@@ -1,12 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp5.0</TargetFramework>
+    <UserSecretsId>2aad6355-9e52-48b9-af12-affb6296241b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="API\Request\" />
-    <Folder Include="API\Send\" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj" />
+    <ProjectReference Include="..\WeatherHistoryViewer.Db\WeatherHistoryViewer.Db.csproj" />
   </ItemGroup>
 
 </Project>
