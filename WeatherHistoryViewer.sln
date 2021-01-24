@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Core",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.APISender", "WeatherHistoryViewer.APISender\WeatherHistoryViewer.APISender.csproj", "{96F90564-6095-4712-8CF4-871DB0B23083}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherHistoryViewer.Web", "WeatherHistoryViewer.Web\WeatherHistoryViewer.Web.csproj", "{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherHistoryViewer.Web", "WeatherHistoryViewer.Web\WeatherHistoryViewer.Web.csproj", "{3D3744FC-348C-453D-8E2E-0BDD06CAE123}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{96F90564-6095-4712-8CF4-871DB0B23083}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96F90564-6095-4712-8CF4-871DB0B23083}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96F90564-6095-4712-8CF4-871DB0B23083}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D3744FC-348C-453D-8E2E-0BDD06CAE123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D3744FC-348C-453D-8E2E-0BDD06CAE123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D3744FC-348C-453D-8E2E-0BDD06CAE123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D3744FC-348C-453D-8E2E-0BDD06CAE123}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
