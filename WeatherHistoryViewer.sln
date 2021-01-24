@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{63BF84D3-C062-4064-AF3E-DF69E55BE55B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "TestConsole\TestConsole.csproj", "{63BF84D3-C062-4064-AF3E-DF69E55BE55B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherHistoryViewer.Services", "WeatherHistoryViewer.Services\WeatherHistoryViewer.Services.csproj", "{CB67C4A6-5FCF-4D7F-82DD-B34CDCCBFE5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Services", "WeatherHistoryViewer.Services\WeatherHistoryViewer.Services.csproj", "{CB67C4A6-5FCF-4D7F-82DD-B34CDCCBFE5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherHistoryViewer.Db", "WeatherHistoryViewer.Db\WeatherHistoryViewer.Db.csproj", "{0655DC18-6652-43B6-A789-D271B9F8046F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Db", "WeatherHistoryViewer.Db\WeatherHistoryViewer.Db.csproj", "{0655DC18-6652-43B6-A789-D271B9F8046F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherHistoryViewer.Core", "WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj", "{37263F9D-C2F3-491A-938E-768EA1ACE7F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Core", "WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj", "{37263F9D-C2F3-491A-938E-768EA1ACE7F4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.APISender", "WeatherHistoryViewer.APISender\WeatherHistoryViewer.APISender.csproj", "{96F90564-6095-4712-8CF4-871DB0B23083}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherHistoryViewer.Web", "WeatherHistoryViewer.Web\WeatherHistoryViewer.Web.csproj", "{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{37263F9D-C2F3-491A-938E-768EA1ACE7F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37263F9D-C2F3-491A-938E-768EA1ACE7F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37263F9D-C2F3-491A-938E-768EA1ACE7F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96F90564-6095-4712-8CF4-871DB0B23083}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96F90564-6095-4712-8CF4-871DB0B23083}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96F90564-6095-4712-8CF4-871DB0B23083}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96F90564-6095-4712-8CF4-871DB0B23083}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04B1B951-DB32-4F73-89B7-C2675EA8B6D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

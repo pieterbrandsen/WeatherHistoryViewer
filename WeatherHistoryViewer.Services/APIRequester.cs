@@ -1,23 +1,23 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using WeatherHistoryViewer.Core;
+using WeatherHistoryViewer.Core.Models;
 
-namespace WeatherHistoryViewer.Services.API
+namespace WeatherHistoryViewer.Services
 {
     public interface IRequester
     {
         CurrentWeatherHTTPResponse GetCurrentWeather(string APIKey);
     }
-    public class Requester : IRequester
+    public class APIRequester : IRequester
     {
-        public Requester()
+        public APIRequester()
         {
 
         }
@@ -36,7 +36,8 @@ namespace WeatherHistoryViewer.Services.API
         {
             string uri = $"http://api.weatherstack.com/current?access_key={APIKey}& query=Baarn& units = m& language = en";
             string jsonResponse = HTTPGet(uri);
-            return JsonSerializer.Deserialize<CurrentWeatherHTTPResponse>(jsonResponse);
+            CurrentWeatherHTTPResponse currentWeatherHTTPResponse = JsonSerializer.Deserialize<CurrentWeatherHTTPResponse>(jsonResponse);
+            return currentWeatherHTTPResponse;
         }
     }
 }

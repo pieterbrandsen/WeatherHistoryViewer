@@ -9,8 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeatherHistoryViewer.Core;
 using WeatherHistoryViewer.Db;
-using WeatherHistoryViewer.Services.API;
-using WeatherHistoryViewer.Services.Db;
+using WeatherHistoryViewer.Services;
 
 namespace WeatherHistoryViewer.Services
 {
@@ -21,6 +20,21 @@ namespace WeatherHistoryViewer.Services
             services
                 .AddDbContext<ApplicationDbContext>();
 
+            return services;
+        }
+
+        public static IServiceCollection RegisterInterfaceServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            services
+                .AddScoped<ISecretRevealer, SecretRevealer>()
+                .AddScoped<IRequester, APIRequester>()
+                .AddScoped<IWeatherData, WeatherDataHandler>();
+            
+            return services;
+        }
+
+        public static IServiceCollection RegisterSecrets(this IServiceCollection services, IConfiguration configuration)
+        {
             return services;
         }
     }
