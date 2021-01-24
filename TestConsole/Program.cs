@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherHistoryViewer.Core.Models;
@@ -12,13 +13,9 @@ namespace TestConsole
         public static IConfigurationRoot Configuration { get; set; }
         public static IServiceProvider ServiceProvider { get; set; }
 
-
         private static void Main()
         {
             Startup();
-
-            var createTimer = new CreateTimer(ServiceProvider);
-            createTimer.InitTimer();
             Console.ReadKey();
         }
 
@@ -49,6 +46,8 @@ namespace TestConsole
                 .RegisterInterfaceServices(Configuration);
 
             ServiceProvider = services.BuildServiceProvider();
+            ICreateTimer createTimer = ServiceProvider.GetService<ICreateTimer>();
+            createTimer.InitTimer();
         }
     }
 }

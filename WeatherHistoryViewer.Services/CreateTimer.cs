@@ -4,20 +4,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace WeatherHistoryViewer.Services
 {
-    public class CreateTimer
+    public interface ICreateTimer
+    {
+        public void InitTimer();
+    }
+    public class CreateTimer : ICreateTimer
     {
         private static Timer aTimer;
-        private static IServiceProvider _serviceProvider;
+        private static IWeatherDataHandler _weatherDataHandler;
 
-        public CreateTimer(IServiceProvider serviceProvider)
+        public CreateTimer(IWeatherDataHandler weatherDataHandler)
         {
-            _serviceProvider = serviceProvider;
+            _weatherDataHandler = weatherDataHandler;
         }
 
         public void InitTimer()
         {
             // Create a timer with a ... second interval.
-            aTimer = new Timer(30 * 60 * 1000);
+            aTimer = new Timer(1 * 20 * 1000);
             // Hook up the Elapsed event for the timer. 
             aTimer.Elapsed += OnTimedEvent;
             aTimer.AutoReset = true;
@@ -28,8 +32,7 @@ namespace WeatherHistoryViewer.Services
         {
             Console.WriteLine("A new data entry was added at {0:HH:mm:ss.fff}",
                 e.SignalTime);
-            var weatherData = _serviceProvider.GetService<IWeatherData>();
-            weatherData.AddCurrentWeatherToDB();
+            _weatherDataHandler.AddCurrentWeatherToDB();
         }
     }
 }

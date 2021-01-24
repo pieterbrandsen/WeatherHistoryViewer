@@ -3,18 +3,18 @@ using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services
 {
-    public interface IWeatherData
+    public interface IWeatherDataHandler
     {
         public void AddCurrentWeatherToDB();
     }
 
-    public class WeatherDataHandler : IWeatherData
+    public class WeatherDataHandlerHandler : IWeatherDataHandler
     {
         private readonly ApplicationDbContext _context;
         private readonly IRequester _requester;
         private readonly ISecretRevealer _secretRevealer;
 
-        public WeatherDataHandler(ApplicationDbContext context, ISecretRevealer secretRevealer, IRequester requester)
+        public WeatherDataHandlerHandler(ApplicationDbContext context, ISecretRevealer secretRevealer, IRequester requester)
         {
             _context = context;
             _secretRevealer = secretRevealer;
