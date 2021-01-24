@@ -1,14 +1,10 @@
 ﻿using System;
 using System.IO;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherHistoryViewer.Core;
-using WeatherHistoryViewer.Db;
+using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Services;
-using WeatherHistoryViewer.Services.API;
-using WeatherHistoryViewer.Services.Db;
-using System.Timers;
 
 namespace TestConsole
 {
@@ -16,9 +12,18 @@ namespace TestConsole
     {
         public static IConfigurationRoot Configuration { get; set; }
         public static IServiceProvider ServiceProvider { get; set; }
-        private static System.Timers.Timer aTimer;
+        
 
         private static void Main()
+        {
+            Startup();
+
+            CreateTimer createTimer = new CreateTimer(ServiceProvider);
+            createTimer.InitTimer();
+            Console.ReadKey();
+        }
+
+        private static void Startup()
         {
             var devEnvironmentVariable = Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT");
 
@@ -45,31 +50,9 @@ namespace TestConsole
             //Map the implementations of your classes here ready for DI
             services.Configure<SecretKeys>(Configuration.GetSection(nameof(SecretKeys)))
                 .RegisterDataServices(Configuration)
-                    .AddScoped<ISecretRevealer, SecretRevealer>()
-    .AddScoped<IRequester, Requester>()
-    .AddScoped<IWeatherData, WeatherData>();
+                .RegisterInterfaceServices(Configuration);
 
             ServiceProvider = services.BuildServiceProvider();
-
-            SetTimer();
-            Console.ReadKey();
-        }
-
-        private static void SetTimer()
-        {
-            // Create a timer with a two second interval.
-            aTimer = new Timer(2000);
-            // Hook up the Elapsed event for the timer. 
-            aTimer.Elapsed += OnTimedEvent;
-            aTimer.AutoReset = true;
-            aTimer.Enabled = true;
-        }
-        private static void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}",
-                              e.SignalTime);
-            IWeatherData weatherData = ServiceProvider.GetService<IWeatherData>();
-            //weatherData.AddCurrentWeatherToDB();
         }
     }
 }
