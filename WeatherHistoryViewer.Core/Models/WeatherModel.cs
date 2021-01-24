@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WeatherHistoryViewer.Core.Models
+﻿namespace WeatherHistoryViewer.Core.Models
 {
     public class LocationWKey : Location
     {
@@ -12,6 +6,7 @@ namespace WeatherHistoryViewer.Core.Models
         public int WeatherModelId { get; set; }
         public WeatherModel WeatherModel { get; set; }
     }
+
     public class CurrentWeatherWKey : CurrentWeather
     {
         public int Id { get; set; }

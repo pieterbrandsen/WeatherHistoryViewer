@@ -2,23 +2,22 @@
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WeatherHistoryViewer.Core;
 using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Services;
 
 namespace TestConsole
 {
-    class Program
+    internal class Program
     {
         public static IConfigurationRoot Configuration { get; set; }
         public static IServiceProvider ServiceProvider { get; set; }
-        
+
 
         private static void Main()
         {
             Startup();
 
-            CreateTimer createTimer = new CreateTimer(ServiceProvider);
+            var createTimer = new CreateTimer(ServiceProvider);
             createTimer.InitTimer();
             Console.ReadKey();
         }
@@ -34,14 +33,11 @@ namespace TestConsole
             var builder = new ConfigurationBuilder();
             // tell the builder to look for the appsettings.json file
             builder.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables();
 
             //only add secrets in development
-            if (isDevelopment)
-            {
-                builder.AddUserSecrets<Program>();
-            }
+            if (isDevelopment) builder.AddUserSecrets<Program>();
 
             Configuration = builder.Build();
 

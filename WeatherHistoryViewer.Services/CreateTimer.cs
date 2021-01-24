@@ -1,11 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Timers;
-using WeatherHistoryViewer.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WeatherHistoryViewer.Services
 {
@@ -28,11 +23,12 @@ namespace WeatherHistoryViewer.Services
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
         }
+
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             Console.WriteLine("A new data entry was added at {0:HH:mm:ss.fff}",
-                              e.SignalTime);
-            IWeatherData weatherData = _serviceProvider.GetService<IWeatherData>();
+                e.SignalTime);
+            var weatherData = _serviceProvider.GetService<IWeatherData>();
             weatherData.AddCurrentWeatherToDB();
         }
     }

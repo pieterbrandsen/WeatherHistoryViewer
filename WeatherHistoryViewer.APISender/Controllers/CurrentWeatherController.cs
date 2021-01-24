@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WeatherHistoryViewer.Core;
 using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Db;
 
@@ -27,7 +22,8 @@ namespace WeatherHistoryViewer.APISender.Controllers
         {
             if (_context.Weather.ToList().Count() == 0) return new WeatherModel();
 
-            WeatherModel weatherModel = _context.Weather.Include(i => i.CurrentWeather).Include(i => i.Location).OrderBy(i => i).Last();
+            var weatherModel = _context.Weather.Include(i => i.CurrentWeather).Include(i => i.Location).OrderBy(i => i)
+                .Last();
             return weatherModel;
         }
     }

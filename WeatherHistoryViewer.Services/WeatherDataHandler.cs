@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WeatherHistoryViewer.Core.Models;
+﻿using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services
@@ -12,11 +7,12 @@ namespace WeatherHistoryViewer.Services
     {
         public void AddCurrentWeatherToDB();
     }
+
     public class WeatherDataHandler : IWeatherData
     {
         private readonly ApplicationDbContext _context;
-        private readonly ISecretRevealer _secretRevealer;
         private readonly IRequester _requester;
+        private readonly ISecretRevealer _secretRevealer;
 
         public WeatherDataHandler(ApplicationDbContext context, ISecretRevealer secretRevealer, IRequester requester)
         {
@@ -25,10 +21,20 @@ namespace WeatherHistoryViewer.Services
             _requester = requester;
         }
 
+        public void AddCurrentWeatherToDB()
+        {
+            var secrets = _secretRevealer.RevealSecretKeys();
+            var response = _requester.GetCurrentWeather(secrets.WeatherStack);
+
+            var weather = CreateNewWeatherModel(response);
+            _context.Weather.Add(weather);
+            _context.SaveChanges();
+        }
+
         private WeatherModel CreateNewWeatherModel(CurrentWeatherHTTPResponse response)
         {
-            LocationWKey location = new LocationWKey();
-            Location responseLocation = response.Location;
+            var location = new LocationWKey();
+            var responseLocation = response.Location;
             location.Country = responseLocation.Country;
             location.Lat = responseLocation.Lat;
             location.Localtime = responseLocation.Localtime;
@@ -39,8 +45,8 @@ namespace WeatherHistoryViewer.Services
             location.TimezoneId = responseLocation.TimezoneId;
             location.UtcOffset = responseLocation.UtcOffset;
 
-            CurrentWeatherWKey weather = new CurrentWeatherWKey();
-            CurrentWeather responseWeather = response.Current;
+            var weather = new CurrentWeatherWKey();
+            var responseWeather = response.Current;
             weather.Cloudcover = responseWeather.Cloudcover;
             weather.Feelslike = responseWeather.Feelslike;
             weather.Humidity = responseWeather.Humidity;
@@ -57,17 +63,7 @@ namespace WeatherHistoryViewer.Services
             weather.WindSpeed = responseWeather.WindSpeed;
 
 
-            return new WeatherModel { Location = location, CurrentWeather = weather};
-        }
-
-        public void AddCurrentWeatherToDB()
-        {
-            SecretKeys secrets = _secretRevealer.RevealSecretKeys();
-            CurrentWeatherHTTPResponse response = _requester.GetCurrentWeather(secrets.WeatherStack);
-
-            WeatherModel weather = CreateNewWeatherModel(response);
-            _context.Weather.Add(weather);
-            _context.SaveChanges();
+            return new WeatherModel {Location = location, CurrentWeather = weather};
         }
     }
 }

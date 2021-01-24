@@ -1,9 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Microsoft.Extensions.Options;
 using WeatherHistoryViewer.Core.Models;
 
 namespace WeatherHistoryViewer.Services
@@ -12,9 +8,11 @@ namespace WeatherHistoryViewer.Services
     {
         public SecretKeys RevealSecretKeys();
     }
+
     public class SecretRevealer : ISecretRevealer
     {
         private readonly SecretKeys _secrets;
+
         // I’ve injected <em>secrets</em> into the constructor as setup in Program.cs
         public SecretRevealer(IOptions<SecretKeys> secrets)
         {

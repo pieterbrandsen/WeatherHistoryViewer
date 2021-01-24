@@ -7,101 +7,98 @@ namespace WeatherHistoryViewer.Db.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Weather",
-                columns: table => new
+                "Weather",
+                table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>("int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1")
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Weather", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Weather", x => x.Id); });
 
             migrationBuilder.CreateTable(
-                name: "CurrentWeather",
-                columns: table => new
+                "CurrentWeather",
+                table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>("int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    WeatherModelId = table.Column<int>(type: "int", nullable: false),
-                    ObservationTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Temperature = table.Column<int>(type: "int", nullable: false),
-                    WeatherCode = table.Column<int>(type: "int", nullable: false),
-                    WindSpeed = table.Column<int>(type: "int", nullable: false),
-                    WindDegree = table.Column<int>(type: "int", nullable: false),
-                    WindDir = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Pressure = table.Column<int>(type: "int", nullable: false),
-                    Precip = table.Column<double>(type: "float", nullable: false),
-                    Humidity = table.Column<int>(type: "int", nullable: false),
-                    Cloudcover = table.Column<int>(type: "int", nullable: false),
-                    Feelslike = table.Column<int>(type: "int", nullable: false),
-                    UvIndex = table.Column<int>(type: "int", nullable: false),
-                    Visibility = table.Column<int>(type: "int", nullable: false),
-                    IsDay = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    WeatherModelId = table.Column<int>("int", nullable: false),
+                    ObservationTime = table.Column<string>("nvarchar(max)", nullable: true),
+                    Temperature = table.Column<int>("int", nullable: false),
+                    WeatherCode = table.Column<int>("int", nullable: false),
+                    WindSpeed = table.Column<int>("int", nullable: false),
+                    WindDegree = table.Column<int>("int", nullable: false),
+                    WindDir = table.Column<string>("nvarchar(max)", nullable: true),
+                    Pressure = table.Column<int>("int", nullable: false),
+                    Precip = table.Column<double>("float", nullable: false),
+                    Humidity = table.Column<int>("int", nullable: false),
+                    Cloudcover = table.Column<int>("int", nullable: false),
+                    Feelslike = table.Column<int>("int", nullable: false),
+                    UvIndex = table.Column<int>("int", nullable: false),
+                    Visibility = table.Column<int>("int", nullable: false),
+                    IsDay = table.Column<string>("nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CurrentWeather", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CurrentWeather_Weather_WeatherModelId",
-                        column: x => x.WeatherModelId,
-                        principalTable: "Weather",
-                        principalColumn: "Id",
+                        "FK_CurrentWeather_Weather_WeatherModelId",
+                        x => x.WeatherModelId,
+                        "Weather",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Location",
-                columns: table => new
+                "Location",
+                table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>("int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    WeatherModelId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Region = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Lat = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Lon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TimezoneId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Localtime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LocaltimeEpoch = table.Column<int>(type: "int", nullable: false),
-                    UtcOffset = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    WeatherModelId = table.Column<int>("int", nullable: false),
+                    Name = table.Column<string>("nvarchar(max)", nullable: true),
+                    Country = table.Column<string>("nvarchar(max)", nullable: true),
+                    Region = table.Column<string>("nvarchar(max)", nullable: true),
+                    Lat = table.Column<string>("nvarchar(max)", nullable: true),
+                    Lon = table.Column<string>("nvarchar(max)", nullable: true),
+                    TimezoneId = table.Column<string>("nvarchar(max)", nullable: true),
+                    Localtime = table.Column<string>("nvarchar(max)", nullable: true),
+                    LocaltimeEpoch = table.Column<int>("int", nullable: false),
+                    UtcOffset = table.Column<string>("nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Location", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Location_Weather_WeatherModelId",
-                        column: x => x.WeatherModelId,
-                        principalTable: "Weather",
-                        principalColumn: "Id",
+                        "FK_Location_Weather_WeatherModelId",
+                        x => x.WeatherModelId,
+                        "Weather",
+                        "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_CurrentWeather_WeatherModelId",
-                table: "CurrentWeather",
-                column: "WeatherModelId",
+                "IX_CurrentWeather_WeatherModelId",
+                "CurrentWeather",
+                "WeatherModelId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Location_WeatherModelId",
-                table: "Location",
-                column: "WeatherModelId",
+                "IX_Location_WeatherModelId",
+                "Location",
+                "WeatherModelId",
                 unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CurrentWeather");
+                "CurrentWeather");
 
             migrationBuilder.DropTable(
-                name: "Location");
+                "Location");
 
             migrationBuilder.DropTable(
-                name: "Weather");
+                "Weather");
         }
     }
 }
