@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj" />
+    <ProjectReference Include="..\WeatherHistoryViewer.Db\WeatherHistoryViewer.Db.csproj" />
+    <ProjectReference Include="..\WeatherHistoryViewer.Services\WeatherHistoryViewer.Services.csproj" />
+  </ItemGroup>
+
+
+</Project>
