@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WeatherHistoryViewer.Core
+namespace WeatherHistoryViewer.Core.Models
 {
     public class SecretKeys
     {

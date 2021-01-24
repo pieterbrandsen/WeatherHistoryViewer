@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace WeatherHistoryViewer.Core
+namespace WeatherHistoryViewer.Core.Models
 {
     public class Request
     {
@@ -54,7 +54,6 @@ namespace WeatherHistoryViewer.Core
 
     public class CurrentWeather
     {
-        public int Id { get; set; }
         [JsonPropertyName("observation_time")]
         public string ObservationTime { get; set; }
 
@@ -77,7 +76,7 @@ namespace WeatherHistoryViewer.Core
         public int Pressure { get; set; }
 
         [JsonPropertyName("precip")]
-        public int Precip { get; set; }
+        public double Precip { get; set; }
 
         [JsonPropertyName("humidity")]
         public int Humidity { get; set; }
