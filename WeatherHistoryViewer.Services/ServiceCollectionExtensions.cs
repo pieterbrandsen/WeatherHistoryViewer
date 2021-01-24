@@ -21,7 +21,8 @@ namespace WeatherHistoryViewer.Services
             services
                 .AddScoped<ISecretRevealer, SecretRevealer>()
                 .AddScoped<IRequester, APIRequester>()
-                .AddScoped<IWeatherData, WeatherDataHandler>();
+                .AddScoped<IWeatherDataHandler, WeatherDataHandlerHandler>()
+                .AddScoped<ICreateTimer, CreateTimer>();
 
             return services;
         }
