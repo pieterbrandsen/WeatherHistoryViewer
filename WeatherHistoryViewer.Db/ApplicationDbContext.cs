@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using WeatherHistoryViewer.Core;
+using WeatherHistoryViewer.Core.Models;
 
 namespace WeatherHistoryViewer.Db
 {
@@ -20,10 +21,19 @@ namespace WeatherHistoryViewer.Db
             }
         }
 
-        public DbSet<CurrentWeather> Weather { get; set; }
+        public DbSet<WeatherModel> Weather { get; set; }
+        public DbSet<CurrentWeatherWKey> CurrentWeather { get; set; }
+        public DbSet<LocationWKey> Location { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            builder.Entity<WeatherModel>()
+                .HasOne(s => s.Location)
+                .WithOne(ad => ad.WeatherModel)
+                .HasForeignKey<LocationWKey>(ad => ad.WeatherModelId);
+            builder.Entity<WeatherModel>()
+                .HasOne(s => s.CurrentWeather)
+                .WithOne(ad => ad.WeatherModel)
+                .HasForeignKey<CurrentWeatherWKey>(ad => ad.WeatherModelId);
         }
     }
 }

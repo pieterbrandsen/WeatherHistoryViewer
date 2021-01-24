@@ -23,4 +23,8 @@
     <ProjectReference Include="..\WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
