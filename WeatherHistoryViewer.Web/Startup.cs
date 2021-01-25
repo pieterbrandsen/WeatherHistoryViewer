@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WeatherHistoryViewer.Web.Data;
 
 namespace WeatherHistoryViewer.Web
 {
@@ -22,7 +21,9 @@ namespace WeatherHistoryViewer.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            services.RegisterSecrets(Configuration);
+            services.RegisterDataServices(Configuration);
+            services.RegisterInterfaceServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
