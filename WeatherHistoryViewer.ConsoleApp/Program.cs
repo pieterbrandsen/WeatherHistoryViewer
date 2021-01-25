@@ -41,13 +41,13 @@ namespace TestConsole
             IServiceCollection services = new ServiceCollection();
 
             //Map the implementations of your classes here ready for DI
-            services.Configure<SecretKeys>(Configuration.GetSection(nameof(SecretKeys)))
+            services.Configure<UserSecrets>(Configuration.GetSection(nameof(UserSecrets)))
                 .RegisterDataServices(Configuration)
                 .RegisterInterfaceServices(Configuration);
 
             ServiceProvider = services.BuildServiceProvider();
             ICreateTimer createTimer = ServiceProvider.GetService<ICreateTimer>();
-            createTimer.InitTimer();
+            createTimer?.InitTimer();
         }
     }
 }

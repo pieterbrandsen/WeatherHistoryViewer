@@ -26,8 +26,8 @@ namespace WeatherHistoryViewer.Services
 
         public void AddCurrentWeatherToDB()
         {
-            var secrets = _secretRevealer.RevealSecretApiKeys();
-            var response = _requester.GetCurrentWeather(secrets.WeatherStack);
+            var secrets = _secretRevealer.RevealUserSecrets();
+            var response = _requester.GetCurrentWeather(secrets.ApiKeys.WeatherStack);
 
             var weather = CreateNewWeatherModel(response);
             _context.Weather.Add(weather);

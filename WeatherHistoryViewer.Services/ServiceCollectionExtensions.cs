@@ -12,7 +12,7 @@ namespace WeatherHistoryViewer.Services
             IConfiguration configuration)
         {
             services
-                .AddDbContext<ApplicationDbContext>();
+                .AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration["UserSecrets:DefaultConnectionString"]));
 
             return services;
         }

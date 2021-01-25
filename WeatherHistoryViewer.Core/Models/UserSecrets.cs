@@ -4,9 +4,10 @@
     {
         public string WeatherStack { get; set; }
     }
-
-    public class ConnectionStringKeys
+    public class UserSecrets
     {
-        public string ApplicationDbContext { get; set; }
+        public ApiKeys ApiKeys { get; set; }
+        public string DefaultConnectionString { get; set; }
     }
+
 }
