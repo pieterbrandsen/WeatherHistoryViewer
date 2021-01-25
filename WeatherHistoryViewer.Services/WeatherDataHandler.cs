@@ -1,4 +1,6 @@
-﻿using WeatherHistoryViewer.Core.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services
@@ -6,6 +8,7 @@ namespace WeatherHistoryViewer.Services
     public interface IWeatherDataHandler
     {
         public void AddCurrentWeatherToDB();
+        public List<WeatherModel> GetAllWeatherModels();
     }
 
     public class WeatherDataHandlerHandler : IWeatherDataHandler
@@ -23,7 +26,7 @@ namespace WeatherHistoryViewer.Services
 
         public void AddCurrentWeatherToDB()
         {
-            var secrets = _secretRevealer.RevealSecretKeys();
+            var secrets = _secretRevealer.RevealSecretApiKeys();
             var response = _requester.GetCurrentWeather(secrets.WeatherStack);
 
             var weather = CreateNewWeatherModel(response);
@@ -64,6 +67,11 @@ namespace WeatherHistoryViewer.Services
 
 
             return new WeatherModel {Location = location, CurrentWeather = weather};
+        }
+
+        public List<WeatherModel> GetAllWeatherModels()
+        {
+            return _context.Weather.ToList();
         }
     }
 }

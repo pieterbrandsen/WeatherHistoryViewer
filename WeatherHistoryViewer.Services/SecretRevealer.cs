@@ -6,24 +6,32 @@ namespace WeatherHistoryViewer.Services
 {
     public interface ISecretRevealer
     {
-        public SecretKeys RevealSecretKeys();
+        public ApiKeys RevealSecretApiKeys();
+        public ConnectionStringKeys RevealSecretConnectionStringKeys();
     }
 
     public class SecretRevealer : ISecretRevealer
     {
-        private readonly SecretKeys _secrets;
+        private readonly ApiKeys _apiSecrets;
+        private readonly ConnectionStringKeys _connectionStringSecrets;
 
         // I’ve injected <em>secrets</em> into the constructor as setup in Program.cs
-        public SecretRevealer(IOptions<SecretKeys> secrets)
+        public SecretRevealer(IOptions<ApiKeys> apiKeys, IOptions<ConnectionStringKeys> connectionStringKeys)
         {
             // We want to know if secrets is null so we throw an exception if it is
-            _secrets = secrets.Value ?? throw new ArgumentNullException(nameof(secrets));
+            _apiSecrets = apiKeys.Value ?? throw new ArgumentNullException(nameof(apiKeys));
+            _connectionStringSecrets = connectionStringKeys.Value ?? throw new ArgumentNullException(nameof(connectionStringKeys));
         }
 
-        public SecretKeys RevealSecretKeys()
+        public ApiKeys RevealSecretApiKeys()
         {
             //I can now use my mapped secrets below.
-            return _secrets;
+            return _apiSecrets;
+        }
+        public ConnectionStringKeys RevealSecretConnectionStringKeys()
+        {
+            //I can now use my mapped secrets below.
+            return _connectionStringSecrets;
         }
     }
 }
