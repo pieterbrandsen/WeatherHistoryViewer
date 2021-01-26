@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services;
 
 namespace TestConsole

@@ -9,8 +9,8 @@ using WeatherHistoryViewer.Db;
 namespace WeatherHistoryViewer.Db.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210124111401_init")]
-    partial class init
+    [Migration("20210126094524_renames")]
+    partial class renames
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,7 +20,7 @@ namespace WeatherHistoryViewer.Db.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.CurrentWeatherWKey", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.WeatherHistoryWeatherWKey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,10 +77,10 @@ namespace WeatherHistoryViewer.Db.Migrations
                     b.HasIndex("WeatherModelId")
                         .IsUnique();
 
-                    b.ToTable("CurrentWeather");
+                    b.ToTable("WeatherHistory");
                 });
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.LocationWKey", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.WeatherLocationWKey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,10 +122,10 @@ namespace WeatherHistoryViewer.Db.Migrations
                     b.HasIndex("WeatherModelId")
                         .IsUnique();
 
-                    b.ToTable("Location");
+                    b.ToTable("WeatherLocation");
                 });
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.WeatherModel", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.WeatherModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,29 +137,29 @@ namespace WeatherHistoryViewer.Db.Migrations
                     b.ToTable("Weather");
                 });
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.CurrentWeatherWKey", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.WeatherHistoryWeatherWKey", b =>
                 {
-                    b.HasOne("WeatherHistoryViewer.Core.WeatherModel", "WeatherModel")
+                    b.HasOne("WeatherHistoryViewer.Core.Models.WeatherModel", "WeatherModel")
                         .WithOne("CurrentWeather")
-                        .HasForeignKey("WeatherHistoryViewer.Core.CurrentWeatherWKey", "WeatherModelId")
+                        .HasForeignKey("WeatherHistoryViewer.Core.Models.WeatherHistoryWeatherWKey", "WeatherModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("WeatherModel");
                 });
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.LocationWKey", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.WeatherLocationWKey", b =>
                 {
-                    b.HasOne("WeatherHistoryViewer.Core.WeatherModel", "WeatherModel")
+                    b.HasOne("WeatherHistoryViewer.Core.Models.WeatherModel", "WeatherModel")
                         .WithOne("Location")
-                        .HasForeignKey("WeatherHistoryViewer.Core.LocationWKey", "WeatherModelId")
+                        .HasForeignKey("WeatherHistoryViewer.Core.Models.WeatherLocationWKey", "WeatherModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("WeatherModel");
                 });
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.WeatherModel", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.WeatherModel", b =>
                 {
                     b.Navigation("CurrentWeather");
 

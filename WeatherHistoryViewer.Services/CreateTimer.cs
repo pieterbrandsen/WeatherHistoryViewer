@@ -10,7 +10,7 @@ namespace WeatherHistoryViewer.Services
     }
     public class CreateTimer : ICreateTimer
     {
-        private static Timer aTimer;
+        private static Timer timer;
         private static IWeatherDataHandler _weatherDataHandler;
 
         public CreateTimer(IWeatherDataHandler weatherDataHandler)
@@ -21,11 +21,11 @@ namespace WeatherHistoryViewer.Services
         public void InitTimer()
         {
             // Create a timer with a ... second interval.
-            aTimer = new Timer(1 * 20 * 1000);
+            timer = new Timer(60 * 60 * 1000);
             // Hook up the Elapsed event for the timer. 
-            aTimer.Elapsed += OnTimedEvent;
-            aTimer.AutoReset = true;
-            aTimer.Enabled = true;
+            timer.Elapsed += OnTimedEvent;
+            timer.AutoReset = true;
+            timer.Enabled = true;
         }
 
         private static void OnTimedEvent(object source, ElapsedEventArgs e)

@@ -36,7 +36,7 @@ namespace WeatherHistoryViewer.Services
 
         private WeatherModel CreateNewWeatherModel(CurrentWeatherHTTPResponse response)
         {
-            var location = new LocationWKey();
+            var location = new WeatherLocationWKey();
             var responseLocation = response.Location;
             location.Country = responseLocation.Country;
             location.Lat = responseLocation.Lat;
@@ -48,7 +48,7 @@ namespace WeatherHistoryViewer.Services
             location.TimezoneId = responseLocation.TimezoneId;
             location.UtcOffset = responseLocation.UtcOffset;
 
-            var weather = new CurrentWeatherWKey();
+            var weather = new WeatherHistoryWeatherWKey();
             var responseWeather = response.Current;
             weather.Cloudcover = responseWeather.Cloudcover;
             weather.Feelslike = responseWeather.Feelslike;
