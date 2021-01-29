@@ -1,41 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WeatherHistoryViewer.Core.Models.Weather;
+﻿using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services
 {
     public interface ICustomWeatherClassConverter
     {
-        public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse, string date, HourlyInterval hourlyInterval);
+        public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,
+            string date, HourlyInterval hourlyInterval);
     }
+
     public class CustomWeatherClassConverter : ICustomWeatherClassConverter
     {
         private readonly ILocationDataHandler _locationDataHandler;
+
         public CustomWeatherClassConverter(ILocationDataHandler locationDataHandler)
         {
             _locationDataHandler = locationDataHandler;
         }
-        public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse, string date, HourlyInterval hourlyInterval)
+
+        public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,
+            string date, HourlyInterval hourlyInterval)
         {
-            var historicalWeather = new HistoricalWeather()
+            var day = historicalWeatherResponse.Historical.Day;
+            return new HistoricalWeather
             {
-                Location = _locationDataHandler.GetLocationBasedOnCity(historicalWeatherResponse.Location.Name, historicalWeatherResponse.Location),
-                AvgTemp = historicalWeatherResponse.Historical.Day.Avgtemp,
+                Location = _locationDataHandler.GetLocationBasedOnCity(historicalWeatherResponse.Location.Name,
+                    historicalWeatherResponse.Location),
+                AvgTemp = day.Avgtemp,
                 Date = date,
-                DateEpoch = historicalWeatherResponse.Historical.Day.DateEpoch,
-                SnapshotsOfDay = historicalWeatherResponse.Historical.Day.HourlyModels,
-                MaxTemp = historicalWeatherResponse.Historical.Day.Maxtemp,
-                MinTemp = historicalWeatherResponse.Historical.Day.Mintemp,
-                SunHour = historicalWeatherResponse.Historical.Day.Sunhour,
-                TotalSnow = historicalWeatherResponse.Historical.Day.Totalsnow,
-                UvIndex = historicalWeatherResponse.Historical.Day.UvIndex,
+                DateEpoch = day.DateEpoch,
+                SnapshotsOfDay = day.HourlyModels,
+                MaxTemp = day.Maxtemp,
+                MinTemp = day.Mintemp,
+                SunHour = day.Sunhour,
+                TotalSnow = day.Totalsnow,
+                UvIndex = day.UvIndex,
                 HourlyInterval = hourlyInterval
             };
-
-            return historicalWeather;
         }
     }
 }

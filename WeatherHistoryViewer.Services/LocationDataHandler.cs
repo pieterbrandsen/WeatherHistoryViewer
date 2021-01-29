@@ -21,9 +21,7 @@ namespace WeatherHistoryViewer.Services
         public Location GetLocationBasedOnCity(string cityName, Location knownLocation)
         {
             var foundLocation = _context.Locations.FirstOrDefault(l => l.Name == cityName);
-            if (foundLocation != null) return foundLocation;
-
-            return knownLocation;
+            return foundLocation ?? knownLocation;
         }
     }
 }

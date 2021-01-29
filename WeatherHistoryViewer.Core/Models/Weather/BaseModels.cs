@@ -222,7 +222,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public int UvIndex { get; set; }
     }
 
-    public class DayModel
+    public class Day
     {
         [JsonPropertyName("date")]
         public string Date { get; set; }
@@ -257,6 +257,6 @@ namespace WeatherHistoryViewer.Core.Models.Weather
 
     public class Historical
     {
-        public DayModel Day { get; set; }
+        public Day Day { get; set; }
     }
 }

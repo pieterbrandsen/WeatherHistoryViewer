@@ -21,8 +21,8 @@ namespace WeatherHistoryViewer.Services
 
         public void InitTimer()
         {
-            // Create a timer with a ... second interval.
-            timer = new Timer(20 * 1 * 1000);
+            // Create a timer with a 60 minute interval.
+            timer = new Timer(60 * 60 * 1000);
             // Hook up the Elapsed event for the timer. 
             timer.Elapsed += OnTimedEvent;
             timer.AutoReset = true;

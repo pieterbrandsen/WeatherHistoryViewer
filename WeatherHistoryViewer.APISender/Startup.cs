@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
@@ -42,7 +41,6 @@ namespace WeatherHistoryViewer.APISender
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             weatherDataHandler.AddHistoricalWeatherToDb("Baarn", "2015-01-22", HourlyInterval.Hours1);
-
         }
     }
 }

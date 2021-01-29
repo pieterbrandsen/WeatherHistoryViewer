@@ -11,7 +11,6 @@ namespace WeatherHistoryViewer.Services
             IConfiguration configuration)
         {
             services
-                //.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration["UserSecrets:DefaultConnectionString"]));
                 .AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(configuration["UserSecrets:DefaultConnectionString"]));
 
@@ -29,11 +28,6 @@ namespace WeatherHistoryViewer.Services
                 .AddScoped<ICreateWeatherTimer, CreateWeatherTimer>()
                 .AddScoped<ICustomWeatherClassConverter, CustomWeatherClassConverter>()
                 .AddScoped<ILocationDataHandler, LocationDataHandler>();
-            return services;
-        }
-
-        public static IServiceCollection RegisterSecrets(this IServiceCollection services, IConfiguration configuration)
-        {
             return services;
         }
     }
