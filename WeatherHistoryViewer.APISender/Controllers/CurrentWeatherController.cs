@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WeatherHistoryViewer.Core.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
+using WeatherHistoryViewer.Services;
 
 namespace WeatherHistoryViewer.APISender.Controllers
 {
@@ -10,21 +9,22 @@ namespace WeatherHistoryViewer.APISender.Controllers
     [Route("[controller]")]
     public class CurrentWeatherController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApiRequester _apiRequester;
+        private readonly ISecretRevealer _secretRevealer;
 
-        public CurrentWeatherController(ApplicationDbContext context)
+        public CurrentWeatherController(IApiRequester apiRequester,
+            ISecretRevealer secretRevealer)
         {
-            _context = context;
+            _apiRequester = apiRequester;
+            _secretRevealer = secretRevealer;
         }
 
         [HttpGet]
-        public WeatherModel Get()
+        public CurrentWeatherResponse Get(string city_name="Baarn")
         {
-            if (_context.Weather.ToList().Count() == 0) return new WeatherModel();
-
-            var weatherModel = _context.Weather.Include(i => i.CurrentWeather).Include(i => i.Location).OrderBy(i => i)
-                .Last();
-            return weatherModel;
+            var userSecrets = _secretRevealer.RevealUserSecrets();
+            var currentWeather = _apiRequester.GetCurrentWeather(userSecrets.ApiKeys.WeatherStack, city_name);
+            return currentWeather;
         }
     }
 }

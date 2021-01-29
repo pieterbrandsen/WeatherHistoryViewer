@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherHistoryViewer.Db;
 
@@ -10,7 +11,9 @@ namespace WeatherHistoryViewer.Services
             IConfiguration configuration)
         {
             services
-                .AddDbContext<ApplicationDbContext>();
+                .AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(configuration["UserSecrets:DefaultConnectionString"]));
+
 
             return services;
         }
@@ -20,14 +23,11 @@ namespace WeatherHistoryViewer.Services
         {
             services
                 .AddScoped<ISecretRevealer, SecretRevealer>()
-                .AddScoped<IRequester, APIRequester>()
-                .AddScoped<IWeatherData, WeatherDataHandler>();
-
-            return services;
-        }
-
-        public static IServiceCollection RegisterSecrets(this IServiceCollection services, IConfiguration configuration)
-        {
+                .AddScoped<IApiRequester, ApiRequester>()
+                .AddScoped<IWeatherDataHandler, WeatherDataHandlerHandler>()
+                .AddScoped<ICreateWeatherTimer, CreateWeatherTimer>()
+                .AddScoped<ICustomWeatherClassConverter, CustomWeatherClassConverter>()
+                .AddScoped<ILocationDataHandler, LocationDataHandler>();
             return services;
         }
     }

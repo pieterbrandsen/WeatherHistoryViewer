@@ -1,32 +1,50 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WeatherHistoryViewer.Core.Models;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal;
+using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Db
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<WeatherModel> Weather { get; set; }
-        public DbSet<CurrentWeatherWKey> CurrentWeather { get; set; }
-        public DbSet<LocationWKey> Location { get; set; }
+        private readonly string _connectionString;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+            _connectionString = ((SqlServerOptionsExtension) options.Extensions.Last()).ConnectionString;
+        }
+
+        public DbSet<Location> Locations { get; set; }
+        public DbSet<HistoricalWeather> Weather { get; set; }
+        public DbSet<WeatherSnapshot> WeatherHourly { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
-            if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer(
-                    "Server=(localdb)\\mssqllocaldb;Database=weatherDB;Trusted_Connection=True;MultipleActiveResultSets=true");
+            if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlServer(_connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<WeatherModel>()
-                .HasOne(s => s.Location)
-                .WithOne(ad => ad.WeatherModel)
-                .HasForeignKey<LocationWKey>(ad => ad.WeatherModelId);
-            builder.Entity<WeatherModel>()
-                .HasOne(s => s.CurrentWeather)
-                .WithOne(ad => ad.WeatherModel)
-                .HasForeignKey<CurrentWeatherWKey>(ad => ad.WeatherModelId);
+            base.OnModelCreating(builder);
+
+            builder.Entity<HistoricalWeather>()
+                .HasOne(i => i.Location)
+                .WithMany();
+
+            builder.Entity<HistoricalWeather>()
+                .HasMany(g => g.SnapshotsOfDay)
+                .WithOne(s => s.HistoricalWeather)
+                .HasForeignKey(s => s.HistoricalWeatherId);
+
+            //        builder.Entity<HistoricalWeather>()
+            //.Navigation(w => w.Location)
+            //    .UsePropertyAccessMode(PropertyAccessMode.Property);
+
+            builder.Entity<HistoricalWeather>().HasKey(o => o.Id);
+            builder.Entity<WeatherSnapshot>().HasKey(o => o.Id);
+            builder.Entity<Location>().HasKey(o => o.Name);
         }
     }
 }

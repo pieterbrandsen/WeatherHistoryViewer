@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
+using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
 
 namespace WeatherHistoryViewer.APISender
@@ -20,15 +21,14 @@ namespace WeatherHistoryViewer.APISender
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services
+            services.Configure<UserSecrets>(Configuration.GetSection(nameof(UserSecrets)))
                 .RegisterDataServices(Configuration)
                 .RegisterInterfaceServices(Configuration)
-                .AddControllers().AddNewtonsoftJson(options =>
-                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+                .AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IWeatherDataHandler weatherDataHandler)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
@@ -39,6 +39,8 @@ namespace WeatherHistoryViewer.APISender
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            weatherDataHandler.AddHistoricalWeatherToDb("Baarn", "2015-01-22", HourlyInterval.Hours1);
         }
     }
 }

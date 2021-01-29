@@ -16,72 +16,54 @@ namespace WeatherHistoryViewer.Db.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.CurrentWeatherWKey", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.Weather.HistoricalWeather", b =>
             {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd()
                     .HasColumnType("int")
                     .UseIdentityColumn();
 
-                b.Property<int>("Cloudcover")
+                b.Property<int>("AvgTemp")
                     .HasColumnType("int");
 
-                b.Property<int>("Feelslike")
-                    .HasColumnType("int");
-
-                b.Property<int>("Humidity")
-                    .HasColumnType("int");
-
-                b.Property<string>("IsDay")
+                b.Property<string>("Date")
                     .HasColumnType("nvarchar(max)");
 
-                b.Property<string>("ObservationTime")
-                    .HasColumnType("nvarchar(max)");
+                b.Property<int>("DateEpoch")
+                    .HasColumnType("int");
 
-                b.Property<double>("Precip")
+                b.Property<int>("HourlyInterval")
+                    .HasColumnType("int");
+
+                b.Property<string>("LocationName")
+                    .HasColumnType("nvarchar(450)");
+
+                b.Property<int>("MaxTemp")
+                    .HasColumnType("int");
+
+                b.Property<int>("MinTemp")
+                    .HasColumnType("int");
+
+                b.Property<double>("SunHour")
                     .HasColumnType("float");
 
-                b.Property<int>("Pressure")
-                    .HasColumnType("int");
-
-                b.Property<int>("Temperature")
+                b.Property<int>("TotalSnow")
                     .HasColumnType("int");
 
                 b.Property<int>("UvIndex")
                     .HasColumnType("int");
 
-                b.Property<int>("Visibility")
-                    .HasColumnType("int");
-
-                b.Property<int>("WeatherCode")
-                    .HasColumnType("int");
-
-                b.Property<int>("WeatherModelId")
-                    .HasColumnType("int");
-
-                b.Property<int>("WindDegree")
-                    .HasColumnType("int");
-
-                b.Property<string>("WindDir")
-                    .HasColumnType("nvarchar(max)");
-
-                b.Property<int>("WindSpeed")
-                    .HasColumnType("int");
-
                 b.HasKey("Id");
 
-                b.HasIndex("WeatherModelId")
-                    .IsUnique();
+                b.HasIndex("LocationName");
 
-                b.ToTable("CurrentWeather");
+                b.ToTable("Weather");
             });
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.LocationWKey", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.Weather.Location", b =>
             {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int")
-                    .UseIdentityColumn();
+                b.Property<string>("Name")
+                    .HasColumnType("nvarchar(450)");
 
                 b.Property<string>("Country")
                     .HasColumnType("nvarchar(max)");
@@ -89,16 +71,7 @@ namespace WeatherHistoryViewer.Db.Migrations
                 b.Property<string>("Lat")
                     .HasColumnType("nvarchar(max)");
 
-                b.Property<string>("Localtime")
-                    .HasColumnType("nvarchar(max)");
-
-                b.Property<int>("LocaltimeEpoch")
-                    .HasColumnType("int");
-
                 b.Property<string>("Lon")
-                    .HasColumnType("nvarchar(max)");
-
-                b.Property<string>("Name")
                     .HasColumnType("nvarchar(max)");
 
                 b.Property<string>("Region")
@@ -110,57 +83,131 @@ namespace WeatherHistoryViewer.Db.Migrations
                 b.Property<string>("UtcOffset")
                     .HasColumnType("nvarchar(max)");
 
-                b.Property<int>("WeatherModelId")
-                    .HasColumnType("int");
+                b.HasKey("Name");
 
-                b.HasKey("Id");
-
-                b.HasIndex("WeatherModelId")
-                    .IsUnique();
-
-                b.ToTable("Location");
+                b.ToTable("Locations");
             });
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.WeatherModel", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.Weather.WeatherSnapshot", b =>
             {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd()
                     .HasColumnType("int")
                     .UseIdentityColumn();
 
+                b.Property<int>("Chanceoffog")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceoffrost")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceofhightemp")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceofovercast")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceofrain")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceofremdry")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceofsnow")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceofsunshine")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceofthunder")
+                    .HasColumnType("int");
+
+                b.Property<int>("Chanceofwindy")
+                    .HasColumnType("int");
+
+                b.Property<int>("Cloudcover")
+                    .HasColumnType("int");
+
+                b.Property<int>("Dewpoint")
+                    .HasColumnType("int");
+
+                b.Property<int>("Feelslike")
+                    .HasColumnType("int");
+
+                b.Property<int>("Heatindex")
+                    .HasColumnType("int");
+
+                b.Property<int>("HistoricalWeatherId")
+                    .HasColumnType("int");
+
+                b.Property<int>("Humidity")
+                    .HasColumnType("int");
+
+                b.Property<double>("Precip")
+                    .HasColumnType("float");
+
+                b.Property<int>("Pressure")
+                    .HasColumnType("int");
+
+                b.Property<int>("Temperature")
+                    .HasColumnType("int");
+
+                b.Property<string>("Time")
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<int>("UvIndex")
+                    .HasColumnType("int");
+
+                b.Property<int>("Visibility")
+                    .HasColumnType("int");
+
+                b.Property<int>("WeatherCode")
+                    .HasColumnType("int");
+
+                b.Property<int>("WindDegree")
+                    .HasColumnType("int");
+
+                b.Property<string>("WindDir")
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<int>("WindSpeed")
+                    .HasColumnType("int");
+
+                b.Property<int>("Windchill")
+                    .HasColumnType("int");
+
+                b.Property<int>("Windgust")
+                    .HasColumnType("int");
+
                 b.HasKey("Id");
 
-                b.ToTable("Weather");
+                b.HasIndex("HistoricalWeatherId");
+
+                b.ToTable("WeatherHourly");
             });
 
-            modelBuilder.Entity("WeatherHistoryViewer.Core.CurrentWeatherWKey", b =>
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.Weather.HistoricalWeather", b =>
             {
-                b.HasOne("WeatherHistoryViewer.Core.WeatherModel", "WeatherModel")
-                    .WithOne("CurrentWeather")
-                    .HasForeignKey("WeatherHistoryViewer.Core.CurrentWeatherWKey", "WeatherModelId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-
-                b.Navigation("WeatherModel");
-            });
-
-            modelBuilder.Entity("WeatherHistoryViewer.Core.LocationWKey", b =>
-            {
-                b.HasOne("WeatherHistoryViewer.Core.WeatherModel", "WeatherModel")
-                    .WithOne("Location")
-                    .HasForeignKey("WeatherHistoryViewer.Core.LocationWKey", "WeatherModelId")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-
-                b.Navigation("WeatherModel");
-            });
-
-            modelBuilder.Entity("WeatherHistoryViewer.Core.WeatherModel", b =>
-            {
-                b.Navigation("CurrentWeather");
+                b.HasOne("WeatherHistoryViewer.Core.Models.Weather.Location", "Location")
+                    .WithMany()
+                    .HasForeignKey("LocationName");
 
                 b.Navigation("Location");
             });
+
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.Weather.WeatherSnapshot", b =>
+            {
+                b.HasOne("WeatherHistoryViewer.Core.Models.Weather.HistoricalWeather", "HistoricalWeather")
+                    .WithMany("SnapshotsOfDay")
+                    .HasForeignKey("HistoricalWeatherId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("HistoricalWeather");
+            });
+
+            modelBuilder.Entity("WeatherHistoryViewer.Core.Models.Weather.HistoricalWeather",
+                b => { b.Navigation("SnapshotsOfDay"); });
 #pragma warning restore 612, 618
         }
     }

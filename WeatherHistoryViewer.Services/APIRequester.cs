@@ -1,33 +1,62 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Text.Json;
-using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services
 {
-    public interface IRequester
+    public interface IApiRequester
     {
-        CurrentWeatherHTTPResponse GetCurrentWeather(string APIKey);
+        HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
+            HourlyInterval hourlyInterval);
+
+        CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName);
     }
 
-    public class APIRequester : IRequester
+    public class ApiRequester : IApiRequester
     {
-        public CurrentWeatherHTTPResponse GetCurrentWeather(string APIKey)
+        public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
+            HourlyInterval hourlyInterval)
         {
-            var uri = $"http://api.weatherstack.com/current?access_key={APIKey}& query=Baarn& units = m& language = en";
-            var jsonResponse = HTTPGet(uri);
-            var currentWeatherHTTPResponse = JsonSerializer.Deserialize<CurrentWeatherHTTPResponse>(jsonResponse);
-            return currentWeatherHTTPResponse;
+            var uri =
+                $"http://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1&interval={(int)hourlyInterval}& units=m";
+            try
+            {
+                var jsonResponse = HTTPGet(uri).Replace(date, "Day");
+                return JsonSerializer.Deserialize<HistoricalWeatherResponse>(jsonResponse);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
-        private static string HTTPGet(string uri)
+        public CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName)
         {
-            var request = (HttpWebRequest) WebRequest.Create(uri);
+            var uri = $"http://api.weatherstack.com/current?access_key={apiKey}& query={cityName}& units=m";
+            try
+            {
+                var jsonResponse = HTTPGet(uri);
+                return JsonSerializer.Deserialize<CurrentWeatherResponse>(jsonResponse);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private string HTTPGet(string uri)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(uri);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
-            using var response = (HttpWebResponse) request.GetResponse();
+            using var response = (HttpWebResponse)request.GetResponse();
             using var stream = response.GetResponseStream();
             using var reader = new StreamReader(stream);
+
             return reader.ReadToEnd();
         }
     }
