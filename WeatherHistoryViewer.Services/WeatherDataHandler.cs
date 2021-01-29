@@ -1,77 +1,54 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services
 {
     public interface IWeatherDataHandler
     {
-        public void AddCurrentWeatherToDB();
-        public List<WeatherModel> GetAllWeatherModels();
+        public void AddHistoricalWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval);
+        public List<HistoricalWeather> GetAllWeatherHistory(string cityName);
     }
 
     public class WeatherDataHandlerHandler : IWeatherDataHandler
     {
         private readonly ApplicationDbContext _context;
-        private readonly IRequester _requester;
+        private readonly IApiRequester _requester;
         private readonly ISecretRevealer _secretRevealer;
+        private readonly ICustomWeatherClassConverter _customWeatherClassConverter;
 
-        public WeatherDataHandlerHandler(ApplicationDbContext context, ISecretRevealer secretRevealer, IRequester requester)
+        public WeatherDataHandlerHandler(ApplicationDbContext context, ISecretRevealer secretRevealer, IApiRequester requester, ICustomWeatherClassConverter customWeatherClassConverter)
         {
             _context = context;
             _secretRevealer = secretRevealer;
             _requester = requester;
+            _customWeatherClassConverter = customWeatherClassConverter;
         }
 
-        public void AddCurrentWeatherToDB()
+        public void AddHistoricalWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
         {
+            if (_context.Weather.Any() && _context.Weather.Include(o => o.Location).FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return;
             var secrets = _secretRevealer.RevealUserSecrets();
-            var response = _requester.GetCurrentWeather(secrets.ApiKeys.WeatherStack);
+            var response = _requester.GetHistoricalWeather(secrets.ApiKeys.WeatherStack, cityName, date, hourlyInterval);
+            var weatherModel = _customWeatherClassConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
+            
+            _context.Weather.Add(weatherModel);
 
-            var weather = CreateNewWeatherModel(response);
-            _context.Weather.Add(weather);
+            _context.Database.OpenConnection();
+            //_context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Weather ON;");
             _context.SaveChanges();
+            //_context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Weather OFF;");
+            _context.Database.CloseConnection();
         }
 
-        private WeatherModel CreateNewWeatherModel(CurrentWeatherHTTPResponse response)
+        public List<HistoricalWeather> GetAllWeatherHistory(string cityName)
         {
-            var location = new WeatherLocationWKey();
-            var responseLocation = response.Location;
-            location.Country = responseLocation.Country;
-            location.Lat = responseLocation.Lat;
-            location.Localtime = responseLocation.Localtime;
-            location.LocaltimeEpoch = responseLocation.LocaltimeEpoch;
-            location.Lon = responseLocation.Lon;
-            location.Name = responseLocation.Name;
-            location.Region = responseLocation.Region;
-            location.TimezoneId = responseLocation.TimezoneId;
-            location.UtcOffset = responseLocation.UtcOffset;
-
-            var weather = new WeatherHistoryWeatherWKey();
-            var responseWeather = response.Current;
-            weather.Cloudcover = responseWeather.Cloudcover;
-            weather.Feelslike = responseWeather.Feelslike;
-            weather.Humidity = responseWeather.Humidity;
-            weather.IsDay = responseWeather.IsDay;
-            weather.ObservationTime = responseWeather.ObservationTime;
-            weather.Precip = responseWeather.Precip;
-            weather.Pressure = responseWeather.Pressure;
-            weather.Temperature = responseWeather.Temperature;
-            weather.UvIndex = responseWeather.UvIndex;
-            weather.Visibility = responseWeather.Visibility;
-            weather.WeatherCode = responseWeather.WeatherCode;
-            weather.WindDegree = responseWeather.WindDegree;
-            weather.WindDir = responseWeather.WindDir;
-            weather.WindSpeed = responseWeather.WindSpeed;
-
-
-            return new WeatherModel {Location = location, CurrentWeather = weather};
-        }
-
-        public List<WeatherModel> GetAllWeatherModels()
-        {
-            return _context.Weather.ToList();
+            var returnList = _context.Weather.ToList();
+            return returnList;
         }
     }
 }
