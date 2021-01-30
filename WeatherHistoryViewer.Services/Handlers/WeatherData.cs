@@ -9,7 +9,7 @@ namespace WeatherHistoryViewer.Services.Handlers
 {
     public interface IWeatherData
     {
-        public void AddWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval, bool saveData = true);
+        public void AddWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval);
 
         public void AddHistoricalWeatherRangeToDb(string cityName,
             HourlyInterval hourlyInterval = HourlyInterval.Hours3, string oldestDate = null, string newestDate = null);
@@ -36,7 +36,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             _database = database;
         }
 
-        public void AddWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval, bool saveData = true)
+        public void AddWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
         {
             var secrets = _secretRevealer.RevealUserSecrets();
             using var context = new ApplicationDbContext(secrets.DefaultConnectionString);
@@ -50,7 +50,7 @@ namespace WeatherHistoryViewer.Services.Handlers
                 var weatherModel =
                     _customWeatherClassConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
 
-                _database.AddHistoricalWeather(weatherModel, saveData);
+                _database.AddHistoricalWeather(weatherModel);
             }
             catch (Exception e)
             {
@@ -69,7 +69,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             foreach (var date in dateList)
             {
                 Debug.WriteLine(date);
-                AddWeatherToDb(cityName, date, hourlyInterval, false);
+                AddWeatherToDb(cityName, date, hourlyInterval);
             }
         }
     }

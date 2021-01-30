@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Timers;
+﻿using System.Timers;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
 

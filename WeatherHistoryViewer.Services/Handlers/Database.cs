@@ -8,7 +8,7 @@ namespace WeatherHistoryViewer.Services.Handlers
 {
     public interface IDatabase
     {
-        public void AddHistoricalWeather(HistoricalWeather weather, bool saveData);
+        public void AddHistoricalWeather(HistoricalWeather weather);
     }
 
     public class Database : IDatabase
@@ -20,15 +20,18 @@ namespace WeatherHistoryViewer.Services.Handlers
             _context = context;
         }
 
-        public void AddHistoricalWeather(HistoricalWeather weather, bool saveData)
+        public void AddHistoricalWeather(HistoricalWeather weather)
         {
             try
             {
+                BeginTransaction();
                 _context.Weather.Add(weather);
-                if (!saveData) SaveChanges();
+                SaveChanges();
+                CommitTransaction();
             }
             catch (Exception e)
             {
+                RollbackTransaction();
                 CloseConnection();
                 Console.WriteLine(e);
                 throw;
@@ -52,19 +55,19 @@ namespace WeatherHistoryViewer.Services.Handlers
             CloseConnection();
         }
 
-        public void AddHistoricalWeatherList(List<HistoricalWeather> weatherList)
+        private void BeginTransaction()
         {
-            try
-            {
-                _context.Weather.AddRange(weatherList);
-                SaveChanges();
-            }
-            catch (Exception e)
-            {
-                CloseConnection();
-                Console.WriteLine(e);
-                throw;
-            }
+            _context.Database.BeginTransaction();
+        }
+
+        private void CommitTransaction()
+        {
+            _context.Database.CommitTransaction();
+        }
+
+        private void RollbackTransaction()
+        {
+            _context.Database.RollbackTransaction();
         }
     }
 }
