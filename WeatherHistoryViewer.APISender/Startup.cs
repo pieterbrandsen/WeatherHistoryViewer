@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WeatherHistoryViewer.Core.Models;
-using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
+using WeatherHistoryViewer.Services.Handlers;
 
 namespace WeatherHistoryViewer.APISender
 {
@@ -28,7 +28,8 @@ namespace WeatherHistoryViewer.APISender
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IWeatherDataHandler weatherDataHandler)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IWeatherData weatherData,
+            IWeatherTimer weatherTimer)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
@@ -40,7 +41,9 @@ namespace WeatherHistoryViewer.APISender
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            weatherDataHandler.AddHistoricalWeatherToDb("Baarn", "2015-01-22", HourlyInterval.Hours1);
+            weatherTimer.StartTimer();
+            //weatherData.AddWeatherToDb("Baarn", "2018-01-04", HourlyInterval.Hours1);
+            //weatherData.AddHistoricalWeatherRangeToDb("Baarn", HourlyInterval.Hours1, "2018-01-01");
         }
     }
 }
