@@ -2,18 +2,18 @@
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 
-namespace WeatherHistoryViewer.Services
+namespace WeatherHistoryViewer.Services.Handlers
 {
-    public interface ILocationDataHandler
+    public interface ILocationData
     {
         public Location GetLocationBasedOnCity(string cityName, Location knownLocation);
     }
 
-    public class LocationDataHandler : ILocationDataHandler
+    public class LocationData : ILocationData
     {
         private readonly ApplicationDbContext _context;
 
-        public LocationDataHandler(ApplicationDbContext context)
+        public LocationData(ApplicationDbContext context)
         {
             _context = context;
         }

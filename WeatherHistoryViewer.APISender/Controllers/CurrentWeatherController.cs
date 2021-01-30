@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WeatherHistoryViewer.Core.Models.Weather;
-using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services;
 
 namespace WeatherHistoryViewer.APISender.Controllers
@@ -20,7 +19,7 @@ namespace WeatherHistoryViewer.APISender.Controllers
         }
 
         [HttpGet]
-        public CurrentWeatherResponse Get(string city_name="Baarn")
+        public CurrentWeatherResponse Get(string city_name = "Baarn")
         {
             var userSecrets = _secretRevealer.RevealUserSecrets();
             var currentWeather = _apiRequester.GetCurrentWeather(userSecrets.ApiKeys.WeatherStack, city_name);

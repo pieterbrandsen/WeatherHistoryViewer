@@ -1,4 +1,5 @@
 ﻿using WeatherHistoryViewer.Core.Models.Weather;
+using WeatherHistoryViewer.Services.Handlers;
 
 namespace WeatherHistoryViewer.Services
 {
@@ -10,11 +11,11 @@ namespace WeatherHistoryViewer.Services
 
     public class CustomWeatherClassConverter : ICustomWeatherClassConverter
     {
-        private readonly ILocationDataHandler _locationDataHandler;
+        private readonly ILocationData _locationData;
 
-        public CustomWeatherClassConverter(ILocationDataHandler locationDataHandler)
+        public CustomWeatherClassConverter(ILocationData locationData)
         {
-            _locationDataHandler = locationDataHandler;
+            _locationData = locationData;
         }
 
         public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,
@@ -23,7 +24,7 @@ namespace WeatherHistoryViewer.Services
             var day = historicalWeatherResponse.Historical.Day;
             return new HistoricalWeather
             {
-                Location = _locationDataHandler.GetLocationBasedOnCity(historicalWeatherResponse.Location.Name,
+                Location = _locationData.GetLocationBasedOnCity(historicalWeatherResponse.Location.Name,
                     historicalWeatherResponse.Location),
                 AvgTemp = day.Avgtemp,
                 Date = date,

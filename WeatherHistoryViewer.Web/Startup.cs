@@ -22,7 +22,6 @@ namespace WeatherHistoryViewer.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.RegisterSecrets(Configuration);
             services.RegisterDataServices(Configuration);
             services.RegisterInterfaceServices(Configuration);
         }

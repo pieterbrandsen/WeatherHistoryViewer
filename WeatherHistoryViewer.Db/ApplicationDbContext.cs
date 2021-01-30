@@ -15,6 +15,11 @@ namespace WeatherHistoryViewer.Db
             _connectionString = ((SqlServerOptionsExtension) options.Extensions.Last()).ConnectionString;
         }
 
+        public ApplicationDbContext(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
         public DbSet<Location> Locations { get; set; }
         public DbSet<HistoricalWeather> Weather { get; set; }
         public DbSet<WeatherSnapshot> WeatherHourly { get; set; }

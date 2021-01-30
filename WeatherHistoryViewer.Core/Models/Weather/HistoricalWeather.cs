@@ -21,7 +21,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public int MinTemp { get; set; }
         public int MaxTemp { get; set; }
         public int AvgTemp { get; set; }
-        public int TotalSnow { get; set; }
+        public double TotalSnow { get; set; }
         public double SunHour { get; set; }
         public int UvIndex { get; set; }
         public HourlyInterval HourlyInterval { get; set; }
