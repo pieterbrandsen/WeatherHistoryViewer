@@ -100,8 +100,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public int Id { get; set; }
         public int HistoricalWeatherId { get; set; }
         public HistoricalWeather HistoricalWeather { get; set; }
-
-
+        public string FullDate { get; set; }
         [JsonPropertyName("time")] public string Time { get; set; }
 
         [JsonPropertyName("temperature")] public int Temperature { get; set; }
