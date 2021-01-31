@@ -11,18 +11,20 @@ namespace WeatherHistoryViewer.Services
 
     public class CustomWeatherClassConverter : ICustomWeatherClassConverter
     {
+        private readonly IDateData _dateData;
         private readonly ILocationData _locationData;
 
-        public CustomWeatherClassConverter(ILocationData locationData)
+        public CustomWeatherClassConverter(ILocationData locationData, IDateData dateData)
         {
             _locationData = locationData;
+            _dateData = dateData;
         }
 
         public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,
             string date, HourlyInterval hourlyInterval)
         {
             var day = historicalWeatherResponse.Historical.Day;
-            return new HistoricalWeather
+            var weather = new HistoricalWeather
             {
                 Location = _locationData.GetLocationBasedOnCity(historicalWeatherResponse.Location.Name,
                     historicalWeatherResponse.Location),
@@ -37,6 +39,15 @@ namespace WeatherHistoryViewer.Services
                 UvIndex = day.UvIndex,
                 HourlyInterval = hourlyInterval
             };
+
+            foreach (var weatherSnapshot in weather.SnapshotsOfDay)
+            {
+                var hour = weatherSnapshot.Time != "0" ? weatherSnapshot.Time.Split("0")[0] : "0";
+                var formattedHour = hour.Length == 1 ? $"0{hour}:00" : $"{hour}:00";
+                weatherSnapshot.FullDate = $"{date.Replace("-", "-")}T{formattedHour}:01";
+            }
+
+            return weather;
         }
     }
 }

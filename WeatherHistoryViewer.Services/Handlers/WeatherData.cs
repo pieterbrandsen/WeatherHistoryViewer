@@ -17,18 +17,18 @@ namespace WeatherHistoryViewer.Services.Handlers
 
     public class WeatherData : IWeatherData
     {
-        //private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly ICustomWeatherClassConverter _customWeatherClassConverter;
         private readonly IDatabase _database;
         private readonly IDateData _dateData;
         private readonly IApiRequester _requester;
         private readonly ISecretRevealer _secretRevealer;
 
-        public WeatherData( /*ApplicationDbContext context,*/ ISecretRevealer secretRevealer,
+        public WeatherData(ApplicationDbContext context, ISecretRevealer secretRevealer,
             IApiRequester requester, ICustomWeatherClassConverter customWeatherClassConverter, IDateData dateData,
             IDatabase database)
         {
-            //_context = context;
+            _context = context;
             _secretRevealer = secretRevealer;
             _requester = requester;
             _customWeatherClassConverter = customWeatherClassConverter;
@@ -39,8 +39,7 @@ namespace WeatherHistoryViewer.Services.Handlers
         public void AddWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
         {
             var secrets = _secretRevealer.RevealUserSecrets();
-            using var context = new ApplicationDbContext(secrets.DefaultConnectionString);
-            if (context.Weather.Any() && context.Weather.Include(o => o.Location)
+            if (_context.Weather.Any() && _context.Weather.Include(o => o.Location)
                 .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return;
 
             try
@@ -66,9 +65,10 @@ namespace WeatherHistoryViewer.Services.Handlers
                 ? _dateData.GetAllRequestableDates()
                 : _dateData.GetRangeOfRequestableDates(oldestDate, newestDate);
 
+
             foreach (var date in dateList)
             {
-                Debug.WriteLine(date);
+                Debug.WriteLine($"Place: {cityName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
                 AddWeatherToDb(cityName, date, hourlyInterval);
             }
         }
