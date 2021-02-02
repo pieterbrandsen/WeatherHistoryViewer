@@ -21,4 +21,10 @@ namespace WeatherHistoryViewer.Core.Models.Weather
 
         [JsonPropertyName("current")] public Current Current { get; set; }
     }
+
+    public class HttpStatusResponse
+    {
+        public bool Result { get; set; } = false;
+        public HttpStatusModel StatusModel { get; set; }
+    }
 }
