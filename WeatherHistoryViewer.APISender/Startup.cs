@@ -29,8 +29,7 @@ namespace WeatherHistoryViewer.APISender
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IWeatherData weatherData,
-            IWeatherTimer weatherTimer)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
@@ -41,13 +40,6 @@ namespace WeatherHistoryViewer.APISender
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
-            //weatherTimer.StartTimer();
-            //weatherData.AddWeatherToDb("Baarn", "2018-01-04", HourlyInterval.Hours1);
-            //weatherData.AddWeatherToDb("Amsterdam", "2018-01-04", HourlyInterval.Hours1);
-            //weatherData.AddWeatherToDb("Amsterdam", "2020-01-04", HourlyInterval.Hours1);
-            weatherData.AddHistoricalWeatherRangeToDb("Baarn", HourlyInterval.Hours1);
-            weatherData.AddHistoricalWeatherRangeToDb("Amsterdam", HourlyInterval.Hours1);
         }
     }
 }
