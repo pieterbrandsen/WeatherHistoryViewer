@@ -38,14 +38,14 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         public void AddWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
         {
-            var secrets = _secretRevealer.RevealUserSecrets();
+                var weatherStackApiKey = _secretRevealer.RevealWeatherStackApiKey();
             if (_context.Weather.Any() && _context.Weather.Include(o => o.Location)
                 .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return;
 
             try
             {
                 var response =
-                    _requester.GetHistoricalWeather(secrets.ApiKeys.WeatherStack, cityName, date, hourlyInterval);
+                    _requester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
                 var weatherModel =
                     _customWeatherClassConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
 

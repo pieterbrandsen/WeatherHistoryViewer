@@ -34,7 +34,8 @@ namespace WeatherHistoryViewer.APISender.Controllers
         {
             try
             {
-                if (_secretRevealer.RevealUserSecrets().ApiKeys.WeatherHistoryViewer != access_key) return StatusCode(StatusCodes.Status400BadRequest, _httpStatus.GetErrorModel(HttpStatusTypes.invalid_acces_key));
+                var weatherHistoryApiKey = _secretRevealer.RevealWeatherHistoryApiKey();
+                if (weatherHistoryApiKey != access_key) return StatusCode(StatusCodes.Status400BadRequest, _httpStatus.GetErrorModel(HttpStatusTypes.invalid_acces_key));
 
                 var oldestDate = _dateData.GetDateStringOfDaysAgo();
                 var yesterdayDate = _dateData.GetDateStringOfDaysAgo(1);

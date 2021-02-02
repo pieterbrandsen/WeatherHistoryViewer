@@ -6,7 +6,9 @@ namespace WeatherHistoryViewer.Services
 {
     public interface ISecretRevealer
     {
-        public UserSecrets RevealUserSecrets();
+        public string RevealWeatherStackApiKey();
+        public string RevealWeatherHistoryApiKey();
+        public string RevealConnectionString();
     }
 
     public class SecretRevealer : ISecretRevealer
@@ -20,10 +22,19 @@ namespace WeatherHistoryViewer.Services
             _userSecrets = userSecrets.Value ?? throw new ArgumentNullException(nameof(_userSecrets));
         }
 
-        public UserSecrets RevealUserSecrets()
+        public string RevealConnectionString()
         {
-            //I can now use my mapped secrets below.
-            return _userSecrets;
+            return _userSecrets.DefaultConnectionString;
+        }
+
+        public string RevealWeatherHistoryApiKey()
+        {
+            return _userSecrets.ApiKeys.WeatherHistoryViewer;
+        }
+
+        public string RevealWeatherStackApiKey()
+        {
+            return _userSecrets.ApiKeys.WeatherStack;
         }
     }
 }
