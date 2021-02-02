@@ -20,7 +20,7 @@ namespace WeatherHistoryViewer.Services
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
             HourlyInterval hourlyInterval, int tryCount = 0)
         {
-            Thread.Sleep(2 * 1000);
+            //Thread.Sleep(2 * 1000);
             var uri =
                 $"https://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1&interval={(int) hourlyInterval}& units=m";
             try
@@ -42,7 +42,7 @@ namespace WeatherHistoryViewer.Services
 
         public CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, int tryCount = 0)
         {
-            Thread.Sleep(5 * 1000);
+            Thread.Sleep(2 * 1000);
             var uri = $"http://api.weatherstack.com/current?access_key={apiKey}& query={cityName}& units=m";
             try
             {

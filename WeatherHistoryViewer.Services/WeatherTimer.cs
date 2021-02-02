@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Timers;
+﻿using System.Timers;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
 
@@ -39,6 +37,7 @@ namespace WeatherHistoryViewer.Services
             var oldestDate = _dateData.GetDateStringOfDaysAgo();
             var yesterdayDate = _dateData.GetDateStringOfDaysAgo(1);
             _weatherData.AddHistoricalWeatherRangeToDb("Baarn", HourlyInterval.Hours1, oldestDate, yesterdayDate);
+            _weatherData.AddHistoricalWeatherRangeToDb("Amsterdam", HourlyInterval.Hours1, oldestDate, yesterdayDate);
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
 using WeatherHistoryViewer.Services.Handlers;
 
@@ -41,9 +42,12 @@ namespace WeatherHistoryViewer.APISender
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            weatherTimer.StartTimer();
+            //weatherTimer.StartTimer();
             //weatherData.AddWeatherToDb("Baarn", "2018-01-04", HourlyInterval.Hours1);
-            //weatherData.AddHistoricalWeatherRangeToDb("Baarn", HourlyInterval.Hours1, "2018-01-01");
+            //weatherData.AddWeatherToDb("Amsterdam", "2018-01-04", HourlyInterval.Hours1);
+            //weatherData.AddWeatherToDb("Amsterdam", "2020-01-04", HourlyInterval.Hours1);
+            weatherData.AddHistoricalWeatherRangeToDb("Baarn", HourlyInterval.Hours1);
+            weatherData.AddHistoricalWeatherRangeToDb("Amsterdam", HourlyInterval.Hours1);
         }
     }
 }
