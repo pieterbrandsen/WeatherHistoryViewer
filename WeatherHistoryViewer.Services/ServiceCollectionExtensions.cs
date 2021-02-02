@@ -29,7 +29,8 @@ namespace WeatherHistoryViewer.Services
                 .AddScoped<ICustomWeatherClassConverter, CustomWeatherClassConverter>()
                 .AddScoped<ILocationData, LocationData>()
                 .AddScoped<IDateData, DateData>()
-                .AddScoped<IDatabase, Database>();
+                .AddScoped<IDatabase, Database>()
+                .AddScoped<IHttpStatus, HttpStatus>();
             return services;
         }
     }

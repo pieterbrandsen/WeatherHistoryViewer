@@ -14,7 +14,6 @@ namespace WeatherHistoryViewer.Services.Handlers
     {
         private const string OldestDateString = "2008-07-01";
 
-        //private const string OldestDateString = "2020-07-01";
         public List<string> GetAllRequestableDates()
         {
             var dateList = new List<string>();

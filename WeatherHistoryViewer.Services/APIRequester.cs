@@ -10,15 +10,15 @@ namespace WeatherHistoryViewer.Services
     public interface IApiRequester
     {
         HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
-            HourlyInterval hourlyInterval, int tryCount = 0);
+            HourlyInterval hourlyInterval);
 
-        CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, int tryCount = 0);
+        CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, string units);
     }
 
     public class ApiRequester : IApiRequester
     {
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
-            HourlyInterval hourlyInterval, int tryCount = 0)
+            HourlyInterval hourlyInterval)
         {
             //Thread.Sleep(2 * 1000);
             var uri =
@@ -26,12 +26,7 @@ namespace WeatherHistoryViewer.Services
             try
             {
                 var jsonResponse = HTTPGet(uri).Replace(date, "Day");
-                var objectResponse = JsonSerializer.Deserialize<HistoricalWeatherResponse>(jsonResponse);
-                if (objectResponse?.Current != null)
-                    return objectResponse;
-
-                if (tryCount < 3) return GetHistoricalWeather(apiKey, cityName, date, hourlyInterval, tryCount++);
-                throw new Exception();
+                return JsonSerializer.Deserialize<HistoricalWeatherResponse>(jsonResponse);
             }
             catch (Exception e)
             {
@@ -40,20 +35,13 @@ namespace WeatherHistoryViewer.Services
             }
         }
 
-        public CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, int tryCount = 0)
+        public CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, string units)
         {
-            Thread.Sleep(2 * 1000);
-            var uri = $"http://api.weatherstack.com/current?access_key={apiKey}& query={cityName}& units=m";
+            var uri = $"https://api.weatherstack.com/current?access_key={apiKey}& query={cityName}& units={units}";
             try
             {
                 var jsonResponse = HTTPGet(uri);
-                var objectResponse = JsonSerializer.Deserialize<CurrentWeatherResponse>(jsonResponse);
-
-                if (objectResponse?.Current != null)
-                    return objectResponse;
-
-                if (tryCount < 3) return GetCurrentWeather(apiKey, cityName, tryCount++);
-                throw new Exception();
+                return JsonSerializer.Deserialize<CurrentWeatherResponse>(jsonResponse);
             }
             catch (Exception e)
             {

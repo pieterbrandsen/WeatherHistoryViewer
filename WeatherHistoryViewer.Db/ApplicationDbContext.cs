@@ -38,10 +38,6 @@ namespace WeatherHistoryViewer.Db
                 .WithOne(s => s.HistoricalWeather)
                 .HasForeignKey(s => s.HistoricalWeatherId);
 
-            //        builder.Entity<HistoricalWeather>()
-            //.Navigation(w => w.Location)
-            //    .UsePropertyAccessMode(PropertyAccessMode.Property);
-
             builder.Entity<HistoricalWeather>().HasKey(o => o.Id);
             builder.Entity<WeatherSnapshot>().HasKey(o => o.Id);
             builder.Entity<Location>().HasKey(o => o.Name);
