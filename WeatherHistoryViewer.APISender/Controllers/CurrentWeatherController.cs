@@ -31,10 +31,12 @@ namespace WeatherHistoryViewer.APISender.Controllers
         {
             try
             {
-                var secrets = _secretRevealer.RevealUserSecrets();
-                if (secrets.ApiKeys.WeatherHistoryViewer != access_key) return StatusCode(StatusCodes.Status400BadRequest, _httpStatus.GetErrorModel(HttpStatusTypes.invalid_acces_key));
+                var weatherStackApiKey = _secretRevealer.RevealWeatherStackApiKey();
+                var weatherHistoryApiKey = _secretRevealer.RevealWeatherHistoryApiKey();
+
+                if (weatherHistoryApiKey != access_key) return StatusCode(StatusCodes.Status400BadRequest, _httpStatus.GetErrorModel(HttpStatusTypes.invalid_acces_key));
                 if (query == null) return StatusCode(StatusCodes.Status400BadRequest, _httpStatus.GetErrorModel(HttpStatusTypes.missing_query));
-                var weather = _apiRequester.GetCurrentWeather(secrets.ApiKeys.WeatherStack, query, units);
+                var weather = _apiRequester.GetCurrentWeather(weatherStackApiKey, query, units);
                 if (weather?.Request == null)
                     return StatusCode(StatusCodes.Status500InternalServerError,
                         _httpStatus.GetErrorModel(HttpStatusTypes.no_results));
