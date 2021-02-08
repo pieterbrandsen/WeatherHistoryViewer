@@ -14,8 +14,9 @@ namespace WeatherHistoryViewer.Services.Handlers
     {
         private readonly ApplicationDbContext _context;
 
-        public Database(ApplicationDbContext context)
+        public Database(IDbContextFactory<ApplicationDbContext> contextFactory)
         {
+            using var context = contextFactory.CreateDbContext();
             _context = context;
         }
 
@@ -34,6 +35,10 @@ namespace WeatherHistoryViewer.Services.Handlers
                 CloseConnection();
                 Console.WriteLine(e);
                 throw;
+            }
+            finally
+            {
+                DisposeConnection();
             }
         }
 
@@ -67,6 +72,11 @@ namespace WeatherHistoryViewer.Services.Handlers
         private void RollbackTransaction()
         {
             _context.Database.RollbackTransaction();
+        }
+
+        private void DisposeConnection()
+        {
+            _context.Dispose();
         }
     }
 }

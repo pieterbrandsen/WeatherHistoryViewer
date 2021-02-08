@@ -1,12 +1,13 @@
 ﻿@page "/fetchdata"
-@using WeatherHistoryViewer.Web.Data
-@inject WeatherForecastService ForecastService
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Services.Handlers
+@inject IWeatherData WeatherData
 
 <h1>Weather forecast</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (forecasts == null)
+@*@if (_forecasts == null)
 {
     <p>
         <em>Loading...</em>
@@ -16,33 +17,32 @@ else
 {
     <table class="table">
         <thead>
-        <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
-        </tr>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var forecast in forecasts)
-        {
-            <tr>
-                <td>@forecast.Date.ToShortDateString()</td>
-                <td>@forecast.TemperatureC</td>
-                <td>@forecast.TemperatureF</td>
-                <td>@forecast.Summary</td>
-            </tr>
-        }
+            @foreach (var forecast in _forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
         </tbody>
     </table>
-}
+}*@
 
 @code {
-    private WeatherForecast[] forecasts;
+    private List<HistoricalWeather> _weather;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+        _weather = WeatherData.GetWeatherOfDateInLast10Y("Baarn", "01-25");
     }
-
 }

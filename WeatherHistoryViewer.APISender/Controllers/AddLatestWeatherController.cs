@@ -42,7 +42,7 @@ namespace WeatherHistoryViewer.APISender.Controllers
                 var locations = _locationData.GetAllLocationNames();
                 foreach (var locationName in locations)
                 {
-                    _weatherData.AddHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate, yesterdayDate);
+                    _weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate, yesterdayDate);
                 };
                 return Ok();
             }

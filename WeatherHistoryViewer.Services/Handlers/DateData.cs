@@ -8,6 +8,7 @@ namespace WeatherHistoryViewer.Services.Handlers
         public List<string> GetAllRequestableDates();
         public List<string> GetRangeOfRequestableDates(string oldestDateString, string newestDateString = null);
         public string GetDateStringOfDaysAgo(int dayCount = 7);
+        public List<string> GetDateInLast10Y(string date);
     }
 
     public class DateData : IDateData
@@ -68,6 +69,28 @@ namespace WeatherHistoryViewer.Services.Handlers
             var splitDate = date.Split("-");
             return new DateTime(Convert.ToInt16(splitDate[0]), Convert.ToInt16(splitDate[1]),
                 Convert.ToInt16(splitDate[2]));
+        }
+
+        public List<string> GetDateInLast10Y(string shortDate)
+        {
+            try
+            {
+                var dates = new List<string>();
+                var year = DateTime.Today.Year;
+                for (int i = 0; i < 10; i++)
+                {
+                    var date = $"{year}-{shortDate}";
+                    dates.Add(string.Format("{0:yyyy/MM/dd}", date));
+                    year -= 1;
+                }
+
+                return dates;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

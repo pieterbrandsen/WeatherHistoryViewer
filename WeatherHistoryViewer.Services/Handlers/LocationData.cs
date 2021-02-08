@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 
@@ -13,21 +14,26 @@ namespace WeatherHistoryViewer.Services.Handlers
 
     public class LocationData : ILocationData
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
 
-        public LocationData(ApplicationDbContext context)
+        public LocationData(IDbContextFactory<ApplicationDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public Location GetLocationBasedOnCityName(string cityName, Location knownLocation)
         {
-            var foundLocation = _context.Locations.FirstOrDefault(l => l.Name == cityName);
+            using var context = _contextFactory.CreateDbContext();
+            var foundLocation = context.Locations.FirstOrDefault(l => l.Name == cityName);
+            context.Dispose();
             return foundLocation ?? knownLocation;
         }
         public List<string> GetAllLocationNames()
         {
-            return _context.Locations.Select(l => l.Name).ToList();
+            using var context = _contextFactory.CreateDbContext();
+            var locations = context.Locations.Select(l => l.Name).ToList();
+            context.Dispose();
+            return locations;
         }
     }
 }

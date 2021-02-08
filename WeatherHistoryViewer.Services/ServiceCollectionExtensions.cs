@@ -18,6 +18,16 @@ namespace WeatherHistoryViewer.Services
             return services;
         }
 
+        public static IServiceCollection RegisterDataFactoryServices(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services
+                .AddDbContextFactory<ApplicationDbContext>(options =>
+                    options.UseSqlServer(configuration["UserSecrets:DefaultConnectionString"]));
+
+            return services;
+        }
+
         public static IServiceCollection RegisterInterfaceServices(this IServiceCollection services,
             IConfiguration configuration)
         {
