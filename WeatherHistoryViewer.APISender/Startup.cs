@@ -23,8 +23,8 @@ namespace WeatherHistoryViewer.APISender
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<UserSecrets>(Configuration.GetSection(nameof(UserSecrets)))
-                .RegisterDataServices(Configuration)
                 .RegisterInterfaceServices(Configuration)
+                .RegisterDataFactoryServices(Configuration)
                 .AddControllers();
         }
 

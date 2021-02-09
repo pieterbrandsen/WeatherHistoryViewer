@@ -11,8 +11,8 @@ using WeatherHistoryViewer.Services.Handlers;
 namespace WeatherHistoryViewer.APISender.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class AddLatestWeatherController : ControllerBase
+    [Route("api/[controller]/[action]")]
+    public class UpdateWeather : ControllerBase
     {
         private readonly ISecretRevealer _secretRevealer;
         private readonly IWeatherData _weatherData;
@@ -20,7 +20,7 @@ namespace WeatherHistoryViewer.APISender.Controllers
         private readonly ILocationData _locationData;
         private readonly IHttpStatus _httpStatus;
 
-        public AddLatestWeatherController(ISecretRevealer secretRevealer, IWeatherData weatherData, IDateData dateData, ILocationData locationData, IHttpStatus httpStatus)
+        public UpdateWeather(ISecretRevealer secretRevealer, IWeatherData weatherData, IDateData dateData, ILocationData locationData, IHttpStatus httpStatus)
         {
             _secretRevealer = secretRevealer;
             _weatherData = weatherData;
