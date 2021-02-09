@@ -87,8 +87,6 @@ namespace WeatherHistoryViewer.Services.Handlers
             try
             {
                 var dates = _dateData.GetDateInLast10Y(date);
-                int index1 = dates.IndexOf(dates[2]);
-                int index2 = dates.IndexOf("d");
                 var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
                     .Where(w => w.Location.Name == cityName && dates.Contains(w.Date)).ToList();
                 return weather;
