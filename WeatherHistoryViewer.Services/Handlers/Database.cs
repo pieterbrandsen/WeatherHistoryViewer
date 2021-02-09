@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 
@@ -12,71 +12,42 @@ namespace WeatherHistoryViewer.Services.Handlers
 
     public class Database : IDatabase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
 
         public Database(IDbContextFactory<ApplicationDbContext> contextFactory)
         {
-            using var context = contextFactory.CreateDbContext();
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public void AddHistoricalWeather(HistoricalWeather weather)
         {
+            using var context = _contextFactory.CreateDbContext();
             try
             {
-                BeginTransaction();
-                _context.Weather.Add(weather);
-                SaveChanges();
-                CommitTransaction();
+                context.Database.BeginTransaction();
+                context.Locations.Attach(weather.Location);
+                context.Weather.Add(weather);
+                SaveChanges(context);
+                context.Database.CommitTransaction();
             }
             catch (Exception e)
             {
-                RollbackTransaction();
-                CloseConnection();
+                context.Database.RollbackTransaction();
+                context.Database.CloseConnection();
                 Console.WriteLine(e);
                 throw;
             }
             finally
             {
-                DisposeConnection();
+                context.Dispose();
             }
         }
 
-        private void OpenConnection()
+        private void SaveChanges(ApplicationDbContext context)
         {
-            _context.Database.OpenConnection();
-        }
-
-        private void CloseConnection()
-        {
-            _context.Database.CloseConnection();
-        }
-
-        private void SaveChanges()
-        {
-            OpenConnection();
-            _context.SaveChanges();
-            CloseConnection();
-        }
-
-        private void BeginTransaction()
-        {
-            _context.Database.BeginTransaction();
-        }
-
-        private void CommitTransaction()
-        {
-            _context.Database.CommitTransaction();
-        }
-
-        private void RollbackTransaction()
-        {
-            _context.Database.RollbackTransaction();
-        }
-
-        private void DisposeConnection()
-        {
-            _context.Dispose();
+            context.Database.OpenConnection();
+            context.SaveChanges();
+            context.Database.CloseConnection();
         }
     }
 }

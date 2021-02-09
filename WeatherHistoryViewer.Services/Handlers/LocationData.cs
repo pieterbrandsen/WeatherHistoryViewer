@@ -24,7 +24,7 @@ namespace WeatherHistoryViewer.Services.Handlers
         public Location GetLocationBasedOnCityName(string cityName, Location knownLocation)
         {
             using var context = _contextFactory.CreateDbContext();
-            var foundLocation = context.Locations.FirstOrDefault(l => l.Name == cityName);
+            var foundLocation = context.Locations.FirstOrDefault(l => l.Name.ToLower() == cityName.ToLower());
             context.Dispose();
             return foundLocation ?? knownLocation;
         }

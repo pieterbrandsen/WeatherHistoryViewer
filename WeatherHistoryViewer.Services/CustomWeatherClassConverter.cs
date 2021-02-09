@@ -26,8 +26,7 @@ namespace WeatherHistoryViewer.Services
             var day = historicalWeatherResponse.Historical.Day;
             var weather = new HistoricalWeather
             {
-                Location = _locationData.GetLocationBasedOnCityName(historicalWeatherResponse.Location.Name,
-                    historicalWeatherResponse.Location),
+                Location = historicalWeatherResponse.Location,
                 AvgTemp = day.Avgtemp,
                 Date = date,
                 DateEpoch = day.DateEpoch,
