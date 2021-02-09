@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 
@@ -43,28 +42,28 @@ namespace WeatherHistoryViewer.Services.Handlers
         public void UpdateWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
         {
             using var context = _contextFactory.CreateDbContext();
-                var weatherStackApiKey = _secretRevealer.RevealWeatherStackApiKey();
-                if (context.Weather.Any() && context.Weather.Include(o => o.Location)
-                    .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return;
+            var weatherStackApiKey = _secretRevealer.RevealWeatherStackApiKey();
+            if (context.Weather.Any() && context.Weather.Include(o => o.Location)
+                .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return;
 
-                try
-                {
-                    var response =
-                        _requester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
-                    var weatherModel =
-                        _customWeatherClassConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
+            try
+            {
+                var response =
+                    _requester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
+                var weatherModel =
+                    _customWeatherClassConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
 
-                    _database.AddHistoricalWeather(weatherModel);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
-                finally
-                {
-                    context.Dispose();
-                }
+                _database.AddHistoricalWeather(weatherModel);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                context.Dispose();
+            }
         }
 
         public void UpdateHistoricalWeatherRangeToDb(string cityName,
@@ -77,7 +76,8 @@ namespace WeatherHistoryViewer.Services.Handlers
 
             foreach (var date in dateList)
             {
-                Debug.WriteLine($"Place: {cityName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
+                Debug.WriteLine(
+                    $"Place: {cityName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
                 UpdateWeatherToDb(cityName, date, hourlyInterval);
             }
         }

@@ -54,6 +54,36 @@ namespace WeatherHistoryViewer.Services.Handlers
             return ConvertStringToDateFormat(date);
         }
 
+        public List<string> GetDateInLast10Y(string shortDate)
+        {
+            var shortDateSplitted = shortDate.Split("-");
+            for (var i = 0; i < shortDateSplitted.Length; i++)
+            {
+                var value = shortDateSplitted[i];
+                if (value.Length == 1) shortDateSplitted[i] = $"0{value}";
+            }
+
+
+            try
+            {
+                var dates = new List<string>();
+                var year = DateTime.Today.Year;
+                for (var i = 0; i < 10; i++)
+                {
+                    var date = string.Format("{0:yyyy/MM/dd}", $"{year}-{shortDate}");
+                    dates.Add(date);
+                    year -= 1;
+                }
+
+                return dates;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         private DateTime GetDateOfYesterday(DateTime currentDate)
         {
             return currentDate.AddDays(-1);
@@ -69,39 +99,6 @@ namespace WeatherHistoryViewer.Services.Handlers
             var splitDate = date.Split("-");
             return new DateTime(Convert.ToInt16(splitDate[0]), Convert.ToInt16(splitDate[1]),
                 Convert.ToInt16(splitDate[2]));
-        }
-
-        public List<string> GetDateInLast10Y(string shortDate)
-        {
-            var shortDateSplitted = shortDate.Split("-");
-            for (int i = 0; i < shortDateSplitted.Length; i++)
-            {
-                var value = shortDateSplitted[i];
-                if (value.Length == 1)
-                {
-                    shortDateSplitted[i] = $"0{value}";
-                }   
-            }
-
-
-            try
-            {
-                var dates = new List<string>();
-                var year = DateTime.Today.Year;
-                for (int i = 0; i < 10; i++)
-                {
-                    var date = string.Format("{0:yyyy/MM/dd}", $"{year}-{shortDate}");
-                    dates.Add(date);
-                    year -= 1;
-                }
-
-                return dates;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
         }
     }
 }

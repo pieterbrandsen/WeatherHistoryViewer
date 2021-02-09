@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 namespace WeatherHistoryViewer.Core.Models.Weather
 {
     #region Enums
+
     public enum HttpStatusTypes
     {
         not_found = 404,
@@ -14,15 +15,18 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         invalid_unit = 606,
         request_failed = 615
     }
+
     #endregion
 
     #region Classes
+
     public class HttpStatusModel
     {
         public short Code { get; set; }
         public string Type { get; set; }
         public string Info { get; set; }
     }
+
     public class Request
     {
         [JsonPropertyName("type")] public string Type { get; set; }
@@ -210,5 +214,6 @@ namespace WeatherHistoryViewer.Core.Models.Weather
     {
         public Day Day { get; set; }
     }
+
     #endregion
 }

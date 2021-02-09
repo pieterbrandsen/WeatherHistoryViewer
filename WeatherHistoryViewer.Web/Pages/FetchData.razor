@@ -1,6 +1,6 @@
 ﻿@page "/fetchdata"
-@using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Services.Handlers
+@using WeatherHistoryViewer.Core.Models.Weather
 @inject IWeatherData WeatherData
 
 <h1>Weather forecast</h1>
@@ -45,4 +45,5 @@ else
     {
         _weather = WeatherData.GetWeatherOfDateInLast10Y("Baarn", "01-25");
     }
+
 }

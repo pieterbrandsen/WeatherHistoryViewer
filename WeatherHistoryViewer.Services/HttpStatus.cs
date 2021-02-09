@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services
@@ -12,6 +7,7 @@ namespace WeatherHistoryViewer.Services
     {
         public HttpStatusResponse GetErrorModel(HttpStatusTypes errorType);
     }
+
     public class HttpStatus : IHttpStatus
     {
         public HttpStatusResponse GetErrorModel(HttpStatusTypes errorType)
@@ -42,9 +38,9 @@ namespace WeatherHistoryViewer.Services
                     throw new InvalidEnumArgumentException();
             }
 
-            return new HttpStatusResponse()
+            return new HttpStatusResponse
             {
-                StatusModel = new HttpStatusModel()
+                StatusModel = new HttpStatusModel
                 {
                     Code = (short) errorType,
                     Type = errorType.ToString(),

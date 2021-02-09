@@ -29,6 +29,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             context.Dispose();
             return foundLocation ?? knownLocation;
         }
+
         public List<string> GetAllLocationNames()
         {
             using var context = _contextFactory.CreateDbContext();

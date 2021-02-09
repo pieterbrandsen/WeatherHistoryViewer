@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Text.Json;
-using System.Threading;
 using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services

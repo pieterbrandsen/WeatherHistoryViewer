@@ -4,9 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WeatherHistoryViewer.Core.Models;
-using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
-using WeatherHistoryViewer.Services.Handlers;
 
 namespace WeatherHistoryViewer.APISender
 {

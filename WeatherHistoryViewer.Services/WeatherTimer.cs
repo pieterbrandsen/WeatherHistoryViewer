@@ -43,10 +43,8 @@ namespace WeatherHistoryViewer.Services
             Task.Run(() =>
             {
                 foreach (var locationName in locations)
-                {
                     _weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
                         yesterdayDate);
-                }
             });
         }
     }

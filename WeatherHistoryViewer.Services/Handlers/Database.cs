@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using Microsoft.EntityFrameworkCore.Update;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 
@@ -29,9 +28,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             {
                 context.Database.BeginTransaction();
                 if (_locationData.DoesLocationExistInDb(weather.Location.Name))
-                {
                     context.Locations.Attach(weather.Location);
-                }
                 context.Weather.Add(weather);
                 SaveChanges(context);
                 context.Database.CommitTransaction();

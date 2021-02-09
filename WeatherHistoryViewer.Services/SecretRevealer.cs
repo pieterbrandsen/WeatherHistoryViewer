@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using WeatherHistoryViewer.Core.Models;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace WeatherHistoryViewer.Services
 {
