@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using WeatherHistoryViewer.Core.Models;
 
@@ -13,28 +14,26 @@ namespace WeatherHistoryViewer.Services
 
     public class SecretRevealer : ISecretRevealer
     {
-        private readonly UserSecrets _userSecrets;
+        private readonly IConfiguration _configuration;
 
-        // I’ve injected <em>secrets</em> into the constructor as setup in Program.cs
-        public SecretRevealer(IOptions<UserSecrets> userSecrets)
+        public SecretRevealer(IConfiguration configuration)
         {
-            // We want to know if secrets is null so we throw an exception if it is
-            _userSecrets = userSecrets.Value ?? throw new ArgumentNullException(nameof(_userSecrets));
+            _configuration = configuration;
         }
 
         public string RevealConnectionString()
         {
-            return _userSecrets.DefaultConnectionString;
+            return _configuration["UserSecrets:DefaultConnectionString"];
         }
 
         public string RevealWeatherHistoryApiKey()
         {
-            return _userSecrets.ApiKeys.WeatherHistoryViewer;
+            return _configuration["UserSecrets:ApiKeys:WeatherHistoryViewer"];
         }
 
         public string RevealWeatherStackApiKey()
         {
-            return _userSecrets.ApiKeys.WeatherStack;
+            return _configuration["UserSecrets:ApiKeys:WeatherStack"];
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 
@@ -87,6 +88,9 @@ namespace WeatherHistoryViewer.Services.Handlers
             try
             {
                 var dates = _dateData.GetDateInLast10Y(date);
+                context.Weather.AsNoTracking();
+                context.Locations.AsNoTracking();
+                context.WeatherHourly.AsNoTracking();
                 var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
                     .Where(w => w.Location.Name == cityName && dates.Contains(w.Date)).ToList();
                 return weather;

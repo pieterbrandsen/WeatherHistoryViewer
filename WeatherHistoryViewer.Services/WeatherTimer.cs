@@ -1,4 +1,5 @@
-﻿using System.Timers;
+﻿using System.Threading.Tasks;
+using System.Timers;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
 
@@ -14,11 +15,13 @@ namespace WeatherHistoryViewer.Services
         private static Timer timer;
         private static IWeatherData _weatherData;
         private static IDateData _dateData;
+        private static ILocationData _locationData;
 
-        public WeatherTimer(IWeatherData weatherData, IDateData dateData)
+        public WeatherTimer(IWeatherData weatherData, IDateData dateData, ILocationData locationData)
         {
             _weatherData = weatherData;
             _dateData = dateData;
+            _locationData = locationData;
         }
 
         public void StartTimer()
@@ -27,7 +30,7 @@ namespace WeatherHistoryViewer.Services
             {
                 Enabled = true,
                 AutoReset = true,
-                Interval = 6 * 60 * 60 * 1000
+                Interval = 60 * 60 * 1000
             };
             timer.Elapsed += OnTimedEvent;
         }
@@ -36,8 +39,15 @@ namespace WeatherHistoryViewer.Services
         {
             var oldestDate = _dateData.GetDateStringOfDaysAgo();
             var yesterdayDate = _dateData.GetDateStringOfDaysAgo(1);
-            _weatherData.UpdateHistoricalWeatherRangeToDb("Baarn", HourlyInterval.Hours1, oldestDate, yesterdayDate);
-            _weatherData.UpdateHistoricalWeatherRangeToDb("Amsterdam", HourlyInterval.Hours1, oldestDate, yesterdayDate);
+            var locations = _locationData.GetAllLocationNames();
+            Task.Run(() =>
+            {
+                foreach (var locationName in locations)
+                {
+                    _weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
+                        yesterdayDate);
+                }
+            });
         }
     }
 }
