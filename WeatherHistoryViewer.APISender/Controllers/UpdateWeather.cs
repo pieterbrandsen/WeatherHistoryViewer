@@ -40,11 +40,15 @@ namespace WeatherHistoryViewer.APISender.Controllers
                 var oldestDate = _dateData.GetDateStringOfDaysAgo();
                 var yesterdayDate = _dateData.GetDateStringOfDaysAgo(1);
                 var locations = _locationData.GetAllLocationNames();
-                foreach (var locationName in locations)
+                Task.Run(() =>
                 {
-                    _weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate, yesterdayDate);
-                };
-                return Ok();
+                    foreach (var locationName in locations)
+                    {
+                        _weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
+                            yesterdayDate);
+                    }
+                });
+                return Ok(new {message = "Updated all locations", locations});
             }
             catch (Exception e)
             {
