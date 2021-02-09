@@ -56,5 +56,30 @@ namespace WeatherHistoryViewer.APISender.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, _httpStatus.GetErrorModel(HttpStatusTypes.request_failed));
             }
         }
+
+        [HttpPost]
+        public IActionResult AddWeatherForLocation(string access_key, string query, string oldest_date,
+            string newest_date)
+        {
+            try
+            {
+                var weatherHistoryApiKey = _secretRevealer.RevealWeatherHistoryApiKey();
+                if (weatherHistoryApiKey != access_key) return StatusCode(StatusCodes.Status400BadRequest, _httpStatus.GetErrorModel(HttpStatusTypes.invalid_acces_key));
+                if (query == null) return StatusCode(StatusCodes.Status400BadRequest, _httpStatus.GetErrorModel(HttpStatusTypes.missing_query));
+                
+                Task.Run(() =>
+                {
+                    _weatherData.UpdateHistoricalWeatherRangeToDb(query, HourlyInterval.Hours3, oldest_date, newest_date);
+                });
+                return Ok(new {message = "Updating weather from request"});
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
     }
 }

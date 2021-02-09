@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.EntityFrameworkCore.Update;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 
@@ -13,10 +14,12 @@ namespace WeatherHistoryViewer.Services.Handlers
     public class Database : IDatabase
     {
         private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
+        private readonly ILocationData _locationData;
 
-        public Database(IDbContextFactory<ApplicationDbContext> contextFactory)
+        public Database(IDbContextFactory<ApplicationDbContext> contextFactory, ILocationData locationData)
         {
             _contextFactory = contextFactory;
+            _locationData = locationData;
         }
 
         public void AddHistoricalWeather(HistoricalWeather weather)
@@ -25,7 +28,10 @@ namespace WeatherHistoryViewer.Services.Handlers
             try
             {
                 context.Database.BeginTransaction();
-                context.Locations.Attach(weather.Location);
+                if (_locationData.DoesLocationExistInDb(weather.Location.Name))
+                {
+                    context.Locations.Attach(weather.Location);
+                }
                 context.Weather.Add(weather);
                 SaveChanges(context);
                 context.Database.CommitTransaction();

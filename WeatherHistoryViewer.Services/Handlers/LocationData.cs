@@ -10,6 +10,7 @@ namespace WeatherHistoryViewer.Services.Handlers
     {
         public Location GetLocationBasedOnCityName(string cityName, Location knownLocation);
         public List<string> GetAllLocationNames();
+        public bool DoesLocationExistInDb(string query);
     }
 
     public class LocationData : ILocationData
@@ -34,6 +35,11 @@ namespace WeatherHistoryViewer.Services.Handlers
             var locations = context.Locations.Select(l => l.Name).ToList();
             context.Dispose();
             return locations;
+        }
+
+        public bool DoesLocationExistInDb(string query)
+        {
+            return GetAllLocationNames().Contains(query);
         }
     }
 }
