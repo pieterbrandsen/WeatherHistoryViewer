@@ -56,12 +56,16 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         public List<string> GetDateInLast10Y(string shortDate)
         {
+            shortDate = shortDate.Replace("/", "-");
             var shortDateSplitted = shortDate.Split("-");
+            if (shortDateSplitted.Length == 2)
+            {
             for (var i = 0; i < shortDateSplitted.Length; i++)
             {
                 var value = shortDateSplitted[i];
                 if (value.Length == 1) shortDateSplitted[i] = $"0{value}";
             }
+            shortDate = $"{shortDateSplitted[0]}-{shortDateSplitted[1]}";
 
 
             try
@@ -81,6 +85,11 @@ namespace WeatherHistoryViewer.Services.Handlers
             {
                 Console.WriteLine(e);
                 throw;
+            }
+            }
+            else
+            {
+                return new List<string>();
             }
         }
 

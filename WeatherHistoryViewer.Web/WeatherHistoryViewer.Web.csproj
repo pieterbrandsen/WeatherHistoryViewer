@@ -2,17 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>dde3fd29-8459-4ffc-a611-3e277b43f2a3</UserSecretsId>
+    <UserSecretsId>1b9ae4a1-473c-4c88-9fed-137fedb3740a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj" />
-    <ProjectReference Include="..\WeatherHistoryViewer.Db\WeatherHistoryViewer.Db.csproj" />
-    <ProjectReference Include="..\WeatherHistoryViewer.Services\WeatherHistoryViewer.Services.csproj" />
+    <Folder Include="Data\" />
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
+    <ProjectReference Include="..\WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj" />
+    <ProjectReference Include="..\WeatherHistoryViewer.Services\WeatherHistoryViewer.Services.csproj" />
   </ItemGroup>
 
 </Project>

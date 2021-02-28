@@ -1,7 +1,84 @@
 ﻿@page "/"
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Services.Handlers
+@using System.ComponentModel.DataAnnotations;
 
-<h1>Hello, world!</h1>
+@inject IWeatherData WeatherData
+@inject ILocationData LocationData
 
-Welcome to your new app.
+<EditForm Model="@formResponse" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        <label>
+            Location:
+            <InputText id="location" @bind-Value="formResponse.Location" />
+        </label>
+    </p>
+    <p>
+        <label>
+            Date:
+            <InputText id="date" @bind-Value="formResponse.Date" />
+        </label>
+    </p>
+    <button class="button" type="submit">Submit</button>
+</EditForm>
 
-<SurveyPrompt Title="How is Blazor working for you?"/>
+@if (weather == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (weather.Count == 0)
+{
+    <br />
+    <p><em>Nothing found! Please try again.</em></p>
+    <br />
+    <h4>Troubleshooting:</h4>
+    <p><b>Is your location one of the following?</b></p>
+    foreach (var location in LocationData.GetAllLocationNames())
+    {
+        <p><em>@location</em></p>
+    }
+    <p><b>Is your Date something like this</b></p>
+    <p><em>MONTH-DAY</em></p>
+    <p><em>2-28</em></p>
+    <p><em>12-15</em></p>
+}
+else
+{
+    <h1>The weather of date @weather.First().Date.Split("-")[1]-@weather.First().Date.Split("-")[2] in @weather.First().Location.Country, @weather.First().Location.Name</h1>
+    <br />
+    @foreach (var day in weather)
+    {
+        <div style="background-color:lightblue;margin-bottom:25px">
+            <p>Year: @day.Date.Split("-")[0]</p>
+            <p>Avg temp: @day.AvgTemp</p>
+            <p>Min temp: @day.MinTemp</p>
+            <p>Max temp: @day.MaxTemp</p>
+            <p>Sun hours: @day.SunHour</p>
+            <p>Snow hight: @day.TotalSnow</p>
+        </div>
+    }
+}
+
+
+@code {
+    private class Form
+    {
+        [Required]
+        public string Location { get; set; }
+        [Required]
+        public string Date { get; set; }
+    }
+    private Form formResponse = new Form();
+
+    private List<HistoricalWeather> weather;
+    protected override void OnInitialized()
+    {
+        weather = WeatherData.GetWeatherOfDateInLast10Y("Baarn", DateTime.Now.AddDays(-1).ToString("MM/dd"));
+    }
+    void HandleValidSubmit()
+    {
+        weather = WeatherData.GetWeatherOfDateInLast10Y(formResponse.Location, formResponse.Date);
+    }
+}
