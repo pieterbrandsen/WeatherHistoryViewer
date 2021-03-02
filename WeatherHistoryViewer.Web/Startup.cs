@@ -9,7 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
+using WeatherHistoryViewer.Services.Handlers;
 
 namespace WeatherHistoryViewer.Web
 {
@@ -33,7 +35,7 @@ namespace WeatherHistoryViewer.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILocationData locationData, IDateData dateData, IWeatherData weatherData)
         {
             if (env.IsDevelopment())
             {
@@ -55,6 +57,16 @@ namespace WeatherHistoryViewer.Web
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
+            });
+
+            var oldestDate = dateData.GetDateStringOfDaysAgo(90);
+            var yesterdayDate = dateData.GetDateStringOfDaysAgo(1);
+            var locations = locationData.GetAllLocationNames();
+            Task.Run(() =>
+            {
+                foreach (var locationName in locations)
+                    weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
+                        yesterdayDate);
             });
         }
     }

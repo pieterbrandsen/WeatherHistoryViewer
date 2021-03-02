@@ -13,12 +13,12 @@ namespace WeatherHistoryViewer.Services.Handlers
 
     public class DateData : IDateData
     {
-        private const string OldestDateString = "2008-07-01";
+        private const string OldestDate = "2008-07-01";
 
         public List<string> GetAllRequestableDates()
         {
             var dateList = new List<string>();
-            var oldestDate = ConvertDateStringToDate(OldestDateString);
+            var oldestDate = ConvertDateStringToDate(OldestDate);
             var i = DateTime.Today;
             while (oldestDate.Ticks < i.Ticks)
             {
@@ -105,6 +105,8 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         private DateTime ConvertDateStringToDate(string date)
         {
+            // Does this work?
+            // DateTime.Parse(date);
             var splitDate = date.Split("-");
             return new DateTime(Convert.ToInt16(splitDate[0]), Convert.ToInt16(splitDate[1]),
                 Convert.ToInt16(splitDate[2]));

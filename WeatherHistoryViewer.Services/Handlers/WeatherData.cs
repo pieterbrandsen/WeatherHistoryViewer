@@ -92,7 +92,7 @@ namespace WeatherHistoryViewer.Services.Handlers
                 context.Locations.AsNoTracking();
                 context.WeatherHourly.AsNoTracking();
                 var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
-                    .Where(w => w.Location.Name == cityName && dates.Contains(w.Date)).ToList();
+                    .Where(w => w.Location.Name == cityName && dates.Contains(w.Date)).OrderByDescending(o=>o.DateEpoch).ToList();
                 return weather;
             }
             catch (Exception e)

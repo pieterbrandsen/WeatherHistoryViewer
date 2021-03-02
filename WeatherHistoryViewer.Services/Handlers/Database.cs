@@ -23,6 +23,7 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         public void AddHistoricalWeather(HistoricalWeather weather)
         {
+            // TODO can *using* be removed?
             using var context = _contextFactory.CreateDbContext();
             try
             {
