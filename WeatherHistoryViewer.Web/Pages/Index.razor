@@ -3,8 +3,8 @@
 @using WeatherHistoryViewer.Services.Handlers
 @using System.ComponentModel.DataAnnotations;
 
-@inject IWeatherData WeatherData
-@inject ILocationData LocationData
+@inject IWeatherHandler WeatherHandler
+@inject ILocationHandler LocationHandler
 
 <EditForm Model="@formResponse" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -35,7 +35,7 @@ else if (weather.Count == 0)
     <br />
     <h4>Troubleshooting:</h4>
     <p><b>Is your location one of the following?</b></p>
-    foreach (var location in LocationData.GetAllLocationNames())
+    foreach (var location in LocationHandler.GetAllLocationNames())
     {
         <p><em>@location</em></p>
     }
@@ -48,16 +48,30 @@ else
 {
     <h1>The weather of date @weather.First().Date.Split("-")[1]-@weather.First().Date.Split("-")[2] in @weather.First().Location.Country, @weather.First().Location.Name</h1>
     <br />
-    @foreach (var day in weather)
-    {
-        <div style="background-color:lightblue;margin-bottom:25px">
-            <p>Year: @day.Date.Split("-")[0]</p>
-            <p>Avg temp: @day.AvgTemp</p>
-            <p>Min temp: @day.MinTemp</p>
-            <p>Max temp: @day.MaxTemp</p>
-            <p>Sun hours: @day.SunHour</p>
-        </div>
-    }
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Avg temp</th>
+                <th>Min temp</th>
+                <th>Max temp</th>
+                <th>Sun hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var day in weather)
+            {
+                <tr>
+                    <th>@day.Date.Split("-")[0]</th>
+                    <th>@day.AvgTemp</th>
+                    <th>@day.MinTemp</th>
+                    <th>@day.MaxTemp</th>
+                    <th>@day.SunHour</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 }
 
 
@@ -74,10 +88,10 @@ else
     private List<HistoricalWeather> weather;
     protected override void OnInitialized()
     {
-        weather = WeatherData.GetWeatherOfDateInLast10Y("Baarn", DateTime.Now.AddDays(-1).ToString("MM/dd"));
+        weather = WeatherHandler.GetWeatherOfDateInLast10Y("Baarn", DateTime.Now.AddDays(-1).ToString("MM/dd"));
     }
     void HandleValidSubmit()
     {
-        weather = WeatherData.GetWeatherOfDateInLast10Y(formResponse.Location, formResponse.Date);
+        weather = WeatherHandler.GetWeatherOfDateInLast10Y(formResponse.Location, formResponse.Date);
     }
 }

@@ -11,15 +11,15 @@ namespace WeatherHistoryViewer.APISender.Controllers
     public class CurrentWeatherController : ControllerBase
     {
         private readonly IApiRequester _apiRequester;
-        private readonly IHttpStatus _httpStatus;
+        private readonly HttpStatus _httpStatus;
         private readonly ISecretRevealer _secretRevealer;
 
         public CurrentWeatherController(IApiRequester apiRequester,
-            ISecretRevealer secretRevealer, IHttpStatus httpStatus)
+            ISecretRevealer secretRevealer)
         {
             _apiRequester = apiRequester;
             _secretRevealer = secretRevealer;
-            _httpStatus = httpStatus;
+            _httpStatus = new HttpStatus();
         }
 
         [HttpGet]

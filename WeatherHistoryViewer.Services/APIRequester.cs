@@ -19,7 +19,6 @@ namespace WeatherHistoryViewer.Services
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
             HourlyInterval hourlyInterval)
         {
-            //Thread.Sleep(2 * 1000);
             var uri =
                 $"https://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1&interval={(int) hourlyInterval}& units=m";
             try

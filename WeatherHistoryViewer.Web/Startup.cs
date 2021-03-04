@@ -35,7 +35,7 @@ namespace WeatherHistoryViewer.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILocationData locationData, IDateData dateData, IWeatherData weatherData)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILocationHandler locationData, IWeatherHandler weatherData)
         {
             if (env.IsDevelopment())
             {
@@ -59,11 +59,13 @@ namespace WeatherHistoryViewer.Web
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            var oldestDate = dateData.GetDateStringOfDaysAgo(90);
-            var yesterdayDate = dateData.GetDateStringOfDaysAgo(1);
+            var dateHelper = new DateHelper();
+            var oldestDate = dateHelper.GetDateStringOfDaysAgo(90);
+            var yesterdayDate = dateHelper.GetDateStringOfDaysAgo(1);
             var locations = locationData.GetAllLocationNames();
             Task.Run(() =>
             {
+            weatherData.UpdateHistoricalWeatherRangeToDb("Grachen", HourlyInterval.Hours1);
                 foreach (var locationName in locations)
                     weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
                         yesterdayDate);

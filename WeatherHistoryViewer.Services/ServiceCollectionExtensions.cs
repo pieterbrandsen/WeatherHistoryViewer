@@ -34,13 +34,11 @@ namespace WeatherHistoryViewer.Services
             services
                 .AddScoped<ISecretRevealer, SecretRevealer>()
                 .AddScoped<IApiRequester, ApiRequester>()
-                .AddScoped<IWeatherData, WeatherData>()
+                .AddScoped<IWeatherHandler, WeatherHandler>()
                 .AddScoped<IWeatherTimer, WeatherTimer>()
                 .AddScoped<ICustomWeatherClassConverter, CustomWeatherClassConverter>()
-                .AddScoped<ILocationData, LocationData>()
-                .AddScoped<IDateData, DateData>()
-                .AddScoped<IDatabase, Database>()
-                .AddScoped<IHttpStatus, HttpStatus>();
+                .AddScoped<ILocationHandler, LocationHandler>()
+                .AddScoped<IDatabase, Database>();
             return services;
         }
     }

@@ -6,18 +6,18 @@ using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
-    public interface ILocationData
+    public interface ILocationHandler
     {
         public Location GetLocationBasedOnCityName(string cityName, Location knownLocation);
         public List<string> GetAllLocationNames();
         public bool DoesLocationExistInDb(string query);
     }
 
-    public class LocationData : ILocationData
+    public class LocationHandler : ILocationHandler
     {
         private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
 
-        public LocationData(IDbContextFactory<ApplicationDbContext> contextFactory)
+        public LocationHandler(IDbContextFactory<ApplicationDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }

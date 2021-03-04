@@ -3,15 +3,7 @@ using System.Collections.Generic;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
-    public interface IDateData
-    {
-        public List<string> GetAllRequestableDates();
-        public List<string> GetRangeOfRequestableDates(string oldestDateString, string newestDateString = null);
-        public string GetDateStringOfDaysAgo(int dayCount = 7);
-        public List<string> GetDateInLast10Y(string date);
-    }
-
-    public class DateData : IDateData
+    public class DateHelper
     {
         private const string OldestDate = "2008-07-01";
 

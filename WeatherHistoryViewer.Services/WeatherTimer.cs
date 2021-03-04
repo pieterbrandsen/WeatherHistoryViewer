@@ -13,14 +13,14 @@ namespace WeatherHistoryViewer.Services
     public class WeatherTimer : IWeatherTimer
     {
         private static Timer timer;
-        private static IWeatherData _weatherData;
-        private static IDateData _dateData;
-        private static ILocationData _locationData;
+        private static IWeatherHandler _weatherData;
+        private static DateHelper _dateHelper;
+        private static ILocationHandler _locationData;
 
-        public WeatherTimer(IWeatherData weatherData, IDateData dateData, ILocationData locationData)
+        public WeatherTimer(IWeatherHandler weatherData, ILocationHandler locationData)
         {
             _weatherData = weatherData;
-            _dateData = dateData;
+            _dateHelper = new DateHelper();
             _locationData = locationData;
         }
 
@@ -37,8 +37,8 @@ namespace WeatherHistoryViewer.Services
 
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            var oldestDate = _dateData.GetDateStringOfDaysAgo();
-            var yesterdayDate = _dateData.GetDateStringOfDaysAgo(1);
+            var oldestDate = _dateHelper.GetDateStringOfDaysAgo();
+            var yesterdayDate = _dateHelper.GetDateStringOfDaysAgo(1);
             var locations = _locationData.GetAllLocationNames();
             Task.Run(() =>
             {

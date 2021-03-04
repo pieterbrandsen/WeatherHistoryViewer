@@ -13,9 +13,9 @@ namespace WeatherHistoryViewer.Services.Handlers
     public class Database : IDatabase
     {
         private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
-        private readonly ILocationData _locationData;
+        private readonly ILocationHandler _locationData;
 
-        public Database(IDbContextFactory<ApplicationDbContext> contextFactory, ILocationData locationData)
+        public Database(IDbContextFactory<ApplicationDbContext> contextFactory, ILocationHandler locationData)
         {
             _contextFactory = contextFactory;
             _locationData = locationData;
@@ -23,7 +23,6 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         public void AddHistoricalWeather(HistoricalWeather weather)
         {
-            // TODO can *using* be removed?
             using var context = _contextFactory.CreateDbContext();
             try
             {
@@ -40,10 +39,6 @@ namespace WeatherHistoryViewer.Services.Handlers
                 context.Database.CloseConnection();
                 Console.WriteLine(e);
                 throw;
-            }
-            finally
-            {
-                context.Dispose();
             }
         }
 

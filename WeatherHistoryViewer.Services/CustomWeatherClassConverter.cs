@@ -11,13 +11,13 @@ namespace WeatherHistoryViewer.Services
 
     public class CustomWeatherClassConverter : ICustomWeatherClassConverter
     {
-        private readonly IDateData _dateData;
-        private readonly ILocationData _locationData;
+        private readonly DateHelper _dateHelper;
+        private readonly ILocationHandler _locationData;
 
-        public CustomWeatherClassConverter(ILocationData locationData, IDateData dateData)
+        public CustomWeatherClassConverter(ILocationHandler locationData)
         {
             _locationData = locationData;
-            _dateData = dateData;
+            _dateHelper = new DateHelper();
         }
 
         public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,

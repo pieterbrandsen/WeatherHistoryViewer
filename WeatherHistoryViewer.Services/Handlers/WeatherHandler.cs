@@ -8,7 +8,7 @@ using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
-    public interface IWeatherData
+    public interface IWeatherHandler
     {
         public void UpdateWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval);
 
@@ -18,24 +18,24 @@ namespace WeatherHistoryViewer.Services.Handlers
         public List<HistoricalWeather> GetWeatherOfDateInLast10Y(string cityName, string date);
     }
 
-    public class WeatherData : IWeatherData
+    public class WeatherHandler : IWeatherHandler
     {
         private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
         private readonly ICustomWeatherClassConverter _customWeatherClassConverter;
         private readonly IDatabase _database;
-        private readonly IDateData _dateData;
+        private readonly DateHelper _dateData;
         private readonly IApiRequester _requester;
         private readonly ISecretRevealer _secretRevealer;
 
-        public WeatherData(IDbContextFactory<ApplicationDbContext> contextFactory, ISecretRevealer secretRevealer,
-            IApiRequester requester, ICustomWeatherClassConverter customWeatherClassConverter, IDateData dateData,
+        public WeatherHandler(IDbContextFactory<ApplicationDbContext> contextFactory, ISecretRevealer secretRevealer,
+            IApiRequester requester, ICustomWeatherClassConverter customWeatherClassConverter,
             IDatabase database)
         {
             _contextFactory = contextFactory;
             _secretRevealer = secretRevealer;
             _requester = requester;
             _customWeatherClassConverter = customWeatherClassConverter;
-            _dateData = dateData;
+            _dateData = new DateHelper();
             _database = database;
         }
 
