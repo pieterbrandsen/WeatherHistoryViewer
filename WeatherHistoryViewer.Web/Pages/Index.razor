@@ -88,10 +88,10 @@ else
     private List<HistoricalWeather> weather;
     protected override void OnInitialized()
     {
-        weather = WeatherHandler.GetWeatherOfDateInLast10Y("Baarn", DateTime.Now.AddDays(-1).ToString("MM/dd"));
+        weather = WeatherHandler.GetWeatherOfDateInLast15Y("Amsterdam", DateTime.Now.AddDays(-1).ToString("MM/dd"));
     }
     void HandleValidSubmit()
     {
-        weather = WeatherHandler.GetWeatherOfDateInLast10Y(formResponse.Location, formResponse.Date);
+        weather = WeatherHandler.GetWeatherOfDateInLast15Y(formResponse.Location, formResponse.Date);
     }
 }

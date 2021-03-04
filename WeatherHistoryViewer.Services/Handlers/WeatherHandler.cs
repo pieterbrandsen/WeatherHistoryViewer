@@ -15,7 +15,7 @@ namespace WeatherHistoryViewer.Services.Handlers
         public void UpdateHistoricalWeatherRangeToDb(string cityName,
             HourlyInterval hourlyInterval = HourlyInterval.Hours3, string oldestDate = null, string newestDate = null);
 
-        public List<HistoricalWeather> GetWeatherOfDateInLast10Y(string cityName, string date);
+        public List<HistoricalWeather> GetWeatherOfDateInLast15Y(string cityName, string date);
     }
 
     public class WeatherHandler : IWeatherHandler
@@ -82,12 +82,12 @@ namespace WeatherHistoryViewer.Services.Handlers
             }
         }
 
-        public List<HistoricalWeather> GetWeatherOfDateInLast10Y(string cityName, string date)
+        public List<HistoricalWeather> GetWeatherOfDateInLast15Y(string cityName, string date)
         {
             using var context = _contextFactory.CreateDbContext();
             try
             {
-                var dates = _dateData.GetDateInLast10Y(date);
+                var dates = _dateData.GetDateInLast15Y(date);
                 context.Weather.AsNoTracking();
                 context.Locations.AsNoTracking();
                 context.WeatherHourly.AsNoTracking();

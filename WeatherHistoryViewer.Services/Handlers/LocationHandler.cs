@@ -26,7 +26,6 @@ namespace WeatherHistoryViewer.Services.Handlers
         {
             using var context = _contextFactory.CreateDbContext();
             var foundLocation = context.Locations.FirstOrDefault(l => l.Name.ToLower() == cityName.ToLower());
-            context.Dispose();
             return foundLocation ?? knownLocation;
         }
 
@@ -34,7 +33,6 @@ namespace WeatherHistoryViewer.Services.Handlers
         {
             using var context = _contextFactory.CreateDbContext();
             var locations = context.Locations.Select(l => l.Name).ToList();
-            context.Dispose();
             return locations;
         }
 

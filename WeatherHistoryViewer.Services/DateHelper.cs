@@ -46,7 +46,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             return ConvertStringToDateFormat(date);
         }
 
-        public List<string> GetDateInLast10Y(string shortDate)
+        public List<string> GetDateInLast15Y(string shortDate)
         {
             shortDate = shortDate.Replace("/", "-");
             var shortDateSplitted = shortDate.Split("-");
@@ -64,7 +64,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             {
                 var dates = new List<string>();
                 var year = DateTime.Today.Year;
-                for (var i = 0; i < 10; i++)
+                for (var i = 0; i < 15; i++)
                 {
                     var date = string.Format("{0:yyyy/MM/dd}", $"{year}-{shortDate}");
                     dates.Add(date);
