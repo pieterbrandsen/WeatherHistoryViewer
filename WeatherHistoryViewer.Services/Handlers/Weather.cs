@@ -5,6 +5,9 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
+using WeatherHistoryViewer.Services.Converter;
+using WeatherHistoryViewer.Services.Helper;
+using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
@@ -23,7 +26,7 @@ namespace WeatherHistoryViewer.Services.Handlers
         private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
         private readonly ICustomWeatherClassConverter _customWeatherClassConverter;
         private readonly IDatabase _database;
-        private readonly DateHelper _dateData;
+        private readonly DateHelper _dateHelper;
         private readonly IApiRequester _requester;
         private readonly ISecretRevealer _secretRevealer;
 
@@ -35,19 +38,28 @@ namespace WeatherHistoryViewer.Services.Handlers
             _secretRevealer = secretRevealer;
             _requester = requester;
             _customWeatherClassConverter = customWeatherClassConverter;
-            _dateData = new DateHelper();
+            _dateHelper = new DateHelper();
             _database = database;
+        }
+
+        private bool DoesDateAndCityExistInDb(string cityName, string date)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            if (context.Weather.Any() && context.Weather.Include(o => o.Location)
+             .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return true;
+            return false;
         }
 
         public void UpdateWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
         {
             using var context = _contextFactory.CreateDbContext();
-            var weatherStackApiKey = _secretRevealer.RevealWeatherStackApiKey();
-            if (context.Weather.Any() && context.Weather.Include(o => o.Location)
-                .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return;
+
 
             try
             {
+                var weatherStackApiKey = _secretRevealer.RevealWeatherStackApiKey();
+            
+                if (DoesDateAndCityExistInDb(cityName, date)) return;
                 var response =
                     _requester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
                 var weatherModel =
@@ -70,8 +82,8 @@ namespace WeatherHistoryViewer.Services.Handlers
             HourlyInterval hourlyInterval = HourlyInterval.Hours3, string oldestDate = null, string newestDate = null)
         {
             var dateList = oldestDate == null
-                ? _dateData.GetAllRequestableDates()
-                : _dateData.GetRangeOfRequestableDates(oldestDate, newestDate);
+                ? _dateHelper.GetAllRequestableDates()
+                : _dateHelper.GetRangeOfRequestableDates(oldestDate, newestDate);
 
 
             foreach (var date in dateList)
@@ -87,7 +99,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             using var context = _contextFactory.CreateDbContext();
             try
             {
-                var dates = _dateData.GetDateInLast15Y(date);
+                var dates = _dateHelper.GetDateInLast15Y(date);
                 context.Weather.AsNoTracking();
                 context.Locations.AsNoTracking();
                 context.WeatherHourly.AsNoTracking();

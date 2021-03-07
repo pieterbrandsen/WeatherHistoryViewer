@@ -1,7 +1,8 @@
 ﻿using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
+using WeatherHistoryViewer.Services.Helper;
 
-namespace WeatherHistoryViewer.Services
+namespace WeatherHistoryViewer.Services.Converter
 {
     public interface ICustomWeatherClassConverter
     {
@@ -9,12 +10,12 @@ namespace WeatherHistoryViewer.Services
             string date, HourlyInterval hourlyInterval);
     }
 
-    public class CustomWeatherClassConverter : ICustomWeatherClassConverter
+    public class WeatherModel : ICustomWeatherClassConverter
     {
         private readonly DateHelper _dateHelper;
         private readonly ILocationHandler _locationData;
 
-        public CustomWeatherClassConverter(ILocationHandler locationData)
+        public WeatherModel(ILocationHandler locationData)
         {
             _locationData = locationData;
             _dateHelper = new DateHelper();

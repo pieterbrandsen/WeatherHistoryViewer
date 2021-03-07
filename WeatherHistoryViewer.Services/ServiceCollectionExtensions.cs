@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherHistoryViewer.Db;
+using WeatherHistoryViewer.Services.Converter;
 using WeatherHistoryViewer.Services.Handlers;
+using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.Services
 {
@@ -33,10 +35,10 @@ namespace WeatherHistoryViewer.Services
         {
             services
                 .AddScoped<ISecretRevealer, SecretRevealer>()
-                .AddScoped<IApiRequester, ApiRequester>()
+                .AddScoped<IApiRequester, WeatherStackAPI>()
                 .AddScoped<IWeatherHandler, WeatherHandler>()
                 .AddScoped<IWeatherTimer, WeatherTimer>()
-                .AddScoped<ICustomWeatherClassConverter, CustomWeatherClassConverter>()
+                .AddScoped<ICustomWeatherClassConverter, WeatherModel>()
                 .AddScoped<ILocationHandler, LocationHandler>()
                 .AddScoped<IDatabase, Database>();
             return services;

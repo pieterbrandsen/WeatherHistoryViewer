@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WeatherHistoryViewer.Services.Handlers
+namespace WeatherHistoryViewer.Services.Helper
 {
     public class DateHelper
     {

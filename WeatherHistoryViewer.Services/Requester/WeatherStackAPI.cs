@@ -4,7 +4,7 @@ using System.Net;
 using System.Text.Json;
 using WeatherHistoryViewer.Core.Models.Weather;
 
-namespace WeatherHistoryViewer.Services
+namespace WeatherHistoryViewer.Services.Requester
 {
     public interface IApiRequester
     {
@@ -14,7 +14,7 @@ namespace WeatherHistoryViewer.Services
         CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, string units);
     }
 
-    public class ApiRequester : IApiRequester
+    public class WeatherStackAPI : IApiRequester
     {
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
             HourlyInterval hourlyInterval)
