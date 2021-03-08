@@ -1,17 +1,13 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
 using WeatherHistoryViewer.Services.Handlers;
+using WeatherHistoryViewer.Services.Helper;
 
 namespace WeatherHistoryViewer.Web
 {
@@ -30,12 +26,11 @@ namespace WeatherHistoryViewer.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.RegisterDataFactoryServices(Configuration);
-            services.RegisterInterfaceServices(Configuration);
+            services.RegisterUserSecrets(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILocationData locationData, IDateData dateData, IWeatherData weatherData)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -59,13 +54,15 @@ namespace WeatherHistoryViewer.Web
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            var oldestDate = dateData.GetDateStringOfDaysAgo(90);
-            var yesterdayDate = dateData.GetDateStringOfDaysAgo(1);
-            var locations = locationData.GetAllLocationNames();
+            var dateHelper = new DateHelper();
+            var oldestDate = dateHelper.GetDateStringOfDaysAgo(90);
+            var yesterdayDate = dateHelper.GetDateStringOfDaysAgo(1);
+            var locations = new LocationHandler().GetAllLocationNames();
             Task.Run(() =>
             {
                 foreach (var locationName in locations)
-                    weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
+                    new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1,
+                        oldestDate,
                         yesterdayDate);
             });
         }

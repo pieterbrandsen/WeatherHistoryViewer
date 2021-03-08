@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WeatherHistoryViewer.Core.Models.Weather;
+using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services;
+using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.APISender.Controllers
 {
@@ -10,16 +12,15 @@ namespace WeatherHistoryViewer.APISender.Controllers
     [Route("api/[controller]")]
     public class CurrentWeatherController : ControllerBase
     {
-        private readonly IApiRequester _apiRequester;
-        private readonly IHttpStatus _httpStatus;
-        private readonly ISecretRevealer _secretRevealer;
+        private readonly HttpStatus _httpStatus;
+        private readonly UserSecrets _secrets;
+        private readonly WeatherStackAPI _weatherApiRequester;
 
-        public CurrentWeatherController(IApiRequester apiRequester,
-            ISecretRevealer secretRevealer, IHttpStatus httpStatus)
+        public CurrentWeatherController()
         {
-            _apiRequester = apiRequester;
-            _secretRevealer = secretRevealer;
-            _httpStatus = httpStatus;
+            _weatherApiRequester = new WeatherStackAPI();
+            _secrets = new UserSecrets();
+            _httpStatus = new HttpStatus();
         }
 
         [HttpGet]
@@ -27,8 +28,8 @@ namespace WeatherHistoryViewer.APISender.Controllers
         {
             try
             {
-                var weatherStackApiKey = _secretRevealer.RevealWeatherStackApiKey();
-                var weatherHistoryApiKey = _secretRevealer.RevealWeatherHistoryApiKey();
+                var weatherStackApiKey = _secrets.WeatherStackApiKey;
+                var weatherHistoryApiKey = _secrets.WeatherHistoryApiKey;
 
                 if (weatherHistoryApiKey != access_key)
                     return StatusCode(StatusCodes.Status400BadRequest,
@@ -36,7 +37,7 @@ namespace WeatherHistoryViewer.APISender.Controllers
                 if (query == null)
                     return StatusCode(StatusCodes.Status400BadRequest,
                         _httpStatus.GetErrorModel(HttpStatusTypes.missing_query));
-                var weather = _apiRequester.GetCurrentWeather(weatherStackApiKey, query, units);
+                var weather = _weatherApiRequester.GetCurrentWeather(weatherStackApiKey, query, units);
                 if (weather?.Request == null)
                     return StatusCode(StatusCodes.Status500InternalServerError,
                         _httpStatus.GetErrorModel(HttpStatusTypes.no_results));

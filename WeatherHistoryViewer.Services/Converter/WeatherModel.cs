@@ -1,23 +1,18 @@
 ﻿using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
+using WeatherHistoryViewer.Services.Helper;
 
-namespace WeatherHistoryViewer.Services
+namespace WeatherHistoryViewer.Services.Converter
 {
-    public interface ICustomWeatherClassConverter
+    public class WeatherModelConverter
     {
-        public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,
-            string date, HourlyInterval hourlyInterval);
-    }
+        private readonly DateHelper _dateHelper;
+        private readonly LocationHandler _locationData;
 
-    public class CustomWeatherClassConverter : ICustomWeatherClassConverter
-    {
-        private readonly IDateData _dateData;
-        private readonly ILocationData _locationData;
-
-        public CustomWeatherClassConverter(ILocationData locationData, IDateData dateData)
+        public WeatherModelConverter()
         {
-            _locationData = locationData;
-            _dateData = dateData;
+            _locationData = new LocationHandler();
+            _dateHelper = new DateHelper();
         }
 
         public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,

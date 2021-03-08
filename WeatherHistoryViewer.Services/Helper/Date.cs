@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WeatherHistoryViewer.Services.Handlers
+namespace WeatherHistoryViewer.Services.Helper
 {
-    public interface IDateData
-    {
-        public List<string> GetAllRequestableDates();
-        public List<string> GetRangeOfRequestableDates(string oldestDateString, string newestDateString = null);
-        public string GetDateStringOfDaysAgo(int dayCount = 7);
-        public List<string> GetDateInLast10Y(string date);
-    }
-
-    public class DateData : IDateData
+    public class DateHelper
     {
         private const string OldestDate = "2008-07-01";
 
@@ -54,43 +46,42 @@ namespace WeatherHistoryViewer.Services.Handlers
             return ConvertStringToDateFormat(date);
         }
 
-        public List<string> GetDateInLast10Y(string shortDate)
+        public List<string> GetDateInLast15Y(string shortDate)
         {
             shortDate = shortDate.Replace("/", "-");
             var shortDateSplitted = shortDate.Split("-");
             if (shortDateSplitted.Length == 2)
             {
-            for (var i = 0; i < shortDateSplitted.Length; i++)
-            {
-                var value = shortDateSplitted[i];
-                if (value.Length == 1) shortDateSplitted[i] = $"0{value}";
-            }
-            shortDate = $"{shortDateSplitted[0]}-{shortDateSplitted[1]}";
-
-
-            try
-            {
-                var dates = new List<string>();
-                var year = DateTime.Today.Year;
-                for (var i = 0; i < 10; i++)
+                for (var i = 0; i < shortDateSplitted.Length; i++)
                 {
-                    var date = string.Format("{0:yyyy/MM/dd}", $"{year}-{shortDate}");
-                    dates.Add(date);
-                    year -= 1;
+                    var value = shortDateSplitted[i];
+                    if (value.Length == 1) shortDateSplitted[i] = $"0{value}";
                 }
 
-                return dates;
+                shortDate = $"{shortDateSplitted[0]}-{shortDateSplitted[1]}";
+
+
+                try
+                {
+                    var dates = new List<string>();
+                    var year = DateTime.Today.Year;
+                    for (var i = 0; i < 15; i++)
+                    {
+                        var date = string.Format("{0:yyyy/MM/dd}", $"{year}-{shortDate}");
+                        dates.Add(date);
+                        year -= 1;
+                    }
+
+                    return dates;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            }
-            else
-            {
-                return new List<string>();
-            }
+
+            return new List<string>();
         }
 
         private DateTime GetDateOfYesterday(DateTime currentDate)

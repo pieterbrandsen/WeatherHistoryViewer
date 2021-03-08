@@ -21,8 +21,7 @@ namespace WeatherHistoryViewer.APISender
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<UserSecrets>(Configuration.GetSection(nameof(UserSecrets)))
-                .RegisterInterfaceServices(Configuration)
-                .RegisterDataFactoryServices(Configuration)
+                .RegisterUserSecrets(Configuration)
                 .AddControllers();
         }
 

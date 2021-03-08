@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Infrastructure.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Db
@@ -9,10 +7,9 @@ namespace WeatherHistoryViewer.Db
     {
         private readonly string _connectionString;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext()
         {
-            _connectionString = ((SqlServerOptionsExtension) options.Extensions.Last()).ConnectionString;
+            _connectionString = UserSecrets.ConnectionString;
         }
 
         public DbSet<Location> Locations { get; set; }

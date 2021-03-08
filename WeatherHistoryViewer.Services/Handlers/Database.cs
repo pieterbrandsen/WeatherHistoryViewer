@@ -5,30 +5,22 @@ using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
-    public interface IDatabase
+    public class Database
     {
-        public void AddHistoricalWeather(HistoricalWeather weather);
-    }
+        private readonly LocationHandler _locationHandler;
 
-    public class Database : IDatabase
-    {
-        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
-        private readonly ILocationData _locationData;
-
-        public Database(IDbContextFactory<ApplicationDbContext> contextFactory, ILocationData locationData)
+        public Database()
         {
-            _contextFactory = contextFactory;
-            _locationData = locationData;
+            _locationHandler = new LocationHandler();
         }
 
         public void AddHistoricalWeather(HistoricalWeather weather)
         {
-            // TODO can *using* be removed?
-            using var context = _contextFactory.CreateDbContext();
+            using var context = new ApplicationDbContext();
             try
             {
                 context.Database.BeginTransaction();
-                if (_locationData.DoesLocationExistInDb(weather.Location.Name))
+                if (_locationHandler.DoesLocationExistInDb(weather.Location.Name))
                     context.Locations.Attach(weather.Location);
                 context.Weather.Add(weather);
                 SaveChanges(context);
@@ -40,10 +32,6 @@ namespace WeatherHistoryViewer.Services.Handlers
                 context.Database.CloseConnection();
                 Console.WriteLine(e);
                 throw;
-            }
-            finally
-            {
-                context.Dispose();
             }
         }
 

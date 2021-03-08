@@ -4,22 +4,13 @@ using System.Net;
 using System.Text.Json;
 using WeatherHistoryViewer.Core.Models.Weather;
 
-namespace WeatherHistoryViewer.Services
+namespace WeatherHistoryViewer.Services.Requester
 {
-    public interface IApiRequester
-    {
-        HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
-            HourlyInterval hourlyInterval);
-
-        CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, string units);
-    }
-
-    public class ApiRequester : IApiRequester
+    public class WeatherStackAPI
     {
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
             HourlyInterval hourlyInterval)
         {
-            //Thread.Sleep(2 * 1000);
             var uri =
                 $"https://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1&interval={(int) hourlyInterval}& units=m";
             try

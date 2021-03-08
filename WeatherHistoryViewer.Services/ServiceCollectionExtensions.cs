@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherHistoryViewer.Db;
-using WeatherHistoryViewer.Services.Handlers;
 
 namespace WeatherHistoryViewer.Services
 {
@@ -14,7 +13,6 @@ namespace WeatherHistoryViewer.Services
             services
                 .AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(configuration["UserSecrets:DefaultConnectionString"]));
-
             return services;
         }
 
@@ -28,19 +26,14 @@ namespace WeatherHistoryViewer.Services
             return services;
         }
 
-        public static IServiceCollection RegisterInterfaceServices(this IServiceCollection services,
+        public static IServiceCollection RegisterUserSecrets(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services
-                .AddScoped<ISecretRevealer, SecretRevealer>()
-                .AddScoped<IApiRequester, ApiRequester>()
-                .AddScoped<IWeatherData, WeatherData>()
-                .AddScoped<IWeatherTimer, WeatherTimer>()
-                .AddScoped<ICustomWeatherClassConverter, CustomWeatherClassConverter>()
-                .AddScoped<ILocationData, LocationData>()
-                .AddScoped<IDateData, DateData>()
-                .AddScoped<IDatabase, Database>()
-                .AddScoped<IHttpStatus, HttpStatus>();
+            var secretRevealer = new RevealUserSecrets(configuration);
+            UserSecrets.ConnectionString = secretRevealer.ConnectionString();
+            UserSecrets.WeatherHistoryApiKey = secretRevealer.WeatherHistoryApiKey();
+            UserSecrets.WeatherStackApiKey = secretRevealer.WeatherStackApiKey();
+
             return services;
         }
     }

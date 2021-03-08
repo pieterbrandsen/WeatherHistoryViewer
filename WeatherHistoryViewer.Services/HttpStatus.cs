@@ -3,12 +3,7 @@ using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services
 {
-    public interface IHttpStatus
-    {
-        public HttpStatusResponse GetErrorModel(HttpStatusTypes errorType);
-    }
-
-    public class HttpStatus : IHttpStatus
+    public class HttpStatus
     {
         public HttpStatusResponse GetErrorModel(HttpStatusTypes errorType)
         {
