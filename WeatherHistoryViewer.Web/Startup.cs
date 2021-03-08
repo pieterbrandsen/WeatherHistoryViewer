@@ -66,7 +66,6 @@ namespace WeatherHistoryViewer.Web
             var locations = locationData.GetAllLocationNames();
             Task.Run(() =>
             {
-            weatherData.UpdateHistoricalWeatherRangeToDb("Grachen", HourlyInterval.Hours1);
                 foreach (var locationName in locations)
                     weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
                         yesterdayDate);
