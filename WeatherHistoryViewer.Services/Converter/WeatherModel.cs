@@ -4,20 +4,14 @@ using WeatherHistoryViewer.Services.Helper;
 
 namespace WeatherHistoryViewer.Services.Converter
 {
-    public interface ICustomWeatherClassConverter
-    {
-        public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,
-            string date, HourlyInterval hourlyInterval);
-    }
-
-    public class WeatherModel : ICustomWeatherClassConverter
+    public class WeatherModelConverter
     {
         private readonly DateHelper _dateHelper;
-        private readonly ILocationHandler _locationData;
+        private readonly LocationHandler _locationData;
 
-        public WeatherModel(ILocationHandler locationData)
+        public WeatherModelConverter()
         {
-            _locationData = locationData;
+            _locationData = new LocationHandler();
             _dateHelper = new DateHelper();
         }
 

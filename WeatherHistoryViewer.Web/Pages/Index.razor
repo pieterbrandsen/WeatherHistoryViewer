@@ -3,9 +3,6 @@
 @using WeatherHistoryViewer.Services.Handlers
 @using System.ComponentModel.DataAnnotations;
 
-@inject IWeatherHandler WeatherHandler
-@inject ILocationHandler LocationHandler
-
 <EditForm Model="@formResponse" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -35,7 +32,7 @@ else if (weather.Count == 0)
     <br />
     <h4>Troubleshooting:</h4>
     <p><b>Is your location one of the following?</b></p>
-    foreach (var location in LocationHandler.GetAllLocationNames())
+    foreach (var location in new LocationHandler().GetAllLocationNames())
     {
         <p><em>@location</em></p>
     }
@@ -88,10 +85,10 @@ else
     private List<HistoricalWeather> weather;
     protected override void OnInitialized()
     {
-        weather = WeatherHandler.GetWeatherOfDateInLast15Y("Amsterdam", DateTime.Now.AddDays(-1).ToString("MM/dd"));
+        weather = new WeatherHandler().GetWeatherOfDateInLast15Y("Amsterdam", DateTime.Now.AddDays(-1).ToString("MM/dd"));
     }
     void HandleValidSubmit()
     {
-        weather = WeatherHandler.GetWeatherOfDateInLast15Y(formResponse.Location, formResponse.Date);
+        weather = new WeatherHandler().GetWeatherOfDateInLast15Y(formResponse.Location, formResponse.Date);
     }
 }

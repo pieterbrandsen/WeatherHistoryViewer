@@ -6,15 +6,7 @@ using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services.Requester
 {
-    public interface IApiRequester
-    {
-        HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
-            HourlyInterval hourlyInterval);
-
-        CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, string units);
-    }
-
-    public class WeatherStackAPI : IApiRequester
+    public class WeatherStackAPI
     {
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
             HourlyInterval hourlyInterval)

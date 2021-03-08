@@ -11,40 +11,24 @@ using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
-    public interface IWeatherHandler
+    public class WeatherHandler
     {
-        public void UpdateWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval);
-
-        public void UpdateHistoricalWeatherRangeToDb(string cityName,
-            HourlyInterval hourlyInterval = HourlyInterval.Hours3, string oldestDate = null, string newestDate = null);
-
-        public List<HistoricalWeather> GetWeatherOfDateInLast15Y(string cityName, string date);
-    }
-
-    public class WeatherHandler : IWeatherHandler
-    {
-        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
-        private readonly ICustomWeatherClassConverter _customWeatherClassConverter;
-        private readonly IDatabase _database;
+        private readonly WeatherModelConverter _weatherModelConverter;
+        private readonly Database _database;
         private readonly DateHelper _dateHelper;
-        private readonly IApiRequester _requester;
-        private readonly ISecretRevealer _secretRevealer;
+        private readonly WeatherStackAPI _apiRequester;
 
-        public WeatherHandler(IDbContextFactory<ApplicationDbContext> contextFactory, ISecretRevealer secretRevealer,
-            IApiRequester requester, ICustomWeatherClassConverter customWeatherClassConverter,
-            IDatabase database)
+        public WeatherHandler()
         {
-            _contextFactory = contextFactory;
-            _secretRevealer = secretRevealer;
-            _requester = requester;
-            _customWeatherClassConverter = customWeatherClassConverter;
+            _apiRequester = new WeatherStackAPI();
+            _weatherModelConverter = new WeatherModelConverter();
             _dateHelper = new DateHelper();
-            _database = database;
+            _database = new Database();
         }
 
         private bool DoesDateAndCityExistInDb(string cityName, string date)
         {
-            using var context = _contextFactory.CreateDbContext();
+            using var context = new ApplicationDbContext();
             if (context.Weather.Any() && context.Weather.Include(o => o.Location)
              .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return true;
             return false;
@@ -52,18 +36,17 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         public void UpdateWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
         {
-            using var context = _contextFactory.CreateDbContext();
-
+            using var context = new ApplicationDbContext();
 
             try
             {
-                var weatherStackApiKey = _secretRevealer.RevealWeatherStackApiKey();
+                var weatherStackApiKey = UserSecrets.WeatherStackApiKey;
             
                 if (DoesDateAndCityExistInDb(cityName, date)) return;
                 var response =
-                    _requester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
+                    _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
                 var weatherModel =
-                    _customWeatherClassConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
+                    _weatherModelConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
 
                 _database.AddHistoricalWeather(weatherModel);
             }
@@ -71,10 +54,6 @@ namespace WeatherHistoryViewer.Services.Handlers
             {
                 Console.WriteLine(e);
                 throw;
-            }
-            finally
-            {
-                context.Dispose();
             }
         }
 
@@ -96,7 +75,7 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         public List<HistoricalWeather> GetWeatherOfDateInLast15Y(string cityName, string date)
         {
-            using var context = _contextFactory.CreateDbContext();
+            using var context = new ApplicationDbContext();
             try
             {
                 var dates = _dateHelper.GetDateInLast15Y(date);
@@ -111,10 +90,6 @@ namespace WeatherHistoryViewer.Services.Handlers
             {
                 Console.WriteLine(e);
                 throw;
-            }
-            finally
-            {
-                context.Dispose();
             }
         }
     }

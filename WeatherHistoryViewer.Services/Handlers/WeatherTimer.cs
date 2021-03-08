@@ -6,23 +6,18 @@ using WeatherHistoryViewer.Services.Helper;
 
 namespace WeatherHistoryViewer.Services
 {
-    public interface IWeatherTimer
-    {
-        public void StartTimer();
-    }
-
-    public class WeatherTimer : IWeatherTimer
+    public class WeatherTimer
     {
         private static Timer timer;
-        private static IWeatherHandler _weatherData;
+        private static WeatherHandler _weatherHandler;
         private static DateHelper _dateHelper;
-        private static ILocationHandler _locationData;
+        private static LocationHandler _locationHandler;
 
-        public WeatherTimer(IWeatherHandler weatherData, ILocationHandler locationData)
+        public WeatherTimer()
         {
-            _weatherData = weatherData;
+            _weatherHandler = new WeatherHandler();
             _dateHelper = new DateHelper();
-            _locationData = locationData;
+            _locationHandler = new LocationHandler();
         }
 
         public void StartTimer()
@@ -40,11 +35,11 @@ namespace WeatherHistoryViewer.Services
         {
             var oldestDate = _dateHelper.GetDateStringOfDaysAgo();
             var yesterdayDate = _dateHelper.GetDateStringOfDaysAgo(1);
-            var locations = _locationData.GetAllLocationNames();
+            var locations = _locationHandler.GetAllLocationNames();
             Task.Run(() =>
             {
                 foreach (var locationName in locations)
-                    _weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
+                    _weatherHandler.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
                         yesterdayDate);
             });
         }

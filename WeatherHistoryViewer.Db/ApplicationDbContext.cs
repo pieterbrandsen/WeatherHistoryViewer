@@ -9,10 +9,9 @@ namespace WeatherHistoryViewer.Db
     {
         private readonly string _connectionString;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext()
         {
-            _connectionString = ((SqlServerOptionsExtension) options.Extensions.Last()).ConnectionString;
+            _connectionString = UserSecrets.ConnectionString;
         }
 
         public DbSet<Location> Locations { get; set; }

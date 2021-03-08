@@ -31,12 +31,11 @@ namespace WeatherHistoryViewer.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.RegisterDataFactoryServices(Configuration);
-            services.RegisterInterfaceServices(Configuration);
+            services.RegisterUserSecrets(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILocationHandler locationData, IWeatherHandler weatherData)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -63,11 +62,11 @@ namespace WeatherHistoryViewer.Web
             var dateHelper = new DateHelper();
             var oldestDate = dateHelper.GetDateStringOfDaysAgo(90);
             var yesterdayDate = dateHelper.GetDateStringOfDaysAgo(1);
-            var locations = locationData.GetAllLocationNames();
+            var locations = new LocationHandler().GetAllLocationNames();
             Task.Run(() =>
             {
                 foreach (var locationName in locations)
-                    weatherData.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
+                    new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
                         yesterdayDate);
             });
         }
