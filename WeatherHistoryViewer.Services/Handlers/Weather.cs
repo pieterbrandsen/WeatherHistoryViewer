@@ -13,10 +13,10 @@ namespace WeatherHistoryViewer.Services.Handlers
 {
     public class WeatherHandler
     {
-        private readonly WeatherModelConverter _weatherModelConverter;
+        private readonly WeatherStackAPI _apiRequester;
         private readonly Database _database;
         private readonly DateHelper _dateHelper;
-        private readonly WeatherStackAPI _apiRequester;
+        private readonly WeatherModelConverter _weatherModelConverter;
 
         public WeatherHandler()
         {
@@ -30,7 +30,7 @@ namespace WeatherHistoryViewer.Services.Handlers
         {
             using var context = new ApplicationDbContext();
             if (context.Weather.Any() && context.Weather.Include(o => o.Location)
-             .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return true;
+                .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return true;
             return false;
         }
 
@@ -41,7 +41,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             try
             {
                 var weatherStackApiKey = UserSecrets.WeatherStackApiKey;
-            
+
                 if (DoesDateAndCityExistInDb(cityName, date)) return;
                 var response =
                     _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
@@ -83,7 +83,8 @@ namespace WeatherHistoryViewer.Services.Handlers
                 context.Locations.AsNoTracking();
                 context.WeatherHourly.AsNoTracking();
                 var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
-                    .Where(w => w.Location.Name == cityName && dates.Contains(w.Date)).OrderByDescending(o=>o.DateEpoch).ToList();
+                    .Where(w => w.Location.Name == cityName && dates.Contains(w.Date))
+                    .OrderByDescending(o => o.DateEpoch).ToList();
                 return weather;
             }
             catch (Exception e)

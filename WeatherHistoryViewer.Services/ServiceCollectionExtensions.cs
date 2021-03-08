@@ -2,9 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WeatherHistoryViewer.Db;
-using WeatherHistoryViewer.Services.Converter;
-using WeatherHistoryViewer.Services.Handlers;
-using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.Services
 {

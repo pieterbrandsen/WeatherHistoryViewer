@@ -1,21 +1,21 @@
 ﻿@page "/"
 @using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Services.Handlers
-@using System.ComponentModel.DataAnnotations;
+@using System.ComponentModel.DataAnnotations
 
 <EditForm Model="@formResponse" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
     <p>
         <label>
             Location:
-            <InputText id="location" @bind-Value="formResponse.Location" />
+            <InputText id="location" @bind-Value="formResponse.Location"/>
         </label>
     </p>
     <p>
         <label>
             Date:
-            <InputText id="date" @bind-Value="formResponse.Date" />
+            <InputText id="date" @bind-Value="formResponse.Date"/>
         </label>
     </p>
     <button class="button" type="submit">Submit</button>
@@ -23,72 +23,93 @@
 
 @if (weather == null)
 {
-    <p><em>Loading...</em></p>
+    <p>
+        <em>Loading...</em>
+    </p>
 }
 else if (weather.Count == 0)
 {
-    <br />
-    <p><em>Nothing found! Please try again.</em></p>
-    <br />
+    <br/>
+    <p>
+        <em>Nothing found! Please try again.</em>
+    </p>
+    <br/>
     <h4>Troubleshooting:</h4>
-    <p><b>Is your location one of the following?</b></p>
+    <p>
+        <b>Is your location one of the following?</b>
+    </p>
     foreach (var location in new LocationHandler().GetAllLocationNames())
     {
-        <p><em>@location</em></p>
+        <p>
+            <em>@location</em>
+        </p>
     }
-    <p><b>Is your Date something like this</b></p>
-    <p><em>MONTH-DAY</em></p>
-    <p><em>2-28</em></p>
-    <p><em>12-15</em></p>
+    <p>
+        <b>Is your Date something like this</b>
+    </p>
+    <p>
+        <em>MONTH-DAY</em>
+    </p>
+    <p>
+        <em>2-28</em>
+    </p>
+    <p>
+        <em>12-15</em>
+    </p>
 }
 else
 {
     <h1>The weather of date @weather.First().Date.Split("-")[1]-@weather.First().Date.Split("-")[2] in @weather.First().Location.Country, @weather.First().Location.Name</h1>
-    <br />
+    <br/>
     <table class="table table-bordered">
         <thead>
-            <tr>
-                <th>Year</th>
-                <th>Avg temp</th>
-                <th>Min temp</th>
-                <th>Max temp</th>
-                <th>Sun hours</th>
-            </tr>
+        <tr>
+            <th>Year</th>
+            <th>Avg temp</th>
+            <th>Min temp</th>
+            <th>Max temp</th>
+            <th>Sun hours</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var day in weather)
-            {
-                <tr>
-                    <th>@day.Date.Split("-")[0]</th>
-                    <th>@day.AvgTemp</th>
-                    <th>@day.MinTemp</th>
-                    <th>@day.MaxTemp</th>
-                    <th>@day.SunHour</th>
-                </tr>
-            }
+        @foreach (var day in weather)
+        {
+            <tr>
+                <th>@day.Date.Split("-")[0]</th>
+                <th>@day.AvgTemp</th>
+                <th>@day.MinTemp</th>
+                <th>@day.MaxTemp</th>
+                <th>@day.SunHour</th>
+            </tr>
+        }
         </tbody>
     </table>
-
 }
 
 
 @code {
+
     private class Form
     {
         [Required]
         public string Location { get; set; }
+
         [Required]
         public string Date { get; set; }
     }
-    private Form formResponse = new Form();
+
+    private readonly Form formResponse = new();
 
     private List<HistoricalWeather> weather;
+
     protected override void OnInitialized()
     {
         weather = new WeatherHandler().GetWeatherOfDateInLast15Y("Amsterdam", DateTime.Now.AddDays(-1).ToString("MM/dd"));
     }
+
     void HandleValidSubmit()
     {
         weather = new WeatherHandler().GetWeatherOfDateInLast15Y(formResponse.Location, formResponse.Date);
     }
+
 }

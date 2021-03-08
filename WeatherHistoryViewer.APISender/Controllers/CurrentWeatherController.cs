@@ -12,9 +12,9 @@ namespace WeatherHistoryViewer.APISender.Controllers
     [Route("api/[controller]")]
     public class CurrentWeatherController : ControllerBase
     {
-        private readonly WeatherStackAPI _weatherApiRequester;
         private readonly HttpStatus _httpStatus;
         private readonly UserSecrets _secrets;
+        private readonly WeatherStackAPI _weatherApiRequester;
 
         public CurrentWeatherController()
         {

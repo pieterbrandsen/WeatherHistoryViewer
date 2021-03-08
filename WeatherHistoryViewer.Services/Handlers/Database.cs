@@ -5,13 +5,15 @@ using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
-    public class Database 
+    public class Database
     {
         private readonly LocationHandler _locationHandler;
+
         public Database()
         {
             _locationHandler = new LocationHandler();
         }
+
         public void AddHistoricalWeather(HistoricalWeather weather)
         {
             using var context = new ApplicationDbContext();

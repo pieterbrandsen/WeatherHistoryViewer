@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.Configuration;
 
 namespace WeatherHistoryViewer.Db
 {
@@ -13,10 +12,12 @@ namespace WeatherHistoryViewer.Db
     public class RevealUserSecrets
     {
         private readonly IConfiguration _configuration;
+
         public RevealUserSecrets(IConfiguration configuration)
         {
             _configuration = configuration;
         }
+
         public string ConnectionString()
         {
             return _configuration["UserSecrets:DefaultConnectionString"];

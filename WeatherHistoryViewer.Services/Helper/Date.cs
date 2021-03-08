@@ -52,37 +52,36 @@ namespace WeatherHistoryViewer.Services.Helper
             var shortDateSplitted = shortDate.Split("-");
             if (shortDateSplitted.Length == 2)
             {
-            for (var i = 0; i < shortDateSplitted.Length; i++)
-            {
-                var value = shortDateSplitted[i];
-                if (value.Length == 1) shortDateSplitted[i] = $"0{value}";
-            }
-            shortDate = $"{shortDateSplitted[0]}-{shortDateSplitted[1]}";
-
-
-            try
-            {
-                var dates = new List<string>();
-                var year = DateTime.Today.Year;
-                for (var i = 0; i < 15; i++)
+                for (var i = 0; i < shortDateSplitted.Length; i++)
                 {
-                    var date = string.Format("{0:yyyy/MM/dd}", $"{year}-{shortDate}");
-                    dates.Add(date);
-                    year -= 1;
+                    var value = shortDateSplitted[i];
+                    if (value.Length == 1) shortDateSplitted[i] = $"0{value}";
                 }
 
-                return dates;
+                shortDate = $"{shortDateSplitted[0]}-{shortDateSplitted[1]}";
+
+
+                try
+                {
+                    var dates = new List<string>();
+                    var year = DateTime.Today.Year;
+                    for (var i = 0; i < 15; i++)
+                    {
+                        var date = string.Format("{0:yyyy/MM/dd}", $"{year}-{shortDate}");
+                        dates.Add(date);
+                        year -= 1;
+                    }
+
+                    return dates;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            }
-            else
-            {
-                return new List<string>();
-            }
+
+            return new List<string>();
         }
 
         private DateTime GetDateOfYesterday(DateTime currentDate)
