@@ -66,7 +66,7 @@ namespace WeatherHistoryViewer.Services.Helper
                     DateOfMaxTemp = dateOfMaxTemp,
                     MinTemp = Math.Round(minTemp, 2),
                     DateOfMinTemp = dateOfMinTemp,
-                    AverageSunHours = context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location).Select(w => w.SunHour).Average(),
+                    AverageSunHours = Math.Round(context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location).Select(w => w.SunHour).Average(),2),
                     AverageTemp = Math.Round(context.Weather.Include(w=>w.Location).Where(w=>w.Location.Name == location).Select(w => w.AvgTemp).Average(),2)
                 };
                 overviewList.Add(overviewObj);
