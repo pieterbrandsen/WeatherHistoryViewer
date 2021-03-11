@@ -17,6 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.0" />
+    <PackageReference Include="Azure.Identity" Version="1.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj" />
     <ProjectReference Include="..\WeatherHistoryViewer.Services\WeatherHistoryViewer.Services.csproj" />
   </ItemGroup>
