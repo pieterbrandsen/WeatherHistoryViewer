@@ -1,9 +1,13 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
+using WeatherHistoryViewer.Services.Handlers;
+using WeatherHistoryViewer.Services.Helper;
 
 namespace WeatherHistoryViewer.Web
 {
@@ -22,9 +26,7 @@ namespace WeatherHistoryViewer.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.RegisterSecrets(Configuration);
-            services.RegisterDataServices(Configuration);
-            services.RegisterInterfaceServices(Configuration);
+            services.RegisterUserSecrets(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +52,18 @@ namespace WeatherHistoryViewer.Web
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
+            });
+
+            var dateHelper = new DateHelper();
+            var oldestDate = dateHelper.GetDateStringOfDaysAgo(90);
+            var yesterdayDate = dateHelper.GetDateStringOfDaysAgo(1);
+            var locations = new LocationHandler().GetAllLocationNames();
+            Task.Run(() =>
+            {
+                foreach (var locationName in locations)
+                    new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1,
+                        oldestDate,
+                        yesterdayDate);
             });
         }
     }

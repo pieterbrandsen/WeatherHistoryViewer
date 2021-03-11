@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:44375/",
-      "sslPort": 44373
+      "applicationUrl": "http://localhost:52220/",
+      "sslPort": 44374
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "currentWeather",
+      "launchUrl": "api/currentWeather",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

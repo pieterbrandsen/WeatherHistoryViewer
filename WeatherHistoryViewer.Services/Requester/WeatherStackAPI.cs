@@ -4,23 +4,15 @@ using System.Net;
 using System.Text.Json;
 using WeatherHistoryViewer.Core.Models.Weather;
 
-namespace WeatherHistoryViewer.Services
+namespace WeatherHistoryViewer.Services.Requester
 {
-    public interface IApiRequester
-    {
-        HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
-            HourlyInterval hourlyInterval);
-
-        CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName);
-    }
-
-    public class ApiRequester : IApiRequester
+    public class WeatherStackAPI
     {
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
             HourlyInterval hourlyInterval)
         {
             var uri =
-                $"http://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1&interval={(int)hourlyInterval}& units=m";
+                $"https://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1&interval={(int) hourlyInterval}& units=m";
             try
             {
                 var jsonResponse = HTTPGet(uri).Replace(date, "Day");
@@ -33,9 +25,9 @@ namespace WeatherHistoryViewer.Services
             }
         }
 
-        public CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName)
+        public CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, string units)
         {
-            var uri = $"http://api.weatherstack.com/current?access_key={apiKey}& query={cityName}& units=m";
+            var uri = $"https://api.weatherstack.com/current?access_key={apiKey}& query={cityName}& units={units}";
             try
             {
                 var jsonResponse = HTTPGet(uri);
@@ -48,12 +40,12 @@ namespace WeatherHistoryViewer.Services
             }
         }
 
-        private string HTTPGet(string uri)
+        private static string HTTPGet(string uri)
         {
-            var request = (HttpWebRequest)WebRequest.Create(uri);
+            var request = (HttpWebRequest) WebRequest.Create(uri);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
-            using var response = (HttpWebResponse)request.GetResponse();
+            using var response = (HttpWebResponse) request.GetResponse();
             using var stream = response.GetResponseStream();
             using var reader = new StreamReader(stream);
 

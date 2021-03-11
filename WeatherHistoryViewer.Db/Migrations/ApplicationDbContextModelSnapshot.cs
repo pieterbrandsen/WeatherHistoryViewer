@@ -47,8 +47,8 @@ namespace WeatherHistoryViewer.Db.Migrations
                 b.Property<double>("SunHour")
                     .HasColumnType("float");
 
-                b.Property<int>("TotalSnow")
-                    .HasColumnType("int");
+                b.Property<double>("TotalSnow")
+                    .HasColumnType("float");
 
                 b.Property<int>("UvIndex")
                     .HasColumnType("int");
@@ -134,6 +134,9 @@ namespace WeatherHistoryViewer.Db.Migrations
                 b.Property<int>("Feelslike")
                     .HasColumnType("int");
 
+                b.Property<string>("FullDate")
+                    .HasColumnType("nvarchar(max)");
+
                 b.Property<int>("Heatindex")
                     .HasColumnType("int");
 
@@ -151,6 +154,9 @@ namespace WeatherHistoryViewer.Db.Migrations
 
                 b.Property<int>("Temperature")
                     .HasColumnType("int");
+
+                b.Property<long>("Ticks")
+                    .HasColumnType("bigint");
 
                 b.Property<string>("Time")
                     .HasColumnType("nvarchar(max)");

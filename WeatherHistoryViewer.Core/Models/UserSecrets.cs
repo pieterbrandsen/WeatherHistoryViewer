@@ -3,6 +3,7 @@
     public class ApiKeys
     {
         public string WeatherStack { get; set; }
+        public string WeatherHistoryViewer { get; set; }
     }
 
     public class UserSecrets
