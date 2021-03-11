@@ -6,8 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="wwwroot\js\" />
+    <Compile Remove="Data\**" />
+    <Compile Remove="wwwroot\js\**" />
+    <Content Remove="Data\**" />
+    <Content Remove="wwwroot\js\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="wwwroot\js\**" />
+    <None Remove="Data\**" />
+    <None Remove="wwwroot\js\**" />
   </ItemGroup>
 
   <ItemGroup>
