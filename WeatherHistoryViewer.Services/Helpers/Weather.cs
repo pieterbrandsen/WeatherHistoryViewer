@@ -32,17 +32,17 @@ namespace WeatherHistoryViewer.Services.Helper
             }
         }
 
-        public (string date, double temp) GetMaxOrMinTempOfLocation(bool returnMax)
+        public (string date, double temp) GetMaxOrMinTempOfLocation(bool returnMax, string locationName)
     {
             using var context = new ApplicationDbContext();
             double temp = double.NaN;
             string date = null;
 
             if (returnMax) {
-                temp = context.Weather.Max(w => w.MaxTemp);
+                temp = context.Weather.Include(w=>w.Location).Where(w=>w.Location.Name == locationName).Max(w => w.MaxTemp);
             }
             else {
-                temp = context.Weather.Min(w => w.MinTemp);
+                temp = context.Weather.Include(w => w.Location).Where(w => w.Location.Name == locationName).Min(w => w.MinTemp);
             };
 
             date = context.Weather.FirstOrDefault(w => (returnMax == true ? w.MaxTemp : w.MinTemp) == temp).Date;
@@ -57,17 +57,17 @@ namespace WeatherHistoryViewer.Services.Helper
             var locations = locationHandler.GetAllLocationNames();
             foreach (var location in locations)
             {
-                (string dateOfMaxTemp, double maxTemp) = GetMaxOrMinTempOfLocation(true);
-                (string dateOfMinTemp, double minTemp) = GetMaxOrMinTempOfLocation(false);
+                (string dateOfMaxTemp, double maxTemp) = GetMaxOrMinTempOfLocation(true,location);
+                (string dateOfMinTemp, double minTemp) = GetMaxOrMinTempOfLocation(false,location);
                 var overviewObj = new WeatherOverview()
                 {
                     LocationName = location,
-                    MaxTemp = maxTemp,
+                    MaxTemp = Math.Round(maxTemp,2),
                     DateOfMaxTemp = dateOfMaxTemp,
-                    MinTemp = minTemp,
+                    MinTemp = Math.Round(minTemp, 2),
                     DateOfMinTemp = dateOfMinTemp,
-                    AverageSunHours = context.Weather.Select(w => w.SunHour).Average(),
-                    AverageTemp = context.Weather.Select(w => w.AvgTemp).Average(),
+                    AverageSunHours = context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location).Select(w => w.SunHour).Average(),
+                    AverageTemp = Math.Round(context.Weather.Include(w=>w.Location).Where(w=>w.Location.Name == location).Select(w => w.AvgTemp).Average(),2)
                 };
                 overviewList.Add(overviewObj);
             }

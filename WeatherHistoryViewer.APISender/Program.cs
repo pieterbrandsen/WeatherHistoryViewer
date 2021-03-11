@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using Azure.Identity;
 using Microsoft.Extensions.Configuration;
 using System;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Core;
 
 namespace WeatherHistoryViewer.APISender
 {
