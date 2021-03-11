@@ -4,9 +4,9 @@ namespace WeatherHistoryViewer.Db
 {
     public static class UserSecrets
     {
-        public static readonly string ConnectionString;
-        public static readonly string WeatherHistoryApiKey;
-        public static readonly string WeatherStackApiKey;
+        public static string ConnectionString;
+        public static string WeatherHistoryApiKey;
+        public static string WeatherStackApiKey;
     }
 
     public class RevealUserSecrets
