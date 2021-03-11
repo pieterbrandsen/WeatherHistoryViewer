@@ -1,0 +1,93 @@
+﻿@page "/downloadNewData"
+@using System.ComponentModel.DataAnnotations
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Services.Handlers
+@using System.Threading.Tasks;
+
+<h1>Download new data</h1>
+<EditForm Model="@formResponse" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        <label>
+            City name:
+            <InputText id="cityName" @bind-Value="formResponse.CityName" />
+        </label>
+    </p>
+    <p>
+        <label>
+            Month-Day-Year format
+        </label>
+    </p>
+    <p>
+        <label>
+            Oldest date:
+            <InputText id="date" @bind-Value="formResponse.OldestDate" />
+        </label>
+    </p>
+    <p>
+        <label>
+            Newest date:
+            <InputText id="date" @bind-Value="formResponse.NewestDate" />
+        </label>
+    </p>
+    <p>
+        <label>
+            <InputRadioGroup @bind-Value=formResponse.HourlyInterval>
+                Hour interval:
+                <br />
+                @foreach (var interval in (HourlyInterval[])Enum
+ .GetValues(typeof(HourlyInterval)))
+                {
+                    <InputRadio Value="interval" />
+                    @interval
+                    <br>
+                }
+
+            </InputRadioGroup>
+        </label>
+    </p>
+    <button class="button" type="submit">Submit</button>
+</EditForm>
+
+@if (lastDownloadTime.Length > 0)
+{
+    <h4>Has started trying to downloading the data for @formResponse.CityName</h4>
+    <h6>Start time: @lastDownloadTime</h6>
+}
+
+@code {
+
+    private class Form
+    {
+        [Required]
+        public string CityName { get; set; }
+
+        [Required]
+        public HourlyInterval HourlyInterval { get; set; }
+
+        [Required]
+        public string OldestDate { get; set; }
+
+        [Required]
+        public string NewestDate { get; set; }
+    }
+
+    private readonly Form formResponse = new();
+    private string lastDownloadTime = "";
+    protected override void OnInitialized()
+    {
+        formResponse.NewestDate = DateTime.Now.ToString("yyyy/MM/dd");
+    }
+
+    void HandleValidSubmit()
+    {
+        Task.Delay(10*1000);
+        lastDownloadTime = DateTime.Now.ToString("HH/mm/s");
+        Task.Run(() =>
+        {
+            new WeatherHandler().UpdateHistoricalWeatherRangeToDb(formResponse.CityName, formResponse.HourlyInterval, formResponse.OldestDate, formResponse.NewestDate);
+
+        });
+    }
+}
