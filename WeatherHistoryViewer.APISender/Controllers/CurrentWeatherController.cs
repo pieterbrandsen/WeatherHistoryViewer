@@ -13,13 +13,11 @@ namespace WeatherHistoryViewer.APISender.Controllers
     public class CurrentWeatherController : ControllerBase
     {
         private readonly HttpStatus _httpStatus;
-        private readonly UserSecrets _secrets;
         private readonly WeatherStackAPI _weatherApiRequester;
 
         public CurrentWeatherController()
         {
             _weatherApiRequester = new WeatherStackAPI();
-            _secrets = new UserSecrets();
             _httpStatus = new HttpStatus();
         }
 
@@ -28,8 +26,8 @@ namespace WeatherHistoryViewer.APISender.Controllers
         {
             try
             {
-                var weatherStackApiKey = _secrets.WeatherStackApiKey;
-                var weatherHistoryApiKey = _secrets.WeatherHistoryApiKey;
+                var weatherStackApiKey = UserSecrets.WeatherStackApiKey;
+                var weatherHistoryApiKey = UserSecrets.WeatherHistoryApiKey;
 
                 if (weatherHistoryApiKey != access_key)
                     return StatusCode(StatusCodes.Status400BadRequest,
