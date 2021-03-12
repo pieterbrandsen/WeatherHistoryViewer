@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+//using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services.Handlers;
+
+using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using WeatherHistoryViewer.Services.Converter;
+using WeatherHistoryViewer.Services.Helper;
+using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.Services.Helper
 {
@@ -57,20 +63,21 @@ namespace WeatherHistoryViewer.Services.Helper
             var locations = locationHandler.GetAllLocationNames();
             foreach (var location in locations)
             {
-                (string dateOfMaxTemp, double maxTemp) = GetMaxOrMinTempOfLocation(true,location);
-                (string dateOfMinTemp, double minTemp) = GetMaxOrMinTempOfLocation(false,location);
+                (string dateOfMaxTemp, double maxTemp) = GetMaxOrMinTempOfLocation(true, location);
+                (string dateOfMinTemp, double minTemp) = GetMaxOrMinTempOfLocation(false, location);
                 var overviewObj = new WeatherOverview()
                 {
                     LocationName = location,
-                    MaxTemp = Math.Round(maxTemp,2),
+                    MaxTemp = Math.Round(maxTemp, 2),
                     DateOfMaxTemp = dateOfMaxTemp,
                     MinTemp = Math.Round(minTemp, 2),
                     DateOfMinTemp = dateOfMinTemp,
-                    AverageSunHours = Math.Round(context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location).Select(w => w.SunHour).Average(),2),
-                    AverageTemp = Math.Round(context.Weather.Include(w=>w.Location).Where(w=>w.Location.Name == location).Select(w => w.AvgTemp).Average(),2)
+                    AverageSunHours = Math.Round(context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location).Select(w => w.SunHour).Average(), 2),
+                    AverageTemp = Math.Round(context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location).Select(w => w.AvgTemp).Average(), 2)
                 };
                 overviewList.Add(overviewObj);
             }
+            context.Dispose();
 
             return overviewList;
         }
