@@ -1,17 +1,16 @@
 ﻿@page "/downloadNewData"
-@using System.ComponentModel.DataAnnotations
 @using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Services.Handlers
-@using System.Threading.Tasks;
+@using System.ComponentModel.DataAnnotations
 
 <h1>Download new data</h1>
 <EditForm Model="@formResponse" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
     <p>
         <label>
             City name:
-            <InputText id="cityName" @bind-Value="formResponse.CityName" />
+            <InputText id="cityName" @bind-Value="formResponse.CityName"/>
         </label>
     </p>
     <p>
@@ -22,24 +21,24 @@
     <p>
         <label>
             Oldest date:
-            <InputText id="date" @bind-Value="formResponse.OldestDate" />
+            <InputText id="date" @bind-Value="formResponse.OldestDate"/>
         </label>
     </p>
     <p>
         <label>
             Newest date:
-            <InputText id="date" @bind-Value="formResponse.NewestDate" />
+            <InputText id="date" @bind-Value="formResponse.NewestDate"/>
         </label>
     </p>
     <p>
         <label>
-            <InputRadioGroup @bind-Value=formResponse.HourlyInterval>
+            <InputRadioGroup @bind-Value="formResponse.HourlyInterval">
                 Hour interval:
-                <br />
-                @foreach (var interval in (HourlyInterval[])Enum
- .GetValues(typeof(HourlyInterval)))
+                <br/>
+                @foreach (var interval in (HourlyInterval[]) Enum
+                    .GetValues(typeof(HourlyInterval)))
                 {
-                    <InputRadio Value="interval" />
+                    <InputRadio Value="interval"/>
                     @interval
                     <br>
                 }
@@ -75,6 +74,7 @@
 
     private readonly Form formResponse = new();
     private string lastDownloadTime = "";
+
     protected override void OnInitialized()
     {
         formResponse.NewestDate = DateTime.Now.ToString("yyyy/MM/dd");
@@ -82,12 +82,9 @@
 
     void HandleValidSubmit()
     {
-        Task.Delay(10*1000);
+        Task.Delay(10 * 1000);
         lastDownloadTime = DateTime.Now.ToString("HH/mm/s");
-        Task.Run(() =>
-        {
-            new WeatherHandler().UpdateHistoricalWeatherRangeToDb(formResponse.CityName, formResponse.HourlyInterval, formResponse.OldestDate, formResponse.NewestDate);
-
-        });
+        Task.Run(() => { new WeatherHandler().UpdateHistoricalWeatherRangeToDb(formResponse.CityName, formResponse.HourlyInterval, formResponse.OldestDate, formResponse.NewestDate); });
     }
+
 }

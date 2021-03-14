@@ -12,29 +12,29 @@ else
 {
     <table class="table table-bordered">
         <thead>
-            <tr>
-                <th>City</th>
-                <th>Avg temp</th>
-                <th>Max temp</th>
-                <th>Date of max temp</th>
-                <th>Min temp</th>
-                <th>Date of min temp</th>
-                <th>Average sun hours</th>
-            </tr>
+        <tr>
+            <th>City</th>
+            <th>Avg temp</th>
+            <th>Max temp</th>
+            <th>Date of max temp</th>
+            <th>Min temp</th>
+            <th>Date of min temp</th>
+            <th>Average sun hours</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var overview in weatherOverviews)
-            {
-                <tr>
-                    <th>@overview.LocationName</th>
-                    <th>@overview.AverageTemp</th>
-                    <th>@overview.MaxTemp</th>
-                    <th>@overview.DateOfMaxTemp</th>
-                    <th>@overview.MinTemp</th>
-                    <th>@overview.DateOfMinTemp</th>
-                    <th>@overview.AverageSunHours</th>
-                </tr>
-            }
+        @foreach (var overview in weatherOverviews)
+        {
+            <tr>
+                <th>@overview.LocationName</th>
+                <th>@overview.AverageTemp</th>
+                <th>@overview.MaxTemp</th>
+                <th>@overview.DateOfMaxTemp</th>
+                <th>@overview.MinTemp</th>
+                <th>@overview.DateOfMinTemp</th>
+                <th>@overview.AverageSunHours</th>
+            </tr>
+        }
         </tbody>
     </table>
 }
@@ -47,4 +47,5 @@ else
     {
         weatherOverviews = new WeatherHelper().GetWeatherOverview();
     }
+
 }
