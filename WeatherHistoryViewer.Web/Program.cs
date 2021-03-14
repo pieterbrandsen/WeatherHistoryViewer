@@ -1,10 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Azure.Identity;
-using Microsoft.Extensions.Configuration;
-using System;
-using Azure.Security.KeyVault.Secrets;
-using Azure.Core;
 
 namespace WeatherHistoryViewer.Web
 {
