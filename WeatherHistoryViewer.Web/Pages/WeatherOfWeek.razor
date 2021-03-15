@@ -4,14 +4,6 @@
 @using WeatherHistoryViewer.Services.Handlers
 @using System.ComponentModel.DataAnnotations
 
-@*<style>
-    table {
-        border-collapse: collapse;
-    }
-tr { display: block; float: left; }
-th, td { display: block; border: 1px solid black; }
-</style>*@
-
 <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -68,35 +60,32 @@ th, td { display: block; border: 1px solid black; }
     }
     else
     {
-        <h1>The weather of @_formResponse.Date in @_weatherOfWeeks.First().First().Location.Country, @_weatherOfWeeks.First().First().Location.Name</h1>
+<h1>The weather of @_weatherOfWeeks.First().First().Date.Split("-")[1]-@_weatherOfWeeks.First().First().Date.Split("-")[2] in @_weatherOfWeeks.First().First().Location.Country, @_weatherOfWeeks.First().First().Location.Name</h1>
         <br />
         <table class="table table-bordered">
-            <thead>
                 <tr>
+                    <th>DayOfWeek</th>
                     <th>Year</th>
-                    <th>Date</th>
                     <th>Avg temp</th>
                     <th>Min temp</th>
                     <th>Max temp</th>
                     <th>Sun hours</th>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var week in _weatherOfWeeks.FindAll(wl=>wl.Count > 0))
+                @foreach (var week in _weatherOfWeeks)
                 {
                     <tr>
+                        <th>*</th>
                         <th>Year</th>
-                        <th>Date</th>
                         <th>Avg temp</th>
                         <th>Min temp</th>
                         <th>Max temp</th>
                         <th>Sun hours</th>
                     </tr>
-                    @foreach (var day in _weatherOfWeeks.Find(w=>w.Count > 3))
+                    @foreach (var day in week)
                     {
 
                         <tr>
-                            <th>@day.Date.Split("-")[1]/@day.Date.Split("-")[2]</th>
+                            <th>@_dateHelper.ConvertDateStringToDate(day.Date).DayOfWeek </th>
                             <th>@day.Date.Split("-")[0]</th>
                             <th>@day.AvgTemp</th>
                             <th>@day.MinTemp</th>
@@ -105,13 +94,13 @@ th, td { display: block; border: 1px solid black; }
                         </tr>
                     }
                 }
-            </tbody>
         </table>
     }
 
 
 @code {
     private readonly WeatherHelper _weatherHelper = new();
+    private readonly DateHelper _dateHelper = new();
 
     private class Form
     {
@@ -135,5 +124,4 @@ th, td { display: block; border: 1px solid black; }
     {
         _weatherOfWeeks = _weatherHelper.GetWeatherWeekOfDateInThePastYears(_formResponse.Location, _formResponse.Date);
     }
-
 }
