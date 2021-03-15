@@ -23,7 +23,7 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var overview in weatherOverviews)
+        @foreach (var overview in weatherOverviews.OrderByDescending(w=>w.LocationName))
         {
             <tr>
                 <th>@overview.LocationName</th>

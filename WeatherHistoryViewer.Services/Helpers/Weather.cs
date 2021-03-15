@@ -52,35 +52,70 @@ namespace WeatherHistoryViewer.Services.Helper
         public List<WeatherOverview> GetWeatherOverview()
         {
             using var context = new ApplicationDbContext();
-
             var overviewList = new List<WeatherOverview>();
-            var locations = locationHandler.GetAllLocationNames();
-            foreach (var location in locations)
+
+            try
             {
-                (var dateOfMaxTemp, var maxTemp) = GetMaxOrMinTempOfLocation(true, location);
-                (var dateOfMinTemp, var minTemp) = GetMaxOrMinTempOfLocation(false, location);
-                var overviewObj = new WeatherOverview
+                var locations = locationHandler.GetAllLocationNames();
+                foreach (var location in locations)
                 {
-                    LocationName = location,
-                    MaxTemp = Math.Round(maxTemp, 2),
-                    DateOfMaxTemp = dateOfMaxTemp,
-                    MinTemp = Math.Round(minTemp, 2),
-                    DateOfMinTemp = dateOfMinTemp,
-                    AverageSunHours =
-                        Math.Round(
-                            context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
-                                .Select(w => w.SunHour).Average(), 2),
-                    AverageTemp =
-                        Math.Round(
-                            context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
-                                .Select(w => w.AvgTemp).Average(), 2)
-                };
-                overviewList.Add(overviewObj);
+                    (var dateOfMaxTemp, var maxTemp) = GetMaxOrMinTempOfLocation(true, location);
+                    (var dateOfMinTemp, var minTemp) = GetMaxOrMinTempOfLocation(false, location);
+                    var overviewObj = new WeatherOverview
+                    {
+                        LocationName = location,
+                        MaxTemp = Math.Round(maxTemp, 2),
+                        DateOfMaxTemp = dateOfMaxTemp,
+                        MinTemp = Math.Round(minTemp, 2),
+                        DateOfMinTemp = dateOfMinTemp,
+                        AverageSunHours =
+                            Math.Round(
+                                context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
+                                    .Select(w => w.SunHour).Average(), 2),
+                        AverageTemp =
+                            Math.Round(
+                                context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
+                                    .Select(w => w.AvgTemp).Average(), 2)
+                    };
+                    overviewList.Add(overviewObj);
+                }
+
+                context.Dispose();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
-            context.Dispose();
-
             return overviewList;
+        }
+
+        public List<List<HistoricalWeather>> GetWeatherWeekOfDateInThePastYears(string cityName, string date)
+        {
+            using var context = new ApplicationDbContext();
+            var weatherList = new List<List<HistoricalWeather>>();
+            try
+            {
+                var dates = dateHelper.GetDateInLast15Y(date);
+                foreach (var currDate in dates)
+                {
+                    var currDates = dateHelper.GetWeekDatesFromDate(currDate);
+                    var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
+                   .Where(w => w.Location.Name == cityName && currDates.Contains(w.Date))
+                   .OrderByDescending(o => o.DateEpoch).ToList();
+                    weatherList.Add(weather);
+                }
+
+               
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            return weatherList.FindAll(wl => wl.Count > 0);
         }
     }
 }
