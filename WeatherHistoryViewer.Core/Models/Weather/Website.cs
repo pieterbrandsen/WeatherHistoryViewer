@@ -2,6 +2,7 @@
 {
     public class WeatherOverview
     {
+        public string Year { get; set; }
         public string LocationName { get; set; }
         public double MaxTemp { get; set; }
         public string DateOfMaxTemp { get; set; }

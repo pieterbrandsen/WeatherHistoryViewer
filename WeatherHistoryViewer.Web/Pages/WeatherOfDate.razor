@@ -5,18 +5,18 @@
 @using System.ComponentModel.DataAnnotations
 
 <EditForm Model="@formResponse" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
     <p>
         <label>
             Location:
-            <InputText id="location" @bind-Value="formResponse.Location"/>
+            <InputText id="location" @bind-Value="formResponse.Location" />
         </label>
     </p>
     <p>
         <label>
             Date:
-            <InputText id="date" @bind-Value="formResponse.Date"/>
+            <InputText id="date" @bind-Value="formResponse.Date" />
         </label>
     </p>
     <button class="button" type="submit">Reload</button>
@@ -30,11 +30,11 @@
 }
 else if (weather.Count == 0)
 {
-    <br/>
+    <br />
     <p>
         <em>Nothing found! Please try again.</em>
     </p>
-    <br/>
+    <br />
     <h4>Troubleshooting:</h4>
     <p>
         <b>Is your location one of the following?</b>
@@ -61,28 +61,28 @@ else if (weather.Count == 0)
 else
 {
     <h1>The weather of date @weather.First().Date.Split("-")[1]-@weather.First().Date.Split("-")[2] in @weather.First().Location.Country, @weather.First().Location.Name</h1>
-    <br/>
+    <br />
     <table class="table table-bordered">
         <thead>
-        <tr>
-            <th>Year</th>
-            <th>Avg temp</th>
-            <th>Min temp</th>
-            <th>Max temp</th>
-            <th>Sun hours</th>
-        </tr>
+            <tr>
+                <th>Year</th>
+                <th>Avg temp</th>
+                <th>Min temp</th>
+                <th>Max temp</th>
+                <th>Sun hours</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var day in weather)
-        {
-            <tr>
-                <th>@day.Date.Split("-")[0]</th>
-                <th>@day.AvgTemp</th>
-                <th>@day.MinTemp</th>
-                <th>@day.MaxTemp</th>
-                <th>@day.SunHour</th>
-            </tr>
-        }
+            @foreach (var day in weather)
+            {
+                <tr>
+                    <th>@day.Date.Split("-")[0]</th>
+                    <td>@day.AvgTemp</td>
+                    <td>@day.MinTemp</td>
+                    <td>@day.MaxTemp</td>
+                    <td>@day.SunHour</td>
+                </tr>
+            }
         </tbody>
     </table>
 }

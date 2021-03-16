@@ -1,0 +1,80 @@
+﻿@page "/weatherPerYear"
+@using System.ComponentModel.DataAnnotations
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Services.Helper
+@using WeatherHistoryViewer.Services.Handlers
+
+<EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        <label>
+            Location:
+            <InputText id="location" @bind-Value="_formResponse.Location" />
+        </label>
+    </p>
+    <button class="button" type="submit">Reload</button>
+</EditForm>
+
+@if (_weatherOfYears == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <h1>The weather of @_weatherOfYears.First().LocationName</h1>
+    <br />
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Year</th>
+                <th>Avg temp</th>
+                <th>Max temp</th>
+                <th>Date of max temp</th>
+                <th>Min temp</th>
+                <th>Date of min temp</th>
+                <th>Average sun hours</th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach (var year in _weatherOfYears)
+                {
+                    <tr>
+                        <th>@year.Year</th>
+                        <td>@year.AverageTemp</td>
+                        <td>@year.MaxTemp</td>
+                        <td>@year.DateOfMaxTemp</td>
+                        <td>@year.MinTemp</td>
+                        <td>@year.DateOfMinTemp</td>
+                        <td>@year.AverageSunHours</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+}
+
+@code {
+    private readonly WeatherHelper _weatherHelper = new();
+    private readonly DateHelper _dateHelper = new();
+    private class Form
+    {
+        [Required]
+        public string Location { get; set; }
+    }
+
+    private readonly Form _formResponse = new();
+
+    private List<WeatherOverview> _weatherOfYears;
+
+    protected override void OnInitialized()
+    {
+        _weatherOfYears = _weatherHelper.GetWeatherOfPastYears("Amsterdam");
+    }
+
+    void HandleValidSubmit()
+    {
+        _weatherOfYears = _weatherHelper.GetWeatherOfPastYears(_formResponse.Location);
+    }
+}
