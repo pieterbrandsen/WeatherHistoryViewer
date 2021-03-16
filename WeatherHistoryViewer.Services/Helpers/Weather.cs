@@ -44,7 +44,7 @@ namespace WeatherHistoryViewer.Services.Helper
                 if (returnMax)
                 {
                     weatherList = context.Weather.Include(w => w.Location).Where(w =>
-                            w.Location.Name != locationName && (year != null && w.Date.Contains(year) || year == null))
+                            w.Location.Name == locationName && (year != null && w.Date.Contains(year) || year == null))
                         .ToList();
                     if (weatherList.Count > 0)
                     {
@@ -54,7 +54,7 @@ namespace WeatherHistoryViewer.Services.Helper
                 }
             else {
                     weatherList = context.Weather.Include(w => w.Location).Where(w =>
-                            w.Location.Name != locationName && (year != null && w.Date.Contains(year) || year == null))
+                            w.Location.Name == locationName && (year != null && w.Date.Contains(year) || year == null))
                         .ToList();
                 if (weatherList.Count > 0)
                 {

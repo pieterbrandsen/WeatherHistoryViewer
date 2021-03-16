@@ -111,33 +111,32 @@ namespace WeatherHistoryViewer.Services.Helper
 
         public List<string> GetWeekDatesFromDate(string date)
         {
-
             var currDate = ConvertDateStringToDate(date);
-                int dayOfWeek = (int)currDate.DayOfWeek;
+            var dayOfWeek = (int) currDate.DayOfWeek;
             dayOfWeek = dayOfWeek == 0 ? 7 : dayOfWeek;
-            DateTime startOfWeek = currDate.AddDays(1 - (int)currDate.DayOfWeek);
-            var dateTimeList = new List<DateTime>() { startOfWeek };
+            var startOfWeek = currDate.AddDays(1 - (int) currDate.DayOfWeek);
+            var dateTimeList = new List<DateTime> {startOfWeek};
             var i = startOfWeek;
             var j = startOfWeek;
-            while ((int)i.DayOfWeek > 1)
+            while ((int) i.DayOfWeek > 1)
             {
                 var dateOfYesterday = GetDateOfYesterday(i);
                 i = dateOfYesterday;
                 dateTimeList.Add(i);
             }
-            while ((int)j.DayOfWeek < 6)
+
+            while ((int) j.DayOfWeek < 6)
             {
                 var dateOfTomorrow = GetDateOfTommorow(j);
                 j = dateOfTomorrow;
                 dateTimeList.Add(j);
 
-                if (j.DayOfWeek == DayOfWeek.Saturday)
-                {
-                    dateTimeList.Add(GetDateOfTommorow(j));
-                }
+                if (j.DayOfWeek == DayOfWeek.Saturday) dateTimeList.Add(GetDateOfTommorow(j));
             }
+
             var dateList = new List<string>();
-            dateTimeList.OrderByDescending(d => d.Ticks).ToList().ForEach(d => dateList.Add(ConvertStringToDateFormat(d.Date)));
+            dateTimeList.OrderByDescending(d => d.Ticks).ToList()
+                .ForEach(d => dateList.Add(ConvertStringToDateFormat(d.Date)));
             return dateList;
         }
     }
