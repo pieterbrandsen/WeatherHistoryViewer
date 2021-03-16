@@ -1,0 +1,215 @@
+﻿@page "/weatherOfWeek"
+@using WeatherHistoryViewer.Services.Helper
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Services.Handlers
+@using System.ComponentModel.DataAnnotations
+@using System.Linq
+
+<EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        <label>
+            Location:
+            <InputText id="location" @bind-Value="_formResponse.Location" />
+        </label>
+    </p>
+    <p>
+        <label>
+            Date in week:
+            <InputText id="date" @bind-Value="_formResponse.Date" />
+        </label>
+    </p>
+    <button class="button" type="submit">Reload</button>
+</EditForm>
+
+@if (_weatherOfWeeks == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (_weatherOfWeeks.Count == 0)
+{
+    <br />
+    <p>
+        <em>Nothing found! Please try again.</em>
+    </p>
+    <br />
+    <h4>Troubleshooting:</h4>
+    <p>
+        <b>Is your location one of the following?</b>
+    </p>
+    foreach (var location in new LocationHandler().GetAllLocationNames())
+    {
+        <p>
+            <em>@location</em>
+        </p>
+    }
+    <p>
+        <b>Is your Date something like this</b>
+    </p>
+    <p>
+        <em>MONTH-DAY</em>
+    </p>
+    <p>
+        <em>2-28</em>
+    </p>
+    <p>
+        <em>12-15</em>
+    </p>
+}
+else
+{
+    <h1>The weather of @_weatherOfWeeks.First().First().Date.Split("-")[1]-@_weatherOfWeeks.First().First().Date.Split("-")[2] in @_weatherOfWeeks.First().First().Location.Country, @_weatherOfWeeks.First().First().Location.Name</h1>
+    <br />
+    <h2>Average temperature</h2>
+    <table class="table table-bordered">
+        <tr>
+            <th>Year</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Satuday</th>
+            <th>Sunday</th>
+            <th>Average</th>
+        </tr>
+        @foreach (var week in _weatherOfWeeks)
+        {
+    <tr>
+        <th>@week.First().Date.Split("-")[0]</th>
+        @foreach (var day in week)
+        {
+            <td>@day.AvgTemp</td>
+        }
+        @if (week.Count == 7)
+        {
+            <td>@Math.Round(week.Select(w => w.AvgTemp).Average(), 2)</td>
+        }
+    </tr>
+        }
+    </table>
+
+    <br />
+    <br />
+    <h2>Minimum temperature</h2>
+    <table class="table table-bordered">
+        <tr>
+            <th>Year</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Satuday</th>
+            <th>Sunday</th>
+            <th>Average</th>
+        </tr>
+        @foreach (var week in _weatherOfWeeks)
+        {
+    <tr>
+        <th>@week.First().Date.Split("-")[0]</th>
+        @foreach (var day in week)
+        {
+            <td>@day.MinTemp</td>
+        }
+        @if (week.Count == 7)
+        {
+            <td>@Math.Round(week.Select(w => w.MinTemp).Average(), 2)</td>
+        }
+    </tr>
+        }
+    </table>
+
+    <br />
+    <br />
+    <h2>Maximum temperature</h2>
+    <table class="table table-bordered">
+        <tr>
+            <th>Year</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Satuday</th>
+            <th>Sunday</th>
+        </tr>
+        @foreach (var week in _weatherOfWeeks)
+        {
+    <tr>
+        <th>@week.First().Date.Split("-")[0]</th>
+        @foreach (var day in week)
+        {
+            <td>@day.MaxTemp</td>
+        }
+        @if (week.Count == 7)
+        {
+            <td>@Math.Round(week.Select(w => w.MaxTemp).Average(), 2)</td>
+        }
+    </tr>
+        }
+    </table>
+
+    <br />
+    <br />
+    <h2>Sun hours</h2>
+    <table class="table table-bordered">
+        <tr>
+            <th>Year</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Satuday</th>
+            <th>Sunday</th>
+            <th>Average</th>
+        </tr>
+        @foreach (var week in _weatherOfWeeks)
+        {
+            <tr>
+                <th>@week.First().Date.Split("-")[0]</th>
+                @foreach (var day in week)
+                {
+                    <td>@day.SunHour</td>
+                }
+                @if (week.Count == 7)
+                {
+                    <td>@Math.Round(week.Select(w => w.SunHour).Average(), 2)</td>
+                }
+            </tr>
+        }
+    </table>
+}
+
+
+@code {
+    private readonly WeatherHelper _weatherHelper = new();
+    private readonly DateHelper _dateHelper = new();
+
+    private class Form
+    {
+        [Required]
+        public string Location { get; set; }
+
+        [Required]
+        public string Date { get; set; }
+    }
+
+    private readonly Form _formResponse = new();
+
+    private List<List<HistoricalWeather>> _weatherOfWeeks;
+
+    protected override void OnInitialized()
+    {
+        _weatherOfWeeks = _weatherHelper.GetWeatherWeekOfDateInThePastYears("Amsterdam", DateTime.Now.AddDays(-1).ToString("MM/dd"));
+    }
+
+    void HandleValidSubmit()
+    {
+        _weatherOfWeeks = _weatherHelper.GetWeatherWeekOfDateInThePastYears(_formResponse.Location, _formResponse.Date);
+    }
+}

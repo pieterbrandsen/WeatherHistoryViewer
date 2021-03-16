@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WeatherHistoryViewer.Services.Helper
 {
@@ -89,18 +90,54 @@ namespace WeatherHistoryViewer.Services.Helper
             return currentDate.AddDays(-1);
         }
 
+        private DateTime GetDateOfTommorow(DateTime currentDate)
+        {
+            return currentDate.AddDays(1);
+        }
+
         private string ConvertStringToDateFormat(DateTime date)
         {
             return date.ToString("yyyy-MM-dd");
         }
 
-        private DateTime ConvertDateStringToDate(string date)
+        public DateTime ConvertDateStringToDate(string date)
         {
             // Does this work?
             // DateTime.Parse(date);
             var splitDate = date.Split("-");
             return new DateTime(Convert.ToInt16(splitDate[0]), Convert.ToInt16(splitDate[1]),
                 Convert.ToInt16(splitDate[2]));
+        }
+
+        public List<string> GetWeekDatesFromDate(string date)
+        {
+            var currDate = ConvertDateStringToDate(date);
+            var dayOfWeek = (int) currDate.DayOfWeek;
+            dayOfWeek = dayOfWeek == 0 ? 7 : dayOfWeek;
+            var startOfWeek = currDate.AddDays(1 - (int) currDate.DayOfWeek);
+            var dateTimeList = new List<DateTime> {startOfWeek};
+            var i = startOfWeek;
+            var j = startOfWeek;
+            while ((int) i.DayOfWeek > 1)
+            {
+                var dateOfYesterday = GetDateOfYesterday(i);
+                i = dateOfYesterday;
+                dateTimeList.Add(i);
+            }
+
+            while ((int) j.DayOfWeek < 6)
+            {
+                var dateOfTomorrow = GetDateOfTommorow(j);
+                j = dateOfTomorrow;
+                dateTimeList.Add(j);
+
+                if (j.DayOfWeek == DayOfWeek.Saturday) dateTimeList.Add(GetDateOfTommorow(j));
+            }
+
+            var dateList = new List<string>();
+            dateTimeList.OrderByDescending(d => d.Ticks).ToList()
+                .ForEach(d => dateList.Add(ConvertStringToDateFormat(d.Date)));
+            return dateList;
         }
     }
 }

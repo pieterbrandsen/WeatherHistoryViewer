@@ -19,7 +19,7 @@
             <InputText id="date" @bind-Value="formResponse.Date"/>
         </label>
     </p>
-    <button class="button" type="submit">Submit</button>
+    <button class="button" type="submit">Reload</button>
 </EditForm>
 
 @if (weather == null)
@@ -77,10 +77,10 @@ else
         {
             <tr>
                 <th>@day.Date.Split("-")[0]</th>
-                <th>@day.AvgTemp</th>
-                <th>@day.MinTemp</th>
-                <th>@day.MaxTemp</th>
-                <th>@day.SunHour</th>
+                <td>@day.AvgTemp</td>
+                <td>@day.MinTemp</td>
+                <td>@day.MaxTemp</td>
+                <td>@day.SunHour</td>
             </tr>
         }
         </tbody>
