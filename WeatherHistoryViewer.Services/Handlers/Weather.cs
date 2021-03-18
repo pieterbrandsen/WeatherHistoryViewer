@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services.Converter;
-using WeatherHistoryViewer.Services.Helper;
+using WeatherHistoryViewer.Services.Helpers;
 using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.Services.Handlers
@@ -70,27 +69,6 @@ namespace WeatherHistoryViewer.Services.Handlers
                 Debug.WriteLine(
                     $"Place: {cityName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
                 UpdateWeatherToDb(cityName, date, hourlyInterval);
-            }
-        }
-
-        public List<HistoricalWeather> GetWeatherOfDateInLast15Y(string cityName, string date)
-        {
-            using var context = new ApplicationDbContext();
-            try
-            {
-                var dates = _dateHelper.GetDateInLast15Y(date);
-                context.Weather.AsNoTracking();
-                context.Locations.AsNoTracking();
-                context.WeatherHourly.AsNoTracking();
-                var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
-                    .Where(w => w.Location.Name == cityName && dates.Contains(w.Date))
-                    .OrderByDescending(o => o.DateEpoch).ToList();
-                return weather;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
             }
         }
     }

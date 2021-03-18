@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using WeatherHistoryViewer.Core.Models.Weather;
 
-namespace WeatherHistoryViewer.Services
+namespace WeatherHistoryViewer.Services.Helpers
 {
     public class HttpStatus
     {
