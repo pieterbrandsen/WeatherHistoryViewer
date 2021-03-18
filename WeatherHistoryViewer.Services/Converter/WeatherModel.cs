@@ -1,6 +1,6 @@
 ﻿using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
-using WeatherHistoryViewer.Services.Helper;
+using WeatherHistoryViewer.Services.Helpers;
 
 namespace WeatherHistoryViewer.Services.Converter
 {

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services.Converter;
-using WeatherHistoryViewer.Services.Helper;
+using WeatherHistoryViewer.Services.Helpers;
 using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.Services.Handlers

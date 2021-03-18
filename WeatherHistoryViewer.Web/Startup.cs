@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services;
 using WeatherHistoryViewer.Services.Handlers;
-using WeatherHistoryViewer.Services.Helper;
+using WeatherHistoryViewer.Services.Helpers;
 
 namespace WeatherHistoryViewer.Web
 {

@@ -7,7 +7,7 @@ using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services.Handlers; //using System.Data.Entity;
 
-namespace WeatherHistoryViewer.Services.Helper
+namespace WeatherHistoryViewer.Services.Helpers
 {
     public class WeatherHelper
     {

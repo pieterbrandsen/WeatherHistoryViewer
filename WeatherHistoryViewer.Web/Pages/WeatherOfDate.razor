@@ -1,5 +1,5 @@
 ﻿@page "/weatherOfDate"
-@using WeatherHistoryViewer.Services.Helper
+@using WeatherHistoryViewer.Services.Helpers
 @using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Services.Handlers
 @using System.ComponentModel.DataAnnotations
@@ -113,5 +113,4 @@ else
     {
         weather = weatherHelper.GetWeatherOfDateInThePastYears(formResponse.Location, formResponse.Date);
     }
-
 }

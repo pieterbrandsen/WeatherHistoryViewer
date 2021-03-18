@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
-using WeatherHistoryViewer.Services;
+using WeatherHistoryViewer.Services.Helpers;
 using WeatherHistoryViewer.Services.Requester;
 
 namespace WeatherHistoryViewer.APISender.Controllers

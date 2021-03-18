@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
-namespace WeatherHistoryViewer.Services.Helper
+namespace WeatherHistoryViewer.Services.Helpers
 {
     public class DateHelper
     {
@@ -11,29 +12,38 @@ namespace WeatherHistoryViewer.Services.Helper
         public List<string> GetAllRequestableDates()
         {
             var dateList = new List<string>();
-            var oldestDate = ConvertDateStringToDate(OldestDate);
+            
             var i = DateTime.Today;
-            while (oldestDate.Ticks < i.Ticks)
+            var latestDateString = ConvertDateToDateString(i);
+
+            while (latestDateString != OldestDate)
             {
                 i = GetDateOfYesterday(i);
-                dateList.Add(ConvertStringToDateFormat(i));
+                latestDateString = ConvertDateToDateString(i);
+                dateList.Add(latestDateString);
             }
 
             return dateList;
         }
 
-        public List<string> GetRangeOfRequestableDates(string oldestDateString, string newestDateString = null)
+        public List<string> GetRangeOfRequestableDates(string oldestDateString = null, string newestDateString = null)
         {
             var dateList = new List<string>();
-            var oldestDate = ConvertDateStringToDate(oldestDateString);
             var newestDate = newestDateString == null ? DateTime.Today : ConvertDateStringToDate(newestDateString);
 
-            dateList.Add(ConvertStringToDateFormat(newestDate));
+            dateList.Add(ConvertDateToDateString(newestDate));
             var i = newestDate;
-            while (oldestDate.Ticks < i.Ticks)
+            var latestDateString = ConvertDateToDateString(i);
+            if (oldestDateString == null)
+            {
+                oldestDateString = OldestDate;
+            }
+
+            while (latestDateString != oldestDateString)
             {
                 i = GetDateOfYesterday(i);
-                dateList.Add(ConvertStringToDateFormat(i));
+                latestDateString = ConvertDateToDateString(i);
+                dateList.Add(latestDateString);
             }
 
             return dateList;
@@ -41,22 +51,22 @@ namespace WeatherHistoryViewer.Services.Helper
 
         public string GetDateStringOfDaysAgo(int dayAmount = 7)
         {
-            var date = DateTime.Today;
-            for (var i = 1; i <= dayAmount; i++) date = GetDateOfYesterday(date);
+            var date = DateTime.Today.AddDays(dayAmount *-1);
 
-            return ConvertStringToDateFormat(date);
+            return ConvertDateToDateString(date);
         }
 
         public List<string> GetDateInLast15Y(string shortDate)
         {
-            shortDate = shortDate.Replace("/", "-");
-            var shortDateSplitted = shortDate.Split("-");
+            //shortDate = shortDate.Replace("/", "-");
+            //var shortDateSplitted = shortDate.Split("-");
+            var shortDateSplitted = shortDate.Replace("/", "-").Split("-");
             if (shortDateSplitted.Length == 2)
             {
                 for (var i = 0; i < shortDateSplitted.Length; i++)
                 {
                     var value = shortDateSplitted[i];
-                    if (value.Length == 1) shortDateSplitted[i] = $"0{value}";
+                    if (value.Length != 2) shortDateSplitted[i] = $"0{value[0]}";
                 }
 
                 shortDate = $"{shortDateSplitted[0]}-{shortDateSplitted[1]}";
@@ -95,18 +105,14 @@ namespace WeatherHistoryViewer.Services.Helper
             return currentDate.AddDays(1);
         }
 
-        private string ConvertStringToDateFormat(DateTime date)
+        private string ConvertDateToDateString(DateTime date)
         {
             return date.ToString("yyyy-MM-dd");
         }
 
         public DateTime ConvertDateStringToDate(string date)
         {
-            // Does this work?
-            // DateTime.Parse(date);
-            var splitDate = date.Split("-");
-            return new DateTime(Convert.ToInt16(splitDate[0]), Convert.ToInt16(splitDate[1]),
-                Convert.ToInt16(splitDate[2]));
+            return DateTime.Parse(date);
         }
 
         public List<string> GetWeekDatesFromDate(string date)
@@ -136,7 +142,7 @@ namespace WeatherHistoryViewer.Services.Helper
 
             var dateList = new List<string>();
             dateTimeList.OrderByDescending(d => d.Ticks).ToList()
-                .ForEach(d => dateList.Add(ConvertStringToDateFormat(d.Date)));
+                .ForEach(d => dateList.Add(ConvertDateToDateString(d.Date)));
             return dateList;
         }
     }
