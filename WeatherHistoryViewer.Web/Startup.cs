@@ -55,16 +55,19 @@ namespace WeatherHistoryViewer.Web
             });
 
             var dateHelper = new DateHelper();
-            var oldestDate = dateHelper.GetDateStringOfDaysAgo(90);
+            var oldestDate = dateHelper.GetDateStringOfDaysAgo(3000);
+            //var oldestDate = dateHelper.GetDateStringOfDaysAgo(365);
             var yesterdayDate = dateHelper.GetDateStringOfDaysAgo(1);
             var locations = new LocationHandler().GetAllLocationNames();
-            Task.Run(() =>
+            foreach (var locationName in locations)
             {
-                foreach (var locationName in locations)
+                Task.Run(() =>
+                {
                     new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1,
                         oldestDate,
                         yesterdayDate);
-            });
+                });
+            }
         }
     }
 }

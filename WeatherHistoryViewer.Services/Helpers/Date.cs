@@ -7,7 +7,7 @@ namespace WeatherHistoryViewer.Services.Helpers
 {
     public class DateHelper
     {
-        private const string OldestDate = "2008-07-01";
+        public const string OldestDate = "2008-07-01";
 
         public List<string> GetAllRequestableDates()
         {
@@ -38,6 +38,7 @@ namespace WeatherHistoryViewer.Services.Helpers
             {
                 oldestDateString = OldestDate;
             }
+            else oldestDateString = ConvertDateStringToCorrectDateString(oldestDateString);
 
             while (latestDateString != oldestDateString)
             {
@@ -113,6 +114,16 @@ namespace WeatherHistoryViewer.Services.Helpers
         public DateTime ConvertDateStringToDate(string date)
         {
             return DateTime.Parse(date);
+        }
+
+        private string ConvertDateStringToCorrectDateString(string date)
+        {
+            return ConvertDateToDateString(ConvertDateStringToDate(date));
+        }
+
+        public bool IsDateOlderThenOldestDate(string date)
+        {
+            return ConvertDateStringToDate(date).Ticks < ConvertDateStringToDate(OldestDate).Ticks;
         }
 
         public List<string> GetWeekDatesFromDate(string date)

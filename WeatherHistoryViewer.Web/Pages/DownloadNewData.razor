@@ -82,7 +82,6 @@
 
     void HandleValidSubmit()
     {
-        Task.Delay(10 * 1000);
         lastDownloadTime = DateTime.Now.ToString("HH/mm/s");
         Task.Run(() => { new WeatherHandler().UpdateHistoricalWeatherRangeToDb(formResponse.CityName, formResponse.HourlyInterval, formResponse.OldestDate, formResponse.NewestDate); });
     }

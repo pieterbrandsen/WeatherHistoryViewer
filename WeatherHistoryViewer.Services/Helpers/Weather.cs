@@ -20,7 +20,7 @@ namespace WeatherHistoryViewer.Services.Helpers
             try
             {
                 var dates = dateHelper.GetDateInLast15Y(date);
-                var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
+                var weather = context.Weather.Include(w => w.Location)
                     .Where(w => w.Location.Name == cityName && dates.Contains(w.Date))
                     .OrderByDescending(o => o.DateEpoch).ToList();
                 return weather;
@@ -111,7 +111,7 @@ namespace WeatherHistoryViewer.Services.Helpers
                 throw;
             }
 
-            return overviewList;
+            return overviewList.OrderBy(o => o.LocationName).ToList();
         }
 
         public List<List<HistoricalWeather>> GetWeatherWeekOfDateInThePastYears(string cityName, string date)
@@ -124,7 +124,7 @@ namespace WeatherHistoryViewer.Services.Helpers
                 foreach (var currDate in dates)
                 {
                     var currDates = dateHelper.GetWeekDatesFromDate(currDate);
-                    var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
+                    var weather = context.Weather.Include(w => w.Location)
                    .Where(w => w.Location.Name == cityName && currDates.Contains(w.Date))
                    .OrderByDescending(o => o.DateEpoch).ToList();
                     weatherList.Add(weather);

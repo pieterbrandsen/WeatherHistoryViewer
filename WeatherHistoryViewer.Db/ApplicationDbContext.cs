@@ -14,8 +14,7 @@ namespace WeatherHistoryViewer.Db
 
         public DbSet<Location> Locations { get; set; }
         public DbSet<HistoricalWeather> Weather { get; set; }
-        public DbSet<WeatherSnapshot> WeatherHourly { get; set; }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
@@ -30,13 +29,7 @@ namespace WeatherHistoryViewer.Db
                 .HasOne(i => i.Location)
                 .WithMany();
 
-            builder.Entity<HistoricalWeather>()
-                .HasMany(g => g.SnapshotsOfDay)
-                .WithOne(s => s.HistoricalWeather)
-                .HasForeignKey(s => s.HistoricalWeatherId);
-
             builder.Entity<HistoricalWeather>().HasKey(o => o.Id);
-            builder.Entity<WeatherSnapshot>().HasKey(o => o.Id);
             builder.Entity<Location>().HasKey(o => o.Name);
         }
     }

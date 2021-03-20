@@ -63,132 +63,106 @@ else
 {
     <h1>The weather of @_weatherOfWeeks.First().First().Date.Split("-")[1]-@_weatherOfWeeks.First().First().Date.Split("-")[2] in @_weatherOfWeeks.First().First().Location.Country, @_weatherOfWeeks.First().First().Location.Name</h1>
     <br />
-    <h2>Average temperature</h2>
-    <table class="table table-bordered">
-        <tr>
-            <th>Year</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-            <th>Satuday</th>
-            <th>Sunday</th>
-            <th>Average</th>
-        </tr>
-        @foreach (var week in _weatherOfWeeks)
+    @foreach (var prop in Enum.GetValues(typeof(DisplayedPropertys)))
+    {
+        @switch (prop)
         {
-    <tr>
-        <th>@week.First().Date.Split("-")[0]</th>
-        @foreach (var day in week)
-        {
-            <td>@day.AvgTemp</td>
+            case DisplayedPropertys.AvgTemp:
+                <h2>Average temperature</h2>
+                break;
+            case DisplayedPropertys.MaxTemp:
+                <h2>Maximum temperature</h2>
+                break;
+            case DisplayedPropertys.MinTemp:
+                <h2>Minimum temperature</h2>
+                break;
+            case DisplayedPropertys.SunHours:
+                <h2>Sun hours</h2>
+                break;
+            default:
+                break;
         }
-        @if (week.Count == 7)
-        {
-            <td>@Math.Round(week.Select(w => w.AvgTemp).Average(), 2)</td>
-        }
-    </tr>
-        }
-    </table>
-
-    <br />
-    <br />
-    <h2>Minimum temperature</h2>
-    <table class="table table-bordered">
-        <tr>
-            <th>Year</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-            <th>Satuday</th>
-            <th>Sunday</th>
-            <th>Average</th>
-        </tr>
-        @foreach (var week in _weatherOfWeeks)
-        {
-    <tr>
-        <th>@week.First().Date.Split("-")[0]</th>
-        @foreach (var day in week)
-        {
-            <td>@day.MinTemp</td>
-        }
-        @if (week.Count == 7)
-        {
-            <td>@Math.Round(week.Select(w => w.MinTemp).Average(), 2)</td>
-        }
-    </tr>
-        }
-    </table>
-
-    <br />
-    <br />
-    <h2>Maximum temperature</h2>
-    <table class="table table-bordered">
-        <tr>
-            <th>Year</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-            <th>Satuday</th>
-            <th>Sunday</th>
-        </tr>
-        @foreach (var week in _weatherOfWeeks)
-        {
-    <tr>
-        <th>@week.First().Date.Split("-")[0]</th>
-        @foreach (var day in week)
-        {
-            <td>@day.MaxTemp</td>
-        }
-        @if (week.Count == 7)
-        {
-            <td>@Math.Round(week.Select(w => w.MaxTemp).Average(), 2)</td>
-        }
-    </tr>
-        }
-    </table>
-
-    <br />
-    <br />
-    <h2>Sun hours</h2>
-    <table class="table table-bordered">
-        <tr>
-            <th>Year</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-            <th>Satuday</th>
-            <th>Sunday</th>
-            <th>Average</th>
-        </tr>
-        @foreach (var week in _weatherOfWeeks)
-        {
+        <table class="table table-bordered" style="width: auto;">
             <tr>
-                <th>@week.First().Date.Split("-")[0]</th>
-                @foreach (var day in week)
-                {
-                    <td>@day.SunHour</td>
-                }
-                @if (week.Count == 7)
-                {
-                    <td>@Math.Round(week.Select(w => w.SunHour).Average(), 2)</td>
-                }
+                <th>Year</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Satuday</th>
+                <th>Sunday</th>
+                <th>Average</th>
             </tr>
-        }
-    </table>
+            @foreach (var week in _weatherOfWeeks)
+            {
+                <tr>
+                    <th>@week.First().Date.Split("-")[0]</th>
+                    @switch (prop)
+                    {
+                        case DisplayedPropertys.AvgTemp:
+                            @foreach (var day in week)
+                            {
+                                <td>@day.AvgTemp</td>
+                            }
+                            @if (week.Count == 7)
+                            {
+                                <td>@Math.Round(week.Select(w => w.AvgTemp).Average(), 2)</td>
+                            }
+                            break;
+                        case DisplayedPropertys.MaxTemp:
+                            @foreach (var day in week)
+                            {
+                                <td>@day.MaxTemp</td>
+                            }
+                            @if (week.Count == 7)
+                            {
+                                <td>@Math.Round(week.Select(w => w.MaxTemp).Average(), 2)</td>
+                            }
+                            break;
+                        case DisplayedPropertys.MinTemp:
+                            @foreach (var day in week)
+                            {
+                                <td>@day.MinTemp</td>
+                            }
+                            @if (week.Count == 7)
+                            {
+                                <td>@Math.Round(week.Select(w => w.MinTemp).Average(), 2)</td>
+                            }
+                            break;
+                        case DisplayedPropertys.SunHours:
+                            @foreach (var day in week)
+                            {
+                                <td>@day.SunHour</td>
+                            }
+                            @if (week.Count == 7)
+                            {
+                                <td>@Math.Round(week.Select(w => w.SunHour).Average(), 2)</td>
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    }
+                </tr>
+            }
+        </table>
+        <br />
+    }
 }
 
 
 @code {
     private readonly WeatherHelper _weatherHelper = new();
     private readonly DateHelper _dateHelper = new();
+
+    private enum DisplayedPropertys
+    {
+        AvgTemp,
+        MaxTemp,
+        MinTemp,
+        SunHours
+    }
 
     private class Form
     {

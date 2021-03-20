@@ -20,17 +20,17 @@ namespace WeatherHistoryViewer.Db
 
         public string ConnectionString()
         {
-            return _configuration["UserSecrets:DefaultConnectionString"];
+            return _configuration["DefaultConnectionString"];
         }
 
         public string WeatherHistoryApiKey()
         {
-            return _configuration["UserSecrets:ApiKeys:WeatherHistoryViewer"];
+            return _configuration["WeatherHistoryViewer"];
         }
 
         public string WeatherStackApiKey()
         {
-            return _configuration["UserSecrets:ApiKeys:WeatherStack"];
+            return _configuration["WeatherStack"];
         }
     }
 }

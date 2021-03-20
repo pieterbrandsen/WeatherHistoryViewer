@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -59,9 +60,16 @@ namespace WeatherHistoryViewer.Services.Handlers
         public void UpdateHistoricalWeatherRangeToDb(string cityName,
             HourlyInterval hourlyInterval = HourlyInterval.Hours3, string oldestDate = null, string newestDate = null)
         {
-            var dateList = oldestDate == null
-                ? _dateHelper.GetAllRequestableDates()
-                : _dateHelper.GetRangeOfRequestableDates(oldestDate, newestDate);
+            var dateList = new List<string>();
+            if(oldestDate == null)
+            {
+                dateList = _dateHelper.GetAllRequestableDates();
+            }
+            else
+            {
+                if (!_dateHelper.IsDateOlderThenOldestDate(oldestDate)) dateList = _dateHelper.GetRangeOfRequestableDates(oldestDate, newestDate);
+                else dateList = _dateHelper.GetRangeOfRequestableDates(newestDateString:newestDate);
+            }
 
 
             foreach (var date in dateList)
