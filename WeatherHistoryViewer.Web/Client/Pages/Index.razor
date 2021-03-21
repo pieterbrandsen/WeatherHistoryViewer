@@ -42,10 +42,11 @@ else
 
 @code {
 
-    private WeatherOverview[] weatherOverviews;
+    private List<WeatherOverview >weatherOverviews;
 
     protected override async Task OnInitializedAsync()
     {
-        weatherOverviews = await Http.GetFromJsonAsync<WeatherOverview[]>("/api/overview");
+        weatherOverviews = await Http.GetFromJsonAsync<List<WeatherOverview>>("/api/overview");
+        new ColorScalerHelper().Scale3Way("avgTemp", overviews: weatherOverviews);
     }
 }
