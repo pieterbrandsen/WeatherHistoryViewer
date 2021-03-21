@@ -71,7 +71,7 @@ namespace WeatherHistoryViewer.Services.Helpers
             return (null, temp);
         }
 
-        public List<WeatherOverview> GetWeatherOverview()
+        public IEnumerable<WeatherOverview> GetWeatherOverview()
         {
             using var context = new ApplicationDbContext();
             var overviewList = new List<WeatherOverview>();

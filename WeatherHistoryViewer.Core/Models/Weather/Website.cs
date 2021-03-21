@@ -1,4 +1,6 @@
-﻿namespace WeatherHistoryViewer.Core.Models.Weather
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WeatherHistoryViewer.Core.Models.Weather
 {
     public class WeatherOverview
     {
@@ -10,5 +12,14 @@
         public string DateOfMinTemp { get; set; }
         public double AverageTemp { get; set; }
         public double AverageSunHours { get; set; }
+    }
+
+    public class FormResponse
+    {
+        [Required]
+        public string Location { get; set; }
+
+        [Required]
+        public string Date { get; set; }
     }
 }

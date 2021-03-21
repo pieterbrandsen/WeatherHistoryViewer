@@ -1,8 +1,8 @@
 ﻿@page "/weatherOfWeek"
 @using WeatherHistoryViewer.Services.Helpers
 @using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Handlers
-@using System.ComponentModel.DataAnnotations
 @using System.Linq
 
 <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
@@ -164,16 +164,7 @@ else
         SunHours
     }
 
-    private class Form
-    {
-        [Required]
-        public string Location { get; set; }
-
-        [Required]
-        public string Date { get; set; }
-    }
-
-    private readonly Form _formResponse = new();
+    private readonly FormResponse _formResponse = new();
 
     private List<List<HistoricalWeather>> _weatherOfWeeks;
 
