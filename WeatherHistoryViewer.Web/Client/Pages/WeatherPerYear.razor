@@ -1,0 +1,104 @@
+﻿@page "/weatherPerYear"
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Services.Handlers
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Services.Helpers
+@inject HttpClient Http
+
+<EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        <label>
+            Location:
+            <InputText id="location" @bind-Value="_formResponse.Location" />
+        </label>
+    </p>
+    <button class="button" type="submit">Reload</button>
+</EditForm>
+
+@if (_weatherOfYears == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (_weatherOfYears.Count == 0)
+{
+    <br />
+    <p>
+        <em>Nothing found! Please try again.</em>
+    </p>
+    <br />
+    <h4>Troubleshooting:</h4>
+    <p>
+        <b>Is your location one of the following?</b>
+    </p>
+    foreach (var location in new LocationHandler().GetAllLocationNames())
+    {
+        <p>
+            <em>@location</em>
+        </p>
+    }
+}
+else
+{
+    <h1>The weather of @_weatherOfYears.First().LocationName</h1>
+    <br />
+    <table class="table table-bordered" style="width: auto;">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Avg temp</th>
+                <th>Max temp</th>
+                <th>Date of max temp</th>
+                <th>Min temp</th>
+                <th>Date of min temp</th>
+                <th>Average sun hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var year in _weatherOfYears)
+            {
+                var backgroundColor = $"hsla({(year.AvgTemp / avgTempMax - 1) * -1 * 240},100%,50%,0.5)";
+            <tr>
+                <th>@year.Year</th>
+                <th style="background-color:@backgroundColor">@year.AvgTemp</th>
+                <td>@year.MaxTemp</td>
+                <td>@year.DateOfMaxTemp</td>
+                <td>@year.MinTemp</td>
+                <td>@year.DateOfMinTemp</td>
+                <td>@year.AvgSunHours</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private readonly WeatherHelper _weatherHelper = new();
+    private readonly DateHelper _dateHelper = new();
+
+    private readonly YearFormResponse _formResponse = new();
+
+    private List<WeatherOverview> _weatherOfYears;
+    private double avgTempMax = double.NaN;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _weatherOfYears = await Http.GetFromJsonAsync<List<WeatherOverview>>("/api/weatherOf/years");
+        if (_weatherOfYears.Count > 0)
+        {
+            avgTempMax = _weatherOfYears.Max(s => s.AvgTemp);
+        }
+    }
+
+    async void HandleValidSubmit()
+    {
+        _weatherOfYears = await Http.GetFromJsonAsync<List<WeatherOverview>>($"/api/weatherOf/years?location={_formResponse.Location}");
+        if (_weatherOfYears.Count > 0)
+        {
+            avgTempMax = _weatherOfYears.Max(s => s.AvgTemp);
+        }
+    }
+}

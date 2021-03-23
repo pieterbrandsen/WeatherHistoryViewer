@@ -1,0 +1,118 @@
+﻿@page "/weatherOfDays"
+@using WeatherHistoryViewer.Services.Helpers
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Services.Handlers
+@inject HttpClient Http
+
+<EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <p>
+        <label>
+            Location:
+            <InputText id="location" @bind-Value="_formResponse.Location" />
+        </label>
+    </p>
+    <p>
+        <label>
+            Date:
+            <InputText id="date" @bind-Value="_formResponse.Date" />
+        </label>
+    </p>
+    <button class="button" type="submit">Reload</button>
+</EditForm>
+
+@if (_weatherOfDays == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (_weatherOfDays.Count == 0)
+{
+    <br />
+    <p>
+        <em>Nothing found! Please try again.</em>
+    </p>
+    <br />
+    <h4>Troubleshooting:</h4>
+    <p>
+        <b>Is your location one of the following?</b>
+    </p>
+    foreach (var location in new LocationHandler().GetAllLocationNames())
+    {
+        <p>
+            <em>@location</em>
+        </p>
+    }
+    <p>
+        <b>Is your Date something like this</b>
+    </p>
+    <p>
+        <em>MONTH-DAY</em>
+    </p>
+    <p>
+        <em>2-28</em>
+    </p>
+    <p>
+        <em>12-15</em>
+    </p>
+}
+else
+{
+    <h1>The weather of date @_weatherOfDays.First().Date.Split("-")[1]-@_weatherOfDays.First().Date.Split("-")[2] in @_weatherOfDays.First().Location.Country, @_weatherOfDays.First().Location.Name</h1>
+    <br />
+    <table class="table table-bordered" style="width: auto;">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Avg temp</th>
+                <th>Min temp</th>
+                <th>Max temp</th>
+                <th>Sun hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var day in _weatherOfDays)
+            {
+                var backgroundColor = $"hsla({(day.AvgTemp / avgTempMax - 1) * -1 * 240},100%,50%,0.5)";
+                <tr>
+                    <th>@day.Date.Split("-")[0]</th>
+                    <th style="background-color:@backgroundColor">@day.AvgTemp</th>
+                    <td>@day.MinTemp</td>
+                    <td>@day.MaxTemp</td>
+                    <td>@day.SunHour</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private readonly WeatherHelper weatherHelper = new();
+
+    private readonly FormResponse _formResponse = new();
+
+    private List<HistoricalWeather> _weatherOfDays;
+    private double avgTempMax = double.NaN;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _weatherOfDays = await Http.GetFromJsonAsync<List<HistoricalWeather>>("/api/weatherOf/days");
+        if (_weatherOfDays.Count > 0)
+        {
+            avgTempMax = _weatherOfDays.Max(s => s.AvgTemp);
+        }
+    }
+
+    async void HandleValidSubmit()
+    {
+        _weatherOfDays = await Http.GetFromJsonAsync<List<HistoricalWeather>>($"/api/weatherOf/days?location={_formResponse.Location}&date={_formResponse.Date}");
+        if (_weatherOfDays.Count > 0)
+        {
+            avgTempMax = _weatherOfDays.Max(s => s.AvgTemp);
+        }
+    }
+}

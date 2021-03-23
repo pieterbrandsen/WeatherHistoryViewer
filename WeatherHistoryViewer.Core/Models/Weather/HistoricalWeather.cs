@@ -25,6 +25,5 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public double SunHour { get; set; }
         public int UvIndex { get; set; }
         public HourlyInterval HourlyInterval { get; set; }
-        public ICollection<WeatherSnapshot> SnapshotsOfDay { get; set; }
     }
 }
