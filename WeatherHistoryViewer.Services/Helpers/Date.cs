@@ -59,9 +59,9 @@ namespace WeatherHistoryViewer.Services.Helpers
 
         public List<string> GetDateInLast15Y(string shortDate)
         {
-            //shortDate = shortDate.Replace("/", "-");
-            //var shortDateSplitted = shortDate.Split("-");
             var shortDateSplitted = shortDate.Replace("/", "-").Split("-");
+            if (shortDateSplitted.Length == 3) shortDateSplitted = shortDateSplitted.Skip(1).ToArray();
+
             if (shortDateSplitted.Length == 2)
             {
                 for (var i = 0; i < shortDateSplitted.Length; i++)

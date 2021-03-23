@@ -26,14 +26,15 @@ else
         <tbody>
             @foreach (var overview in weatherOverviews)
             {
+                var backgroundColor = $"hsla({(overview.AvgTemp / avgTempMax - 1) * -1 * 240},100%,50%,0.5)";
                 <tr>
                     <th>@overview.LocationName</th>
-                    <th>@overview.AverageTemp</th>
+                    <th style="background-color:@backgroundColor">@overview.AvgTemp</th>
                     <th>@overview.MaxTemp</th>
                     <th>@overview.DateOfMaxTemp</th>
                     <th>@overview.MinTemp</th>
                     <th>@overview.DateOfMinTemp</th>
-                    <th>@overview.AverageSunHours</th>
+                    <th>@overview.AvgSunHours</th>
                 </tr>
             }
         </tbody>
@@ -42,11 +43,12 @@ else
 
 @code {
 
-    private List<WeatherOverview >weatherOverviews;
+    private List<WeatherOverview> weatherOverviews;
+    private double avgTempMax = double.NaN;
 
     protected override async Task OnInitializedAsync()
     {
         weatherOverviews = await Http.GetFromJsonAsync<List<WeatherOverview>>("/api/overview");
-        new ColorScalerHelper().Scale3Way("avgTemp", overviews: weatherOverviews);
+        avgTempMax = weatherOverviews.Max(s => s.AvgTemp);
     }
 }

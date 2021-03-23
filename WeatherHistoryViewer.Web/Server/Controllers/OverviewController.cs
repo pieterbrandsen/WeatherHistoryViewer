@@ -17,8 +17,8 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var weatherOverview = _weatherHelper.GetWeatherOverview();
-            return Ok(weatherOverview);
+            var weatherOverviews = _weatherHelper.GetWeatherOverview();
+            return Ok(weatherOverviews);
         }
     }
 }

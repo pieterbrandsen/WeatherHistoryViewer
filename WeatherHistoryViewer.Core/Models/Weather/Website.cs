@@ -10,8 +10,8 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public string DateOfMaxTemp { get; set; }
         public double MinTemp { get; set; }
         public string DateOfMinTemp { get; set; }
-        public double AverageTemp { get; set; }
-        public double AverageSunHours { get; set; }
+        public double AvgTemp { get; set; }
+        public double AvgSunHours { get; set; }
     }
 
     public class FormResponse
@@ -21,5 +21,10 @@ namespace WeatherHistoryViewer.Core.Models.Weather
 
         [Required]
         public string Date { get; set; }
+    }
+    public class YearFormResponse
+    {
+        [Required]
+        public string Location { get; set; }
     }
 }

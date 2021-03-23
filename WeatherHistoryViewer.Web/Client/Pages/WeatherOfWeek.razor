@@ -4,6 +4,7 @@
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Handlers
 @using System.Linq
+@inject HttpClient Http
 
 <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -61,7 +62,14 @@ else if (_weatherOfWeeks.Count == 0)
 }
 else
 {
-    <h1>The weather of @_weatherOfWeeks.First().First().Date.Split("-")[1]-@_weatherOfWeeks.First().First().Date.Split("-")[2] in @_weatherOfWeeks.First().First().Location.Country, @_weatherOfWeeks.First().First().Location.Name</h1>
+    if (_weatherOfWeeks.Count > 0)
+    {
+        <h1>The weather of @_weatherOfWeeks.First().First().Date.Split("-")[1]-@_weatherOfWeeks.First().First().Date.Split("-")[2] in @_weatherOfWeeks.First().First().Location.Country, @_weatherOfWeeks.First().First().Location.Name</h1>
+    }
+    else
+    {
+        <h1>The weather of @_formResponse.Location</h1>
+    }
     <br />
     @foreach (var prop in Enum.GetValues(typeof(DisplayedPropertys)))
     {
@@ -94,57 +102,61 @@ else
                 <th>Sunday</th>
                 <th>Average</th>
             </tr>
-            @foreach (var week in _weatherOfWeeks)
+            @for (int i = 0; i < _weatherOfWeeks.Count; i++)
             {
-                <tr>
-                    <th>@week.First().Date.Split("-")[0]</th>
-                    @switch (prop)
+                var week = _weatherOfWeeks[i];
+        <tr>
+            <th>@week.First().Date.Split("-")[0]</th>
+            @switch (prop)
+            {
+                case DisplayedPropertys.AvgTemp:
+                    @foreach (var day in week)
                     {
-                        case DisplayedPropertys.AvgTemp:
-                            @foreach (var day in week)
-                            {
-                                <td>@day.AvgTemp</td>
-                            }
-                            @if (week.Count == 7)
-                            {
-                                <td>@Math.Round(week.Select(w => w.AvgTemp).Average(), 2)</td>
-                            }
-                            break;
-                        case DisplayedPropertys.MaxTemp:
-                            @foreach (var day in week)
-                            {
-                                <td>@day.MaxTemp</td>
-                            }
-                            @if (week.Count == 7)
-                            {
-                                <td>@Math.Round(week.Select(w => w.MaxTemp).Average(), 2)</td>
-                            }
-                            break;
-                        case DisplayedPropertys.MinTemp:
-                            @foreach (var day in week)
-                            {
-                                <td>@day.MinTemp</td>
-                            }
-                            @if (week.Count == 7)
-                            {
-                                <td>@Math.Round(week.Select(w => w.MinTemp).Average(), 2)</td>
-                            }
-                            break;
-                        case DisplayedPropertys.SunHours:
-                            @foreach (var day in week)
-                            {
-                                <td>@day.SunHour</td>
-                            }
-                            @if (week.Count == 7)
-                            {
-                                <td>@Math.Round(week.Select(w => w.SunHour).Average(), 2)</td>
-                            }
-                            break;
-                        default:
-                            break;
+                        <td>@day.AvgTemp</td>
                     }
+                    @if (week.Count == 7)
+                    {
+                        var backgroundColor = $"hsla({(avgTemps[i] / avgTempMax - 1) * -1 * 240},100%,50%,0.5)";
+        <td style="background-color:@backgroundColor">@avgTemps[i]</td>
                     }
-                </tr>
+                    break;
+                case DisplayedPropertys.MaxTemp:
+                    @foreach (var day in week)
+                    {
+                        <td>@day.MaxTemp</td>
+                    }
+                    @if (week.Count == 7)
+                    {
+                        var backgroundColor = $"hsla({(maxTemps[i] / maxTempMax - 1) * -1 * 240},100%,50%,0.5)";
+        <td style="background-color:@backgroundColor">@maxTemps[i]</td>
+                    }
+                    break;
+                case DisplayedPropertys.MinTemp:
+                    @foreach (var day in week)
+                    {
+                        <td>@day.MinTemp</td>
+                    }
+                    @if (week.Count == 7)
+                    {
+                        var backgroundColor = $"hsla({(minTemps[i] / minTempMax - 1) * -1 * 240},100%,50%,0.5)";
+                        <td style="background-color:@backgroundColor">@minTemps[i]</td>
+                    }
+                    break;
+                case DisplayedPropertys.SunHours:
+                    @foreach (var day in week)
+                    {
+                        <td>@day.SunHour</td>
+                    }
+                    @if (week.Count == 7)
+                    {
+                        var backgroundColor = $"hsla({(sunHours[i] / sunHoursMax - 1) * -1 * 240},100%,50%,0.5)";
+        <td style="background-color:@backgroundColor">@sunHours[i]</td>
+                    }
+                    break;
+                default:
+                    break;
+            }
+        </tr>
             }
         </table>
         <br />
@@ -167,14 +179,35 @@ else
     private readonly FormResponse _formResponse = new();
 
     private List<List<HistoricalWeather>> _weatherOfWeeks;
+    private List<double> avgTemps = new();
+    private List<double> maxTemps = new();
+    private List<double> minTemps = new();
+    private List<double> sunHours = new();
 
-    protected override void OnInitialized()
+    private double avgTempMax = double.NaN;
+    private double maxTempMax = double.NaN;
+    private double minTempMax = double.NaN;
+    private double sunHoursMax = double.NaN;
+
+    protected override async Task OnInitializedAsync()
     {
-        _weatherOfWeeks = _weatherHelper.GetWeatherWeekOfDateInThePastYears("Amsterdam", DateTime.Now.AddDays(-1).ToString("MM/dd"));
+        _weatherOfWeeks = await Http.GetFromJsonAsync<List<List<HistoricalWeather>>>("/api/weatherOf/weeks");
+
+        _weatherOfWeeks.ForEach(w =>
+        {
+            avgTemps.Add(Math.Round(w.Select(w => w.AvgTemp).Average(), 2));
+            maxTemps.Add(Math.Round(w.Select(w => w.MaxTemp).Average(), 2));
+            minTemps.Add(Math.Round(w.Select(w => w.MinTemp).Average(), 2));
+            sunHours.Add(Math.Round(w.Select(w => w.SunHour).Average(), 2));
+        });
+        avgTempMax = avgTemps.Max();
+        maxTempMax = maxTemps.Max();
+        minTempMax = minTemps.Max();
+        sunHoursMax = sunHours.Max();
     }
 
-    void HandleValidSubmit()
+    async void HandleValidSubmit()
     {
-        _weatherOfWeeks = _weatherHelper.GetWeatherWeekOfDateInThePastYears(_formResponse.Location, _formResponse.Date);
+        _weatherOfWeeks = await Http.GetFromJsonAsync<List<List<HistoricalWeather>>>($"/api/weatherOf/weeks?location={_formResponse.Location}&date={_formResponse.Date}");
     }
 }
