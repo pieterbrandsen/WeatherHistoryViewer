@@ -34,7 +34,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             return false;
         }
 
-        public void UpdateWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
+        public void UpdateWeatherToDb(string cityName, string date)
         {
             using var context = new ApplicationDbContext();
 
@@ -44,11 +44,13 @@ namespace WeatherHistoryViewer.Services.Handlers
 
                 if (DoesDateAndCityExistInDb(cityName, date)) return;
                 var response =
-                    _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
+                    _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date);
+                if (response.Historical != null)
+                {
                 var weatherModel =
-                    _weatherModelConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
-
+                    _weatherModelConverter.ToHistoricalWeatherModelConverter(response, date);
                 _database.AddHistoricalWeather(weatherModel);
+                }
             }
             catch (Exception e)
             {
@@ -58,7 +60,7 @@ namespace WeatherHistoryViewer.Services.Handlers
         }
 
         public void UpdateHistoricalWeatherRangeToDb(string cityName,
-            HourlyInterval hourlyInterval = HourlyInterval.Hours3, string oldestDate = null, string newestDate = null)
+            string oldestDate = null, string newestDate = null)
         {
             var dateList = new List<string>();
             if(oldestDate == null)
@@ -76,7 +78,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             {
                 Debug.WriteLine(
                     $"Place: {cityName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
-                UpdateWeatherToDb(cityName, date, hourlyInterval);
+                UpdateWeatherToDb(cityName, date);
             }
         }
     }

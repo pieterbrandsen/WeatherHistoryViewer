@@ -78,7 +78,7 @@ namespace WeatherHistoryViewer.Services.Helpers
 
             try
             {
-                var locations = locationHandler.GetAllLocationNames();
+                var locations = locationHandler.GetLocationNames();
                 foreach (var location in locations)
                 {
                     (var dateOfMaxTemp, var maxTemp) = GetMaxOrMinTempOfLocation(true, location);

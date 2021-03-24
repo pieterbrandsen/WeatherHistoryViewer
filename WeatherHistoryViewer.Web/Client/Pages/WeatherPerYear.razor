@@ -5,100 +5,91 @@
 @using WeatherHistoryViewer.Services.Helpers
 @inject HttpClient Http
 
-<EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <p>
-        <label>
-            Location:
-            <InputText id="location" @bind-Value="_formResponse.Location" />
-        </label>
-    </p>
-    <button class="button" type="submit">Reload</button>
-</EditForm>
-
 @if (_weatherOfYears == null)
 {
     <p>
         <em>Loading...</em>
     </p>
 }
-else if (_weatherOfYears.Count == 0)
-{
-    <br />
-    <p>
-        <em>Nothing found! Please try again.</em>
-    </p>
-    <br />
-    <h4>Troubleshooting:</h4>
-    <p>
-        <b>Is your location one of the following?</b>
-    </p>
-    foreach (var location in new LocationHandler().GetAllLocationNames())
-    {
-        <p>
-            <em>@location</em>
-        </p>
-    }
-}
 else
 {
-    <h1>The weather of @_weatherOfYears.First().LocationName</h1>
-    <br />
-    <table class="table table-bordered" style="width: auto;">
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>Avg temp</th>
-                <th>Max temp</th>
-                <th>Date of max temp</th>
-                <th>Min temp</th>
-                <th>Date of min temp</th>
-                <th>Average sun hours</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var year in _weatherOfYears)
+<div class="form-style">
+    <div class="form-style-heading">Load weather data</div>
+    <p>
+        Currently loaded data for @_formResponse.Location
+    </p>
+    <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
+        <datalist id="locationSearch">
+            @foreach (var name in _locationNames)
             {
-                var backgroundColor = $"hsla({(year.AvgTemp / avgTempMax - 1) * -1 * 240},100%,50%,0.5)";
-            <tr>
-                <th>@year.Year</th>
-                <th style="background-color:@backgroundColor">@year.AvgTemp</th>
-                <td>@year.MaxTemp</td>
-                <td>@year.DateOfMaxTemp</td>
-                <td>@year.MinTemp</td>
-                <td>@year.DateOfMinTemp</td>
-                <td>@year.AvgSunHours</td>
-            </tr>
+            <option>@name</option>
             }
-        </tbody>
-    </table>
-}
+        </datalist>
 
-@code {
+        <label><span> </span><input type="submit" value="Load" /></label>
+    </EditForm>
+</div>
+        <table class="table table-bordered" style="width: auto;">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Avg temp</th>
+                    <th>Max temp</th>
+                    <th>Date of max temp</th>
+                    <th>Min temp</th>
+                    <th>Date of min temp</th>
+                    <th>Average sun hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var year in _weatherOfYears)
+                {
+                    var backgroundColor = $"hsla({Math.Round((year.AvgTemp / avgTempMax - 1) * -1 * 240,0)},100%,50%,0.5)";
+                    <tr>
+                        <th>@year.Year</th>
+                        <th style="background-color:@backgroundColor">@year.AvgTemp</th>
+                        <td>@year.MaxTemp</td>
+                        <td>@year.DateOfMaxTemp</td>
+                        <td>@year.MinTemp</td>
+                        <td>@year.DateOfMinTemp</td>
+                        <td>@year.AvgSunHours</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        }
+
+        @code {
     private readonly WeatherHelper _weatherHelper = new();
-    private readonly DateHelper _dateHelper = new();
+        private readonly DateHelper _dateHelper = new();
 
-    private readonly YearFormResponse _formResponse = new();
+        private readonly YearForm _formResponse = new();
 
-    private List<WeatherOverview> _weatherOfYears;
-    private double avgTempMax = double.NaN;
+        private List<WeatherOverview> _weatherOfYears;
+        private List<string> _locationNames;
+        private double avgTempMax = double.NaN;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _weatherOfYears = await Http.GetFromJsonAsync<List<WeatherOverview>>("/api/weatherOf/years");
-        if (_weatherOfYears.Count > 0)
+        protected override async Task OnInitializedAsync()
         {
-            avgTempMax = _weatherOfYears.Max(s => s.AvgTemp);
-        }
-    }
+            _formResponse.Location = "Amsterdam";
 
-    async void HandleValidSubmit()
-    {
-        _weatherOfYears = await Http.GetFromJsonAsync<List<WeatherOverview>>($"/api/weatherOf/years?location={_formResponse.Location}");
-        if (_weatherOfYears.Count > 0)
-        {
-            avgTempMax = _weatherOfYears.Max(s => s.AvgTemp);
+            _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
+            _weatherOfYears = await Http.GetFromJsonAsync<List<WeatherOverview>>("/api/weatherOf/years");
+            if (_weatherOfYears.Count > 0)
+            {
+                avgTempMax = _weatherOfYears.Max(s => s.AvgTemp);
+            }
         }
-    }
-}
+
+        async void HandleValidSubmit()
+        {
+            _weatherOfYears = await Http.GetFromJsonAsync<List<WeatherOverview>>($"/api/weatherOf/years?location={_formResponse.Location}");
+            if (_weatherOfYears.Count > 0)
+            {
+                avgTempMax = _weatherOfYears.Max(s => s.AvgTemp);
+            }
+        }
+        }

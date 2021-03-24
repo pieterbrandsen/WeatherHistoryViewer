@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace WeatherHistoryViewer.Core.Models.Weather
 {
@@ -20,11 +21,23 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public string Location { get; set; }
 
         [Required]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
     }
-    public class YearFormResponse
+    public class YearForm
     {
         [Required]
         public string Location { get; set; }
+    }
+
+    public class AddWeatherDataForm
+    {
+        [Required]
+        public string Location { get; set; }
+
+        [Required]
+        public DateTime OldestDate { get; set; }
+
+        [Required]
+        public DateTime NewestDate { get; set; }
     }
 }

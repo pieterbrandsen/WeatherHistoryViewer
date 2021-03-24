@@ -35,11 +35,11 @@ namespace WeatherHistoryViewer.Services
         {
             var oldestDate = _dateHelper.GetDateStringOfDaysAgo();
             var yesterdayDate = _dateHelper.GetDateStringOfDaysAgo(1);
-            var locations = _locationHandler.GetAllLocationNames();
+            var locations = _locationHandler.GetLocationNames();
             Task.Run(() =>
             {
                 foreach (var locationName in locations)
-                    _weatherHandler.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
+                    _weatherHandler.UpdateHistoricalWeatherRangeToDb(locationName, oldestDate,
                         yesterdayDate);
             });
         }

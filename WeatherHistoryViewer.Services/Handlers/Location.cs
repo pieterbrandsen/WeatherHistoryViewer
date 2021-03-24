@@ -14,7 +14,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             return foundLocation ?? knownLocation;
         }
 
-        public List<string> GetAllLocationNames()
+        public List<string> GetLocationNames()
         {
             using var context = new ApplicationDbContext();
             var locations = context.Locations.Select(l => l.Name).ToList();
@@ -23,7 +23,7 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         public bool DoesLocationExistInDb(string query)
         {
-            return GetAllLocationNames().Contains(query);
+            return GetLocationNames().Contains(query);
         }
     }
 }

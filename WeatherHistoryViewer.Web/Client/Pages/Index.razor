@@ -26,7 +26,7 @@ else
         <tbody>
             @foreach (var overview in weatherOverviews)
             {
-                var backgroundColor = $"hsla({(overview.AvgTemp / avgTempMax - 1) * -1 * 240},100%,50%,0.5)";
+                var backgroundColor = $"hsla({Math.Round((overview.AvgTemp / avgTempMax - 1) * -1 * 240,0)},100%,50%,0.5)";
                 <tr>
                     <th>@overview.LocationName</th>
                     <th style="background-color:@backgroundColor">@overview.AvgTemp</th>

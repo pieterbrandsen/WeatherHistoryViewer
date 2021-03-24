@@ -1,0 +1,95 @@
+﻿@page "/weatherOfDay"
+@using WeatherHistoryViewer.Services.Helpers
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Services.Handlers
+@inject HttpClient Http
+
+@if (_weatherOfDay == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="form-style">
+        <div class="form-style-heading">Load weather data</div>
+        <p>
+            Currently loaded data for date @_formResponse.Date.ToString("MM/dd") in @_formResponse.Location
+        </p>
+        <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
+            <datalist id="locationSearch">
+                @foreach (var name in _locationNames)
+                {
+                    <option>@name</option>
+                }
+            </datalist>
+            <label for="date"><span>Date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.Date"></InputDate></label>
+
+            <label><span> </span><input type="submit" value="Load" /></label>
+        </EditForm>
+    </div>
+
+
+    <table class="table table-bordered" style="width: auto;">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Avg temp</th>
+                <th>Min temp</th>
+                <th>Max temp</th>
+                <th>Sun hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var day in _weatherOfDay)
+            {
+                var backgroundColor = $"hsla({Math.Round((day.AvgTemp / avgTempMax - 1) * -1 * 240, 0)},100%,50%,0.5)";
+                <tr>
+                    <th>@day.Date.Split("-")[0]</th>
+                    <th style="background-color:@backgroundColor">@day.AvgTemp</th>
+                    <td>@day.MinTemp</td>
+                    <td>@day.MaxTemp</td>
+                    <td>@day.SunHour</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private readonly WeatherHelper weatherHelper = new();
+
+    private readonly FormResponse _formResponse = new();
+
+    private List<HistoricalWeather> _weatherOfDay;
+    private List<string> _locationNames;
+    private double avgTempMax = double.NaN;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _formResponse.Location = "Amsterdam";
+        _formResponse.Date = DateTime.Today;
+
+        _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
+        _weatherOfDay = await Http.GetFromJsonAsync<List<HistoricalWeather>>("/api/weatherOf/days");
+        if (_weatherOfDay.Count > 0)
+        {
+            avgTempMax = _weatherOfDay.Max(s => s.AvgTemp);
+        }
+    }
+
+    async void HandleValidSubmit()
+    {
+        _weatherOfDay = await Http.GetFromJsonAsync<List<HistoricalWeather>>($"/api/weatherOf/days?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
+        if (_weatherOfDay.Count > 0)
+        {
+            avgTempMax = _weatherOfDay.Max(s => s.AvgTemp);
+        }
+    }
+}

@@ -8,11 +8,10 @@ namespace WeatherHistoryViewer.Services.Requester
 {
     public class WeatherStackAPI
     {
-        public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date,
-            HourlyInterval hourlyInterval)
+        public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date)
         {
             var uri =
-                $"https://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1&interval={(int) hourlyInterval}& units=m";
+                $"https://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1& interval=12& units=m";
             try
             {
                 var jsonResponse = HTTPGet(uri).Replace(date, "Day");
