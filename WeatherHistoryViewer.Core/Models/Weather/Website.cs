@@ -4,6 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeatherHistoryViewer.Core.Models.Weather
 {
+    public enum DisplayedPropertys
+    {
+        AvgTemp,
+        MaxTemp,
+        MinTemp,
+        SunHour
+    }
     public class WeatherOverview
     {
         public WeatherOverview()

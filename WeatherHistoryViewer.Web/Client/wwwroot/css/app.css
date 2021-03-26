@@ -177,3 +177,26 @@ a, .btn-link {
 .legendaColor10 {
     background-color: hsla(0, 100%, 50%, 0.5);
 }
+
+.legenda-container {
+    background-color: #f4f7f8;
+    padding: 4px 3%;
+    width: 600px;
+}
+
+.color-range {
+    height: 100px;
+    background-image: linear-gradient(to left, hsla(0,100%,50%,1),hsla(60,100%,50%,1), hsla(120,100%,50%,1),hsla(180,100%,50%,1), hsla(240,100%,50%,1));
+}
+
+.flex-container {
+    display: flex;
+}
+
+    .flex-container > p {
+        width: 33%;
+        margin: 10px;
+        text-align: center;
+        line-height: 25px;
+        font-size: 18px;
+    }

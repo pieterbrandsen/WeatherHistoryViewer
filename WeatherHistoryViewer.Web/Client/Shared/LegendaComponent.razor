@@ -1,32 +1,13 @@
 ﻿@using WeatherHistoryViewer.Core.Models.Weather;
 @using WeatherHistoryViewer.Config;
 
-<style>
-    #color_range {
-        height: 100px;
-        background-image: linear-gradient(to left, hsla(0,100%,50%,1),hsla(60,100%,50%,1), hsla(120,100%,50%,1),hsla(180,100%,50%,1), hsla(240,100%,50%,1));
-    }
-
-    .flex-container {
-        display: flex;
-    }   
-
-        .flex-container > p {
-            width: 33%;
-            margin: 10px;
-            text-align: center;
-            line-height: 25px;
-            font-size: 18px;
-        }
-</style>
-<div style="        background-color: #f4f7f8; padding: 4px 3%; width: 600px
-">
+<div class="legenda-container">
     <div>
         <h3 class="text-center">
             <b>@NameOfLegendaValue</b>
         </h3>
     </div>
-    <div id="color_range">    </div>
+    <div class="color_range"></div>
     <div class="flex-container">
             <p class=" text-left">
                 @Math.Round(MinValue,0)
@@ -48,10 +29,10 @@
     [Parameter]
     public string OverrideNameOfLegendaValue { get; set; }
 
-    public double MaxValue { get; set; }
-    public double AvgValue { get; set; }
-    public double MinValue { get; set; }
-    public string NameOfLegendaValue { get; set; }
+    private double MaxValue { get; set; }
+    private double AvgValue { get; set; }
+    private double MinValue { get; set; }
+    private string NameOfLegendaValue { get; set; }
 
     protected override void OnInitialized()
     {
