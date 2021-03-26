@@ -4,6 +4,7 @@
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Handlers
 @using WeatherHistoryViewer.Core.ViewModels
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
 @using System.Linq
 @inject HttpClient Http
 
@@ -35,93 +36,10 @@ else
             <label><span> </span><input type="submit" value="Load" /></label>
         </EditForm>
     </div>
-
-    @foreach (var prop in Enum.GetValues(typeof(DisplayedPropertys)))
-    {
-        @switch (prop)
-        {
-            case DisplayedPropertys.AvgTemp:
-                <LegendaComponent WeatherLegenda="@_weatherLegenda" OverrideNameOfLegendaValue="AvgTemp"></LegendaComponent>
-                break;
-            case DisplayedPropertys.MaxTemp:
-                <LegendaComponent WeatherLegenda="@_weatherLegenda" OverrideNameOfLegendaValue="MaxTemp"></LegendaComponent>
-                break;
-            case DisplayedPropertys.MinTemp:
-                <LegendaComponent WeatherLegenda="@_weatherLegenda" OverrideNameOfLegendaValue="MinTemp"></LegendaComponent>
-                break;
-            case DisplayedPropertys.SunHour:
-                <LegendaComponent WeatherLegenda="@_weatherLegenda" OverrideNameOfLegendaValue="SunHour"></LegendaComponent>
-                break;
-            default:
-                break;
-        }
-        <table class="table table-bordered" style="width: auto;">
-            <tr>
-                <th>Year</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-                <th>Satuday</th>
-                <th>Sunday</th>
-                <th>Average</th>
-            </tr>
-            @for (int i = 0; i < _weatherOfWeek.Count; i++)
-            {
-                var week = _weatherOfWeek[i];
-                <tr>
-                    <th>@week.First().Date.Split("-")[0]</th>
-                    @switch (prop)
-                    {
-                        case DisplayedPropertys.AvgTemp:
-                            @foreach (var day in week)
-                            {
-                                <td>@day.AvgTemp</td>
-                            }
-                            @if (week.Count == 7)
-                            {
-                                <td class="@_averageHistoricalWeatherEachWeek[i].CssBackgroundClass.AvgTemp">@_averageHistoricalWeatherEachWeek[i].AvgTemp</td>
-                            }
-                            break;
-                        case DisplayedPropertys.MaxTemp:
-                            @foreach (var day in week)
-                            {
-                                <td>@day.MaxTemp</td>
-                            }
-                            @if (week.Count == 7)
-                            {
-                                <td class="@_averageHistoricalWeatherEachWeek[i].CssBackgroundClass.MaxTemp">@_averageHistoricalWeatherEachWeek[i].MaxTemp</td>
-                            }
-                            break;
-                        case DisplayedPropertys.MinTemp:
-                            @foreach (var day in week)
-                            {
-                                <td>@day.MinTemp</td>
-                            }
-                            @if (week.Count == 7)
-                            {
-                                <td class="@_averageHistoricalWeatherEachWeek[i].CssBackgroundClass.MinTemp">@_averageHistoricalWeatherEachWeek[i].MinTemp</td>
-                            }
-                            break;
-                        case DisplayedPropertys.SunHour:
-                            @foreach (var day in week)
-                            {
-                                <td>@day.SunHour</td>
-                            }
-                            @if (week.Count == 7)
-                            {
-                                <td class="@_averageHistoricalWeatherEachWeek[i].CssBackgroundClass.SunHour">@_averageHistoricalWeatherEachWeek[i].SunHour</td>
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                </tr>
-            }
-        </table>
-        <br />
-    }
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.AvgTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.MaxTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.MinTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.SunHour"></WeekTableComponent>
 }
 
 
@@ -129,18 +47,10 @@ else
     private readonly WeatherHelper _weatherHelper = new();
     private readonly DateHelper _dateHelper = new();
 
-    private enum DisplayedPropertys
-    {
-        AvgTemp,
-        MaxTemp,
-        MinTemp,
-        SunHour
-    }
-
     private readonly FormResponse _formResponse = new();
 
-    private List<List<HistoricalWeather>> _weatherOfWeek;
     private WeatherLegenda _weatherLegenda;
+    private List<List<HistoricalWeather>> _weatherOfWeek;
     private List<HistoricalWeather> _averageHistoricalWeatherEachWeek;
     private List<string> _locationNames;
 

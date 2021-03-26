@@ -4,6 +4,7 @@
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Helpers
 @using WeatherHistoryViewer.Core.ViewModels
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
 @inject HttpClient Http
 
 @if (_weatherOfYears == null)
@@ -33,34 +34,8 @@ else
             <label><span> </span><input type="submit" value="Load" /></label>
         </EditForm>
     </div>
-        <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
-    <table class="table table-bordered" style="width: auto;">
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>Avg temp</th>
-                <th>Max temp</th>
-                <th>Date of max temp</th>
-                <th>Min temp</th>
-                <th>Date of min temp</th>
-                <th>Average sun hours</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var year in _weatherOfYears)
-            {
-                <tr>
-                    <th>@year.Year</th>
-                    <th class="@year.CssBackgroundClass.AvgTemp">@year.AvgTemp</th>
-                    <td class="@year.CssBackgroundClass.MaxTemp">@year.MaxTemp</td>
-                    <td>@year.DateOfMaxTemp</td>
-                    <td class="@year.CssBackgroundClass.MinTemp">@year.MinTemp</td>
-                    <td>@year.DateOfMinTemp</td>
-                    <td class="@year.CssBackgroundClass.SunHour">@year.SunHour</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
+    <YearsTableComponent WeatherOfYears="@_weatherOfYears"></YearsTableComponent>
 }
 
 @code {

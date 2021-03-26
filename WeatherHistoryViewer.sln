@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Web.Cl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Web.Shared", "WeatherHistoryViewer.Web\Shared\WeatherHistoryViewer.Web.Shared.csproj", "{0506A6AD-6DDA-4B00-8D2B-9CBC811AF133}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherHistoryViewer.Config", "WeatherHistoryViewer.Config\WeatherHistoryViewer.Config.csproj", "{6C709493-EB8C-4721-904E-BF87CA79F92B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Config", "WeatherHistoryViewer.Config\WeatherHistoryViewer.Config.csproj", "{6C709493-EB8C-4721-904E-BF87CA79F92B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

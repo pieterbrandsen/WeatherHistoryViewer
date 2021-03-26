@@ -55,7 +55,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
                 weatherOfWeekSimpleList.Add(weather);
             });
             var weatherLegenda = _websiteHelper.GetWeatherLegenda(weatherOfWeekSimpleList);
-            var averageHistoricalWeatherEachWeek = _websiteHelper.GetWeatherCssLegendaClasses(weatherOfWeekSimpleList, weatherLegenda, true);
+            var averageHistoricalWeatherEachWeek = _websiteHelper.GetWeatherCssLegendaClasses(weatherOfWeekSimpleList, weatherLegenda,true);
             var weatherOfWeekViewModel = new WeatherOfWeekViewModel()
             {
                 HistoricalWeathers = weatherOfWeek,

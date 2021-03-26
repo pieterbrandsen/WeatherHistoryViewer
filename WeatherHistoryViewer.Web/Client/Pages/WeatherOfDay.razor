@@ -4,6 +4,7 @@
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Handlers
 @using WeatherHistoryViewer.Core.ViewModels
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
 @inject HttpClient Http
 
 @if (_weatherOfDay == null)
@@ -36,29 +37,7 @@ else
     </div>
 
     <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
-    <table class="table table-bordered" style="width: auto;">
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>Avg temp</th>
-                <th>Min temp</th>
-                <th>Max temp</th>
-                <th>Sun hours</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var day in _weatherOfDay)
-            {
-                <tr>
-                    <td>@day.Date.Split("-")[0]</td>
-                    <td class="@day.CssBackgroundClass.AvgTemp">@day.AvgTemp</td>
-                    <td class="@day.CssBackgroundClass.MinTemp">@day.MinTemp</td>
-                    <td class="@day.CssBackgroundClass.MaxTemp">@day.MaxTemp</td>
-                    <td class="@day.CssBackgroundClass.SunHour">@day.SunHour</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <DayTableComponent WeatherOfDay="@_weatherOfDay"></DayTableComponent>
 }
 
 
@@ -70,7 +49,6 @@ else
     private List<HistoricalWeather> _weatherOfDay;
     private WeatherLegenda _weatherLegenda;
     private List<string> _locationNames;
-    private double avgTempMax = double.NaN;
 
     protected override async Task OnInitializedAsync()
     {
