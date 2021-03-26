@@ -23,6 +23,11 @@ namespace WeatherHistoryViewer.Services.Helpers
                 var weather = context.Weather.Include(w => w.Location)
                     .Where(w => w.Location.Name == cityName && dates.Contains(w.Date))
                     .OrderByDescending(o => o.DateEpoch).ToList();
+
+                foreach (var day in weather)
+                {
+                    day.CssBackgroundClass = new CssBackgroundClass();
+                }
                 return weather;
             }
             catch (Exception e)
@@ -85,12 +90,13 @@ namespace WeatherHistoryViewer.Services.Helpers
                     (var dateOfMinTemp, var minTemp) = GetMaxOrMinTempOfLocation(false, location);
                     var overviewObj = new WeatherOverview
                     {
+                        CssBackgroundClass = new CssBackgroundClass(),
                         LocationName = location,
                         MaxTemp = Math.Round(maxTemp, 2),
                         DateOfMaxTemp = dateOfMaxTemp,
                         MinTemp = Math.Round(minTemp, 2),
                         DateOfMinTemp = dateOfMinTemp,
-                        AvgSunHours =
+                        SunHour =
                             Math.Round(
                                 context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
                                     .Select(w => w.SunHour).Average(), 2),
@@ -162,7 +168,7 @@ namespace WeatherHistoryViewer.Services.Helpers
                         DateOfMaxTemp = dateOfMaxTemp.Split("-")[1]+"/"+ dateOfMaxTemp.Split("-")[2],
                         MinTemp = Math.Round(minTemp, 2),
                         DateOfMinTemp = dateOfMinTemp.Split("-")[1] + "/" + dateOfMinTemp.Split("-")[2],
-                        AvgSunHours =
+                        SunHour =
                             Math.Round(
                                 context.Weather.Include(w => w.Location).Where(w => w.Location.Name == cityName && w.Date.Contains(year))
                                     .Select(w => w.SunHour).Average(), 2),

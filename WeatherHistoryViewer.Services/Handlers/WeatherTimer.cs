@@ -26,22 +26,14 @@ namespace WeatherHistoryViewer.Services
             {
                 Enabled = true,
                 AutoReset = true,
-                Interval = 60 * 60 * 1000
+                Interval = 6 *60 * 60 * 1000
             };
             timer.Elapsed += OnTimedEvent;
         }
 
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            var oldestDate = _dateHelper.GetDateStringOfDaysAgo();
-            var yesterdayDate = _dateHelper.GetDateStringOfDaysAgo(1);
-            var locations = _locationHandler.GetLocationNames();
-            Task.Run(() =>
-            {
-                foreach (var locationName in locations)
-                    _weatherHandler.UpdateHistoricalWeatherRangeToDb(locationName, oldestDate,
-                        yesterdayDate);
-            });
+            new WeatherHandler().UpdateAllSavedHistoricalWeather();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace WeatherHistoryViewer.Services.Requester
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return null;
             }
         }
 
@@ -35,7 +35,7 @@ namespace WeatherHistoryViewer.Services.Requester
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return null;
             }
         }
 

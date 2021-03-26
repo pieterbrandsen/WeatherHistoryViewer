@@ -3,6 +3,7 @@
 @using WeatherHistoryViewer.Services.Handlers
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Helpers
+@using WeatherHistoryViewer.Core.ViewModels
 @inject HttpClient Http
 
 @if (_weatherOfYears == null)
@@ -13,83 +14,77 @@
 }
 else
 {
-<div class="form-style">
-    <div class="form-style-heading">Load weather data</div>
-    <p>
-        Currently loaded data for @_formResponse.Location
-    </p>
-    <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
-        <datalist id="locationSearch">
-            @foreach (var name in _locationNames)
-            {
-            <option>@name</option>
-            }
-        </datalist>
-
-        <label><span> </span><input type="submit" value="Load" /></label>
-    </EditForm>
-</div>
-        <table class="table table-bordered" style="width: auto;">
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <th>Avg temp</th>
-                    <th>Max temp</th>
-                    <th>Date of max temp</th>
-                    <th>Min temp</th>
-                    <th>Date of min temp</th>
-                    <th>Average sun hours</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var year in _weatherOfYears)
+    <div class="form-style">
+        <div class="form-style-heading">Load weather data</div>
+        <p>
+            Currently loaded data for @_weatherOfYears.First().LocationName
+        </p>
+        <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
+            <datalist id="locationSearch">
+                @foreach (var name in _locationNames)
                 {
-                    var backgroundColor = $"hsla({Math.Round((year.AvgTemp / avgTempMax - 1) * -1 * 240,0)},100%,50%,0.5)";
-                    <tr>
-                        <th>@year.Year</th>
-                        <th style="background-color:@backgroundColor">@year.AvgTemp</th>
-                        <td>@year.MaxTemp</td>
-                        <td>@year.DateOfMaxTemp</td>
-                        <td>@year.MinTemp</td>
-                        <td>@year.DateOfMinTemp</td>
-                        <td>@year.AvgSunHours</td>
-                    </tr>
+                    <option>@name</option>
                 }
-            </tbody>
-        </table>
-        }
+            </datalist>
 
-        @code {
+            <label><span> </span><input type="submit" value="Load" /></label>
+        </EditForm>
+    </div>
+        <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
+    <table class="table table-bordered" style="width: auto;">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Avg temp</th>
+                <th>Max temp</th>
+                <th>Date of max temp</th>
+                <th>Min temp</th>
+                <th>Date of min temp</th>
+                <th>Average sun hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var year in _weatherOfYears)
+            {
+                <tr>
+                    <th>@year.Year</th>
+                    <th class="@year.CssBackgroundClass.AvgTemp">@year.AvgTemp</th>
+                    <td class="@year.CssBackgroundClass.MaxTemp">@year.MaxTemp</td>
+                    <td>@year.DateOfMaxTemp</td>
+                    <td class="@year.CssBackgroundClass.MinTemp">@year.MinTemp</td>
+                    <td>@year.DateOfMinTemp</td>
+                    <td class="@year.CssBackgroundClass.SunHour">@year.SunHour</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
     private readonly WeatherHelper _weatherHelper = new();
-        private readonly DateHelper _dateHelper = new();
+    private readonly DateHelper _dateHelper = new();
 
-        private readonly YearForm _formResponse = new();
+    private readonly YearForm _formResponse = new();
 
-        private List<WeatherOverview> _weatherOfYears;
-        private List<string> _locationNames;
-        private double avgTempMax = double.NaN;
+    private List<WeatherOverview> _weatherOfYears;
+    private WeatherLegenda _weatherLegenda;
+    private List<string> _locationNames;
 
-        protected override async Task OnInitializedAsync()
-        {
-            _formResponse.Location = "Amsterdam";
+    protected override async Task OnInitializedAsync()
+    {
+        _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
+        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years");
+        _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
+        _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
+    }
 
-            _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
-            _weatherOfYears = await Http.GetFromJsonAsync<List<WeatherOverview>>("/api/weatherOf/years");
-            if (_weatherOfYears.Count > 0)
-            {
-                avgTempMax = _weatherOfYears.Max(s => s.AvgTemp);
-            }
-        }
-
-        async void HandleValidSubmit()
-        {
-            _weatherOfYears = await Http.GetFromJsonAsync<List<WeatherOverview>>($"/api/weatherOf/years?location={_formResponse.Location}");
-            if (_weatherOfYears.Count > 0)
-            {
-                avgTempMax = _weatherOfYears.Max(s => s.AvgTemp);
-            }
-        }
-        }
+    async void HandleValidSubmit()
+    {
+        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years?location={_formResponse.Location}");
+        _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
+        _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
+    }
+}

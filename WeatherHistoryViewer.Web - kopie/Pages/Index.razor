@@ -1,0 +1,50 @@
+﻿@page "/"
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Services.Helpers
+
+@if (weatherOverviews == null)
+    {
+        <p>
+            <em>Loading...</em>
+        </p>
+    }
+    else
+    {
+        <table class="table table-bordered" style="width: auto;">
+            <thead>
+            <tr>
+                <th>City</th>
+                <th>Avg temp</th>
+                <th>Max temp</th>
+                <th>Date of max temp</th>
+                <th>Min temp</th>
+                <th>Date of min temp</th>
+                <th>Average sun hours</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var overview in weatherOverviews)
+            {
+                <tr>
+                    <th>@overview.LocationName</th>
+                    <th>@overview.AverageTemp</th>
+                    <th>@overview.MaxTemp</th>
+                    <th>@overview.DateOfMaxTemp</th>
+                    <th>@overview.MinTemp</th>
+                    <th>@overview.DateOfMinTemp</th>
+                    <th>@overview.AverageSunHours</th>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    @code {
+
+        private List<WeatherOverview> weatherOverviews;
+
+        protected override void OnInitialized()
+        {
+            weatherOverviews = new WeatherHelper().GetWeatherOverview();
+        }
+    }

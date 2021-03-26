@@ -3,10 +3,11 @@
 @using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Handlers
+@using WeatherHistoryViewer.Core.ViewModels
 @using System.Linq
 @inject HttpClient Http
 
-@if (_weatherOfWeeks == null)
+@if (_weatherOfWeek == null)
 {
     <p>
         <em>Loading...</em>
@@ -14,42 +15,42 @@
 }
 else
 {
-<div class="form-style">
-    <div class="form-style-heading">Load weather data</div>
-    <p>
-        Currently loaded data for date @_formResponse.Date.ToString("MM/dd") in @_formResponse.Location
-    </p>
-    <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
-        <datalist id="locationSearch">
-            @foreach (var name in _locationNames)
-            {
-            <option>@name</option>
-            }
-        </datalist>
-        <label for="date"><span>Date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.Date"></InputDate></label>
+    <div class="form-style">
+        <div class="form-style-heading">Load weather data</div>
+        <p>
+            Currently loaded data for date @_formResponse.Date.ToString("MM/dd") in @_weatherOfWeek.First().First().Location.Name
+        </p>
+        <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
+            <datalist id="locationSearch">
+                @foreach (var name in _locationNames)
+                {
+                    <option>@name</option>
+                }
+            </datalist>
+            <label for="date"><span>Date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.Date"></InputDate></label>
 
-        <label><span> </span><input type="submit" value="Load" /></label>
-    </EditForm>
-</div>
+            <label><span> </span><input type="submit" value="Load" /></label>
+        </EditForm>
+    </div>
 
     @foreach (var prop in Enum.GetValues(typeof(DisplayedPropertys)))
     {
         @switch (prop)
         {
             case DisplayedPropertys.AvgTemp:
-                <h2>Average temperature</h2>
+                <LegendaComponent WeatherLegenda="@_weatherLegenda" OverrideNameOfLegendaValue="AvgTemp"></LegendaComponent>
                 break;
             case DisplayedPropertys.MaxTemp:
-                <h2>Maximum temperature</h2>
+                <LegendaComponent WeatherLegenda="@_weatherLegenda" OverrideNameOfLegendaValue="MaxTemp"></LegendaComponent>
                 break;
             case DisplayedPropertys.MinTemp:
-                <h2>Minimum temperature</h2>
+                <LegendaComponent WeatherLegenda="@_weatherLegenda" OverrideNameOfLegendaValue="MinTemp"></LegendaComponent>
                 break;
-            case DisplayedPropertys.SunHours:
-                <h2>Sun hours</h2>
+            case DisplayedPropertys.SunHour:
+                <LegendaComponent WeatherLegenda="@_weatherLegenda" OverrideNameOfLegendaValue="SunHour"></LegendaComponent>
                 break;
             default:
                 break;
@@ -66,9 +67,9 @@ else
                 <th>Sunday</th>
                 <th>Average</th>
             </tr>
-            @for (int i = 0; i < _weatherOfWeeks.Count; i++)
+            @for (int i = 0; i < _weatherOfWeek.Count; i++)
             {
-                var week = _weatherOfWeeks[i];
+                var week = _weatherOfWeek[i];
                 <tr>
                     <th>@week.First().Date.Split("-")[0]</th>
                     @switch (prop)
@@ -80,8 +81,7 @@ else
                             }
                             @if (week.Count == 7)
                             {
-                                var backgroundColor = $"hsla({Math.Round((avgTemps[i] / avgTempMax - 1) * -1 * 240,0)},100%,50%,0.5)";
-                                <td style="background-color:@backgroundColor">@avgTemps[i]</td>
+                                <td class="@_averageHistoricalWeatherEachWeek[i].CssBackgroundClass.AvgTemp">@_averageHistoricalWeatherEachWeek[i].AvgTemp</td>
                             }
                             break;
                         case DisplayedPropertys.MaxTemp:
@@ -91,8 +91,7 @@ else
                             }
                             @if (week.Count == 7)
                             {
-                                var backgroundColor = $"hsla({Math.Round((maxTemps[i] / maxTempMax - 1) * -1 * 240,0)},100%,50%,0.5)";
-                                <td style="background-color:@backgroundColor">@maxTemps[i]</td>
+                                <td class="@_averageHistoricalWeatherEachWeek[i].CssBackgroundClass.MaxTemp">@_averageHistoricalWeatherEachWeek[i].MaxTemp</td>
                             }
                             break;
                         case DisplayedPropertys.MinTemp:
@@ -102,19 +101,17 @@ else
                             }
                             @if (week.Count == 7)
                             {
-                                var backgroundColor = $"hsla({Math.Round((minTemps[i] / minTempMax - 1) * -1 * 240,0)},100%,50%,0.5)";
-                                <td style="background-color:@backgroundColor">@minTemps[i]</td>
+                                <td class="@_averageHistoricalWeatherEachWeek[i].CssBackgroundClass.MinTemp">@_averageHistoricalWeatherEachWeek[i].MinTemp</td>
                             }
                             break;
-                        case DisplayedPropertys.SunHours:
+                        case DisplayedPropertys.SunHour:
                             @foreach (var day in week)
                             {
                                 <td>@day.SunHour</td>
                             }
                             @if (week.Count == 7)
                             {
-                                var backgroundColor = $"hsla({Math.Round((sunHours[i] / sunHoursMax - 1) * -1 * 240,0)},100%,50%,0.5)";
-                                <td style="background-color:@backgroundColor">@sunHours[i]</td>
+                                <td class="@_averageHistoricalWeatherEachWeek[i].CssBackgroundClass.SunHour">@_averageHistoricalWeatherEachWeek[i].SunHour</td>
                             }
                             break;
                         default:
@@ -137,47 +134,32 @@ else
         AvgTemp,
         MaxTemp,
         MinTemp,
-        SunHours
+        SunHour
     }
 
     private readonly FormResponse _formResponse = new();
 
-    private List<List<HistoricalWeather>> _weatherOfWeeks;
+    private List<List<HistoricalWeather>> _weatherOfWeek;
+    private WeatherLegenda _weatherLegenda;
+    private List<HistoricalWeather> _averageHistoricalWeatherEachWeek;
     private List<string> _locationNames;
-
-    private List<double> avgTemps = new();
-    private List<double> maxTemps = new();
-    private List<double> minTemps = new();
-    private List<double> sunHours = new();
-
-    private double avgTempMax = double.NaN;
-    private double maxTempMax = double.NaN;
-    private double minTempMax = double.NaN;
-    private double sunHoursMax = double.NaN;
 
     protected override async Task OnInitializedAsync()
     {
-        _formResponse.Location = "Amsterdam";
         _formResponse.Date = DateTime.Today;
 
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
-        _weatherOfWeeks = await Http.GetFromJsonAsync<List<List<HistoricalWeather>>>("/api/weatherOf/weeks");
-
-        _weatherOfWeeks.ForEach(w =>
-        {
-            avgTemps.Add(Math.Round(w.Select(w => w.AvgTemp).Average(), 2));
-            maxTemps.Add(Math.Round(w.Select(w => w.MaxTemp).Average(), 2));
-            minTemps.Add(Math.Round(w.Select(w => w.MinTemp).Average(), 2));
-            sunHours.Add(Math.Round(w.Select(w => w.SunHour).Average(), 2));
-        });
-        avgTempMax = avgTemps.Max();
-        maxTempMax = maxTemps.Max();
-        minTempMax = minTemps.Max();
-        sunHoursMax = sunHours.Max();
+        var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week");
+        _weatherLegenda = weatherOfWeekViewModel.WeatherLegenda;
+        _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeathers;
+        _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
     }
 
     async void HandleValidSubmit()
     {
-        _weatherOfWeeks = await Http.GetFromJsonAsync<List<List<HistoricalWeather>>>($"/api/weatherOf/weeks?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
+        var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
+        _weatherLegenda = weatherOfWeekViewModel.WeatherLegenda;
+        _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeathers;
+        _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
     }
 }

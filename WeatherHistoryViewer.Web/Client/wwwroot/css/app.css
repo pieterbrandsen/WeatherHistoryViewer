@@ -143,3 +143,37 @@ a, .btn-link {
         background: #EA7B00;
         color: #fff;
     }
+
+.legendaColor0 {
+    background-color: hsla(240, 100%, 50%, 0.5);
+}
+.legendaColor1 {
+    background-color: hsla(216, 100%, 50%, 0.5);   
+}
+.legendaColor2 {
+    background-color: hsla(192, 100%, 50%, 0.5);
+}
+.legendaColor3 {
+    background-color: hsla(168, 100%, 50%, 0.5);
+}
+.legendaColor4 {
+    background-color: hsla(144, 100%, 50%, 0.5);
+}
+.legendaColor5 {
+    background-color: hsla(120, 100%, 50%, 0.5);
+}
+.legendaColor6 {
+    background-color: hsla(96, 100%, 50%, 0.5);
+}
+.legendaColor7 {
+    background-color: hsla(72, 100%, 50%, 0.5);
+}
+.legendaColor8 {
+    background-color: hsla(48, 100%, 50%, 0.5);
+}
+.legendaColor9 {
+    background-color: hsla(24, 100%, 50%, 0.5);
+}
+.legendaColor10 {
+    background-color: hsla(0, 100%, 50%, 0.5);
+}

@@ -3,6 +3,7 @@
 @using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Handlers
+@using WeatherHistoryViewer.Core.ViewModels
 @inject HttpClient Http
 
 @if (_weatherOfDay == null)
@@ -16,7 +17,7 @@ else
     <div class="form-style">
         <div class="form-style-heading">Load weather data</div>
         <p>
-            Currently loaded data for date @_formResponse.Date.ToString("MM/dd") in @_formResponse.Location
+            Currently loaded data for date @_formResponse.Date.ToString("MM/dd") in @_weatherOfDay.First().Location.Name
         </p>
         <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator />
@@ -34,7 +35,7 @@ else
         </EditForm>
     </div>
 
-
+    <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
     <table class="table table-bordered" style="width: auto;">
         <thead>
             <tr>
@@ -48,13 +49,12 @@ else
         <tbody>
             @foreach (var day in _weatherOfDay)
             {
-                var backgroundColor = $"hsla({Math.Round((day.AvgTemp / avgTempMax - 1) * -1 * 240, 0)},100%,50%,0.5)";
                 <tr>
-                    <th>@day.Date.Split("-")[0]</th>
-                    <th style="background-color:@backgroundColor">@day.AvgTemp</th>
-                    <td>@day.MinTemp</td>
-                    <td>@day.MaxTemp</td>
-                    <td>@day.SunHour</td>
+                    <td>@day.Date.Split("-")[0]</td>
+                    <td class="@day.CssBackgroundClass.AvgTemp">@day.AvgTemp</td>
+                    <td class="@day.CssBackgroundClass.MinTemp">@day.MinTemp</td>
+                    <td class="@day.CssBackgroundClass.MaxTemp">@day.MaxTemp</td>
+                    <td class="@day.CssBackgroundClass.SunHour">@day.SunHour</td>
                 </tr>
             }
         </tbody>
@@ -68,28 +68,24 @@ else
     private readonly FormResponse _formResponse = new();
 
     private List<HistoricalWeather> _weatherOfDay;
+    private WeatherLegenda _weatherLegenda;
     private List<string> _locationNames;
     private double avgTempMax = double.NaN;
 
     protected override async Task OnInitializedAsync()
     {
-        _formResponse.Location = "Amsterdam";
         _formResponse.Date = DateTime.Today;
 
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
-        _weatherOfDay = await Http.GetFromJsonAsync<List<HistoricalWeather>>("/api/weatherOf/days");
-        if (_weatherOfDay.Count > 0)
-        {
-            avgTempMax = _weatherOfDay.Max(s => s.AvgTemp);
-        }
+        var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>("/api/weatherOf/day");
+        _weatherOfDay = weatherOfDayViewModel.HistoricalWeathers;
+        _weatherLegenda = weatherOfDayViewModel.WeatherLegenda;
     }
 
     async void HandleValidSubmit()
     {
-        _weatherOfDay = await Http.GetFromJsonAsync<List<HistoricalWeather>>($"/api/weatherOf/days?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
-        if (_weatherOfDay.Count > 0)
-        {
-            avgTempMax = _weatherOfDay.Max(s => s.AvgTemp);
-        }
+        var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>($"/api/weatherOf/day?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
+        _weatherOfDay = weatherOfDayViewModel.HistoricalWeathers;
+        _weatherLegenda = weatherOfDayViewModel.WeatherLegenda;
     }
 }

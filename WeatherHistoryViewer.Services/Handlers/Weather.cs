@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using WeatherHistoryViewer.Core.Models.Weather;
+using System.Threading.Tasks;
 using WeatherHistoryViewer.Db;
+using WeatherHistoryViewer.Config;
 using WeatherHistoryViewer.Services.Converter;
 using WeatherHistoryViewer.Services.Helpers;
 using WeatherHistoryViewer.Services.Requester;
+using Microsoft.EntityFrameworkCore;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
@@ -26,14 +27,6 @@ namespace WeatherHistoryViewer.Services.Handlers
             _database = new Database();
         }
 
-        private bool DoesDateAndCityExistInDb(string cityName, string date)
-        {
-            using var context = new ApplicationDbContext();
-            if (context.Weather.Any() && context.Weather.Include(o => o.Location)
-                .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return true;
-            return false;
-        }
-
         public void UpdateWeatherToDb(string cityName, string date)
         {
             using var context = new ApplicationDbContext();
@@ -42,7 +35,6 @@ namespace WeatherHistoryViewer.Services.Handlers
             {
                 var weatherStackApiKey = UserSecrets.WeatherStackApiKey;
 
-                if (DoesDateAndCityExistInDb(cityName, date)) return;
                 var response =
                     _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date);
                 if (response.Historical != null)
@@ -59,7 +51,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             }
         }
 
-        public void UpdateHistoricalWeatherRangeToDb(string cityName,
+        public void UpdateHistoricalWeatherRangeToDb(string locationName,
             string oldestDate = null, string newestDate = null)
         {
             var dateList = new List<string>();
@@ -73,12 +65,39 @@ namespace WeatherHistoryViewer.Services.Handlers
                 else dateList = _dateHelper.GetRangeOfRequestableDates(newestDateString:newestDate);
             }
 
+            using var context = new ApplicationDbContext();
+            var excludedDates = new HashSet<string>(context.Weather.Include(w=>w.Location).Where(w=>w.Location.Name == locationName).Select(w => w.Date));
+            dateList = dateList.Where(p => !excludedDates.Contains(p)).ToList();
 
             foreach (var date in dateList)
             {
                 Debug.WriteLine(
-                    $"Place: {cityName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
-                UpdateWeatherToDb(cityName, date);
+                    $"Place: {locationName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
+                UpdateWeatherToDb(locationName, date);
+            }
+        }
+        public void UpdateAllSavedHistoricalWeather()
+        {
+            try
+            {
+                var dateHelper = new DateHelper();
+                var oldestDate = dateHelper.GetDateStringOfDaysAgo(365);
+                var newestDate = dateHelper.GetDateStringOfDaysAgo(WebConfig.NewestDaysAgo);
+                var locations = new LocationHandler().GetLocationNames();
+                Task.Run(() =>
+                {
+                    foreach (var locationName in locations)
+                    {
+
+                        new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName,
+                            oldestDate,
+                            newestDate);
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

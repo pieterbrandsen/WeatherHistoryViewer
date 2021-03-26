@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WeatherHistoryViewer.Core.Models.Weather;
+using WeatherHistoryViewer.Core.ViewModels;
 using WeatherHistoryViewer.Services.Helpers;
 
 namespace WeatherHistoryViewer.Web.Server.Controllers
@@ -14,6 +15,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
     public class WeatherOf : ControllerBase
     {
         private WeatherHelper _weatherHelper = new();
+        private WebsiteHelper _websiteHelper = new();
 
         private string _defaultDate = "2020-01-01";
 
@@ -25,24 +27,58 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         public IActionResult Years(string location= "Amsterdam")
         {
             var weatherOfYears = _weatherHelper.GetWeatherOfPastYears(location);
-            return Ok(weatherOfYears);
+            var weatherLegenda = _websiteHelper.GetWeatherLegenda(weatherOfYears);
+            weatherOfYears = _websiteHelper.GetWeatherCssLegendaClasses(weatherOfYears, weatherLegenda);
+            var weatherOfYearsViewModel = new WeatherOfYearsViewModel()
+            {
+                WeatherOverviews = weatherOfYears,
+                WeatherLegenda = weatherLegenda
+            };
+            return Ok(weatherOfYearsViewModel);
         }
         [HttpGet]
-        public IActionResult Weeks(string location = "Amsterdam", string date = null)
+        public IActionResult Week(string location = "Amsterdam", string date = null)
         {
             if (date == null) date = _defaultDate;
 
-            var weatherOfWeeks = _weatherHelper.GetWeatherWeekOfDateInThePastYears(location, date);
-            return Ok(weatherOfWeeks);
+            var weatherOfWeek = _weatherHelper.GetWeatherWeekOfDateInThePastYears(location, date);
+            var weatherOfWeekSimpleList = new List<HistoricalWeather>();
+            weatherOfWeek.ForEach(w =>
+            {
+                var weather = new HistoricalWeather()
+                {
+                    MaxTemp = Math.Round(w.Select(w => w.MaxTemp).Average(), 2),
+                    AvgTemp = Math.Round(w.Select(w => w.AvgTemp).Average(), 2),
+                    MinTemp = Math.Round(w.Select(w => w.MinTemp).Average(), 2),
+                    SunHour = Math.Round(w.Select(w => w.SunHour).Average(), 2),
+                };
+                weatherOfWeekSimpleList.Add(weather);
+            });
+            var weatherLegenda = _websiteHelper.GetWeatherLegenda(weatherOfWeekSimpleList);
+            var averageHistoricalWeatherEachWeek = _websiteHelper.GetWeatherCssLegendaClasses(weatherOfWeekSimpleList, weatherLegenda, true);
+            var weatherOfWeekViewModel = new WeatherOfWeekViewModel()
+            {
+                HistoricalWeathers = weatherOfWeek,
+                AverageHistoricalWeatherEachWeek =  averageHistoricalWeatherEachWeek,
+                WeatherLegenda = weatherLegenda
+            };
+            return Ok(weatherOfWeekViewModel);
         }
 
         [HttpGet]
-        public IActionResult Days(string location = "Amsterdam", string date = null)
+        public IActionResult Day(string location = "Amsterdam", string date = null)
         {
             if (date == null) date = _defaultDate;
 
-            var weatherOfDays = _weatherHelper.GetWeatherOfDayInThePastYears(location, date);
-            return Ok(weatherOfDays);
+            var weatherOfDay = _weatherHelper.GetWeatherOfDayInThePastYears(location,date);
+            var weatherLegenda = _websiteHelper.GetWeatherLegenda(weatherOfDay);
+            weatherOfDay = _websiteHelper.GetWeatherCssLegendaClasses(weatherOfDay, weatherLegenda);
+            var weatherOfDayViewModel = new WeatherOfDayViewModel()
+            {
+                HistoricalWeathers = weatherOfDay,
+                WeatherLegenda = weatherLegenda
+            };
+            return Ok(weatherOfDayViewModel);
         }
     }
 }

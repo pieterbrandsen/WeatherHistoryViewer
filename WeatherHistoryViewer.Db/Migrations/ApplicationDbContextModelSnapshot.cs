@@ -25,8 +25,8 @@ namespace WeatherHistoryViewer.Db.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AvgTemp")
-                        .HasColumnType("int");
+                    b.Property<double>("AvgTemp")
+                        .HasColumnType("float");
 
                     b.Property<string>("Date")
                         .HasColumnType("nvarchar(max)");
@@ -37,11 +37,11 @@ namespace WeatherHistoryViewer.Db.Migrations
                     b.Property<string>("LocationName")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("MaxTemp")
-                        .HasColumnType("int");
+                    b.Property<double>("MaxTemp")
+                        .HasColumnType("float");
 
-                    b.Property<int>("MinTemp")
-                        .HasColumnType("int");
+                    b.Property<double>("MinTemp")
+                        .HasColumnType("float");
 
                     b.Property<double>("SunHour")
                         .HasColumnType("float");

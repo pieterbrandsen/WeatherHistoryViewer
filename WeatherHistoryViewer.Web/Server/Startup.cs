@@ -60,19 +60,7 @@ namespace WeatherHistoryViewer.Web.Server
                 endpoints.MapFallbackToFile("index.html");
             });
 
-            var dateHelper = new DateHelper();
-            var oldestDate = dateHelper.GetDateStringOfDaysAgo(365);
-            var yesterdayDate = dateHelper.GetDateStringOfDaysAgo(0);
-            var locations = new LocationHandler().GetLocationNames();
-            foreach (var locationName in locations)
-            {
-                Task.Run(() =>
-                {
-                    new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName,
-                        oldestDate,
-                        yesterdayDate);
-                });
-            }
+            new WeatherHandler().UpdateAllSavedHistoricalWeather();
         }
     }
 }
