@@ -1,0 +1,47 @@
+﻿@using WeatherHistoryViewer.Core.Models.Weather
+
+<LegendaComponent WeatherLegenda="@WeatherLegenda" OverrideNameOfLegendaValue="@DisplayedPropertys.ToString()"></LegendaComponent>
+<table class="table table-bordered" style="width: auto;">
+    <tr>
+        <th>Year</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Satuday</th>
+        <th>Sunday</th>
+        <th>Average</th>
+    </tr>
+    @for (int i = 0; i < WeatherOfWeek.Count; i++)
+    {
+        var week = WeatherOfWeek[i];
+        <tr>
+            <th>@week.First().Date.Split("-")[0]</th>
+            @foreach (var day in week)
+            {
+                <td>@day.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(day)</td>
+            }
+            @if (week.Count == 7)
+            {
+                <td class="@AverageHistoricalWeatherEachWeek[i].CssBackgroundClass.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i].CssBackgroundClass)">@AverageHistoricalWeatherEachWeek[i].GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i])</td>
+            }
+        </tr>
+    }
+</table>
+<br />
+<br />
+
+@code {
+    [Parameter]
+    public List<List<HistoricalWeather>> WeatherOfWeek { get; set; }
+
+    [Parameter]
+    public List<HistoricalWeather> AverageHistoricalWeatherEachWeek { get; set; }
+
+    [Parameter]
+    public WeatherLegenda WeatherLegenda { get; set; }
+
+    [Parameter]
+    public DisplayedPropertys DisplayedPropertys { get; set; }
+}

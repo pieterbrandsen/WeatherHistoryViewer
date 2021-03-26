@@ -1,0 +1,75 @@
+﻿@page "/weatherOfWeek"
+@using WeatherHistoryViewer.Services.Helpers
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Services.Handlers
+@using WeatherHistoryViewer.Core.ViewModels
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
+@using System.Linq
+@inject HttpClient Http
+
+@if (_weatherOfWeek == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="form-style">
+        <div class="form-style-heading">Load weather data</div>
+        <p>
+            Currently loaded data for date @_formResponse.Date.ToString("MM/dd") in @_weatherOfWeek.First().First().Location.Name
+        </p>
+        <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
+            <datalist id="locationSearch">
+                @foreach (var name in _locationNames)
+                {
+                    <option>@name</option>
+                }
+            </datalist>
+            <label for="date"><span>Date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.Date"></InputDate></label>
+
+            <label><span> </span><input type="submit" value="Load" /></label>
+        </EditForm>
+    </div>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.AvgTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.MaxTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.MinTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.SunHour"></WeekTableComponent>
+}
+
+
+@code {
+    private readonly WeatherHelper _weatherHelper = new();
+    private readonly DateHelper _dateHelper = new();
+
+    private readonly FormResponse _formResponse = new();
+
+    private WeatherLegenda _weatherLegenda;
+    private List<List<HistoricalWeather>> _weatherOfWeek;
+    private List<HistoricalWeather> _averageHistoricalWeatherEachWeek;
+    private List<string> _locationNames;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _formResponse.Date = DateTime.Today;
+
+        _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
+        var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week");
+        _weatherLegenda = weatherOfWeekViewModel.WeatherLegenda;
+        _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeathers;
+        _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
+    }
+
+    async void HandleValidSubmit()
+    {
+        var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
+        _weatherLegenda = weatherOfWeekViewModel.WeatherLegenda;
+        _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeathers;
+        _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
+    }
+}

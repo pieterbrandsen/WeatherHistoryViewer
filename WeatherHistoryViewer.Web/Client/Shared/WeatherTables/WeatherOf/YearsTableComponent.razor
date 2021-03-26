@@ -1,0 +1,34 @@
+﻿@using WeatherHistoryViewer.Core.Models.Weather
+
+<table class="table table-bordered" style="width: auto;">
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Avg temp</th>
+            <th>Max temp</th>
+            <th>Date of max temp</th>
+            <th>Min temp</th>
+            <th>Date of min temp</th>
+            <th>Average sun hours</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var year in WeatherOfYears)
+        {
+            <tr>
+                <th>@year.Year</th>
+                <th class="@year.CssBackgroundClass.AvgTemp">@year.AvgTemp</th>
+                <td class="@year.CssBackgroundClass.MaxTemp">@year.MaxTemp</td>
+                <td>@year.DateOfMaxTemp</td>
+                <td class="@year.CssBackgroundClass.MinTemp">@year.MinTemp</td>
+                <td>@year.DateOfMinTemp</td>
+                <td class="@year.CssBackgroundClass.SunHour">@year.SunHour</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public List<WeatherOverview> WeatherOfYears { get; set; }
+}

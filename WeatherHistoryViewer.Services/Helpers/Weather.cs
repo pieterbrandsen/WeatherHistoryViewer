@@ -14,15 +14,20 @@ namespace WeatherHistoryViewer.Services.Helpers
         private readonly DateHelper dateHelper = new();
         private readonly LocationHandler locationHandler = new();
 
-        public List<HistoricalWeather> GetWeatherOfDateInThePastYears(string cityName, string date)
+        public List<HistoricalWeather> GetWeatherOfDayInThePastYears(string cityName, string date)
         {
             using var context = new ApplicationDbContext();
             try
             {
                 var dates = dateHelper.GetDateInLast15Y(date);
-                var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
+                var weather = context.Weather.Include(w => w.Location)
                     .Where(w => w.Location.Name == cityName && dates.Contains(w.Date))
                     .OrderByDescending(o => o.DateEpoch).ToList();
+
+                foreach (var day in weather)
+                {
+                    day.CssBackgroundClass = new CssBackgroundClass();
+                }
                 return weather;
             }
             catch (Exception e)
@@ -78,23 +83,24 @@ namespace WeatherHistoryViewer.Services.Helpers
 
             try
             {
-                var locations = locationHandler.GetAllLocationNames();
+                var locations = locationHandler.GetLocationNames();
                 foreach (var location in locations)
                 {
                     (var dateOfMaxTemp, var maxTemp) = GetMaxOrMinTempOfLocation(true, location);
                     (var dateOfMinTemp, var minTemp) = GetMaxOrMinTempOfLocation(false, location);
                     var overviewObj = new WeatherOverview
                     {
+                        CssBackgroundClass = new CssBackgroundClass(),
                         LocationName = location,
                         MaxTemp = Math.Round(maxTemp, 2),
                         DateOfMaxTemp = dateOfMaxTemp,
                         MinTemp = Math.Round(minTemp, 2),
                         DateOfMinTemp = dateOfMinTemp,
-                        AverageSunHours =
+                        SunHour =
                             Math.Round(
                                 context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
                                     .Select(w => w.SunHour).Average(), 2),
-                        AverageTemp =
+                        AvgTemp =
                             Math.Round(
                                 context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
                                     .Select(w => w.AvgTemp).Average(), 2)
@@ -111,7 +117,7 @@ namespace WeatherHistoryViewer.Services.Helpers
                 throw;
             }
 
-            return overviewList;
+            return overviewList.OrderBy(o => o.LocationName).ToList();
         }
 
         public List<List<HistoricalWeather>> GetWeatherWeekOfDateInThePastYears(string cityName, string date)
@@ -124,7 +130,7 @@ namespace WeatherHistoryViewer.Services.Helpers
                 foreach (var currDate in dates)
                 {
                     var currDates = dateHelper.GetWeekDatesFromDate(currDate);
-                    var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
+                    var weather = context.Weather.Include(w => w.Location)
                    .Where(w => w.Location.Name == cityName && currDates.Contains(w.Date))
                    .OrderByDescending(o => o.DateEpoch).ToList();
                     weatherList.Add(weather);
@@ -162,11 +168,11 @@ namespace WeatherHistoryViewer.Services.Helpers
                         DateOfMaxTemp = dateOfMaxTemp.Split("-")[1]+"/"+ dateOfMaxTemp.Split("-")[2],
                         MinTemp = Math.Round(minTemp, 2),
                         DateOfMinTemp = dateOfMinTemp.Split("-")[1] + "/" + dateOfMinTemp.Split("-")[2],
-                        AverageSunHours =
+                        SunHour =
                             Math.Round(
                                 context.Weather.Include(w => w.Location).Where(w => w.Location.Name == cityName && w.Date.Contains(year))
                                     .Select(w => w.SunHour).Average(), 2),
-                        AverageTemp =
+                        AvgTemp =
                             Math.Round(
                                 context.Weather.Include(w => w.Location).Where(w => w.Location.Name == cityName && w.Date.Contains(year))
                                     .Select(w => w.AvgTemp).Average(), 2)
