@@ -52,7 +52,7 @@ namespace WeatherHistoryViewer.Services.Helpers
         }
         private string GetCssLegendaClass(double currValue, double maxValue, double minValue)
         {
-            return $"legendaColor{Math.Round((currValue / minValue) / (maxValue / minValue) * 10,0)}";
+            return $"legendaColor{Math.Round((currValue - minValue) / (maxValue - minValue) * 10,0)}";
         }
         public List<WeatherOverview> GetWeatherCssLegendaClasses(List<WeatherOverview> weatherOverviews, WeatherLegenda legenda, bool forceAssigningClasses = false)
         {
