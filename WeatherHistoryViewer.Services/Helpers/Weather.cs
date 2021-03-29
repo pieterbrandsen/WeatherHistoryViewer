@@ -156,16 +156,19 @@ namespace WeatherHistoryViewer.Services.Helpers
                         }
                     }
                     var weatherMeasurmentList = weatherList.Select(w => w.WeatherMeasurment).ToList();
+                    var shortDateOfMaxTemp = highestMaxTemp.Date.Substring(highestMaxTemp.Date.IndexOf('/') + 1);
+                    var shortDateOfLowestTemp = lowestMinTemp.Date.Substring(lowestMinTemp.Date.IndexOf('/') + 1);
                     var overview = new WeatherOverview
                     {
                         Year = weatherList.Key.ToString(),
                         AvgTemp = Math.Round(weatherMeasurmentList.Select(w => w.AvgTemp).Average(), 2),
                         SunHour = Math.Round(weatherMeasurmentList.Select(w => w.SunHour).Average(), 2),
                         MaxTemp = highestMaxTemp.Temp,
-                        DateOfMaxTemp = highestMaxTemp.Date,
+                        DateOfMaxTemp = shortDateOfMaxTemp,
                         MinTemp = lowestMinTemp.Temp,
-                        DateOfMinTemp = lowestMinTemp.Date
+                        DateOfMinTemp = shortDateOfLowestTemp
                     };
+
                     overviewList.Add(overview);
                 }
             }
@@ -232,11 +235,10 @@ namespace WeatherHistoryViewer.Services.Helpers
                     var weatherOfDate = weatherList.FirstOrDefault(s => s.Time.Date.Contains(shortDate));
                     if (weatherOfDate != null)
                     {
-
                             var historicalWeather = new HistoricalWeather
                             {
                                 AvgTemp = weatherOfDate.WeatherMeasurment.AvgTemp,
-                                Date = weatherOfDate.Time.Date,
+                                Date = shortDate,
                                 Location = _locationHandler.GetLocation(weatherOfDate.Location.LocationName),
                                 MaxTemp = weatherOfDate.WeatherMeasurment.MaxTemp,
                                 MinTemp = weatherOfDate.WeatherMeasurment.MinTemp,

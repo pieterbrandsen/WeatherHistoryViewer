@@ -16,6 +16,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         private WeatherHelper _weatherHelper = new();
         private WebsiteHelper _websiteHelper = new();
         [HttpGet]
+        [ResponseCache(Duration = 60*60*24*30)]
         public IActionResult Get()
         {
             var weatherOverviews = _weatherHelper.GetWeatherOverview();

@@ -24,6 +24,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
             _defaultDate = DateTime.Now.AddDays(-1).ToString("MM/dd");
         }
         [HttpGet]
+        [ResponseCache(Duration = 60 * 60 * 24 * 30, VaryByQueryKeys = new [] {"location" })]
         public IActionResult Years(string location= "Amsterdam")
         {
             var weatherOfYears = _weatherHelper.GetWeatherOfPastYears(location);
@@ -37,6 +38,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
             return Ok(weatherOfYearsViewModel);
         }
         [HttpGet]
+        [ResponseCache(Duration = 60 * 60 * 24 * 1, VaryByQueryKeys = new [] {"location", "date" })]
         public IActionResult Week(string location = "Amsterdam", string date = null)
         {
             if (date == null) date = _defaultDate;
@@ -66,6 +68,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 60 * 60 * 12, VaryByQueryKeys = new[] { "location", "date" })]
         public IActionResult Day(string location = "Amsterdam", string date = null)
         {
             if (date == null) date = _defaultDate;

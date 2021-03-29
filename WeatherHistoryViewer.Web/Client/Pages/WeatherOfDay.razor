@@ -60,7 +60,7 @@ else
         _weatherLegenda = weatherOfDayViewModel.WeatherLegenda;
     }
 
-    async void HandleValidSubmit()
+    async Task HandleValidSubmit()
     {
         var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>($"/api/weatherOf/day?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
         _weatherOfDay = weatherOfDayViewModel.HistoricalWeather;

@@ -28,6 +28,7 @@ namespace WeatherHistoryViewer.Web.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterUserSecrets(Configuration);
+            services.AddResponseCaching();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -52,6 +53,7 @@ namespace WeatherHistoryViewer.Web.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseResponseCaching();
 
             app.UseEndpoints(endpoints =>
             {

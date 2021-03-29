@@ -65,7 +65,7 @@ else
         _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
     }
 
-    async void HandleValidSubmit()
+    async Task HandleValidSubmit()
     {
         var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
         _weatherLegenda = weatherOfWeekViewModel.WeatherLegenda;

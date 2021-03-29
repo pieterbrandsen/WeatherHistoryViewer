@@ -56,7 +56,7 @@ else
         _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
     }
 
-    async void HandleValidSubmit()
+    async Task HandleValidSubmit()
     {
         var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years?location={_formResponse.Location}");
         _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
