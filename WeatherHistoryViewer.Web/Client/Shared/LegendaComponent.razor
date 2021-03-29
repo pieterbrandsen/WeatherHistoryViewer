@@ -10,14 +10,14 @@
     <div class="color-range"></div>
     <div class="flex-container">
         <p class=" text-left">
-            @Math.Round(MinValue, 0)°C
+            @Math.Round(MinValue, 0)@Symbol
         </p>
-            <p class=" text-center">
-                @Math.Round(AvgValue, 0)°C
-            </p>
-            <p class=" text-right">
-                @Math.Round(MaxValue, 0)°C
-            </p>
+        <p class=" text-center">
+            @Math.Round(AvgValue, 0)@Symbol
+        </p>
+        <p class=" text-right">
+            @Math.Round(MaxValue, 0)@Symbol
+        </p>
     </div>
     <br />
 </div>
@@ -33,10 +33,15 @@
     private double AvgValue { get; set; }
     private double MinValue { get; set; }
     private string NameOfLegendaValue { get; set; }
+    private string Symbol = "°C";
 
     protected override void OnInitialized()
     {
         NameOfLegendaValue = OverrideNameOfLegendaValue ?? WebConfig.NameOfLegendaValue;
+        if (NameOfLegendaValue == "SunHour")
+        {
+            Symbol = " h";
+        }
         MaxValue = (double)WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Max);
         AvgValue = (double)WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Avg);
         MinValue = (double)WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Min);

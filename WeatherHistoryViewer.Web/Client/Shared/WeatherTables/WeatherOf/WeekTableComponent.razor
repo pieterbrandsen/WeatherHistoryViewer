@@ -17,31 +17,17 @@
     @for (int i = 0; i < WeatherOfWeek.Count; i++)
     {
         var week = WeatherOfWeek[i];
-<tr>
-    <th>@week.First().Date.Split("/")[0]</th>
-    @foreach (var day in week)
-    {
-        if (DisplayedPropertys != DisplayedPropertys.SunHour)
-        {
-            <td>@day.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(day)°C</td>
-        }
-        else
-        {
-            <td>@day.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(day) h</td>
-        }
-    }
-    @if (week.Count == 7)
-    {
-        if (DisplayedPropertys != DisplayedPropertys.SunHour)
-        {
-<td class="@AverageHistoricalWeatherEachWeek[i].CssBackgroundClass.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i].CssBackgroundClass)">@AverageHistoricalWeatherEachWeek[i].GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i])°C</td>
-        }
-        else
-        {
-            <td class="@AverageHistoricalWeatherEachWeek[i].CssBackgroundClass.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i].CssBackgroundClass)">@AverageHistoricalWeatherEachWeek[i].GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i]) h</td>
-        }
-    }
-</tr>
+        <tr>
+            <th>@week.First().Date.Split("/")[0]</th>
+            @foreach (var day in week)
+            {
+                <td>@day.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(day)@Symbol</td>
+            }
+            @if (week.Count == 7)
+            {
+                <td class="@AverageHistoricalWeatherEachWeek[i].CssBackgroundClass.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i].CssBackgroundClass)">@AverageHistoricalWeatherEachWeek[i].GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i])@Symbol</td>
+            }
+        </tr>
     }
 </table>
 <br />
@@ -59,4 +45,13 @@
 
     [Parameter]
     public DisplayedPropertys DisplayedPropertys { get; set; }
+    private string Symbol = "°C";
+
+    protected override void OnInitialized()
+    {
+        if (DisplayedPropertys.ToString() == "SunHour")
+        {
+            Symbol = " h";
+        }
+    }
 }
