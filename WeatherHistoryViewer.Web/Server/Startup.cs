@@ -28,6 +28,7 @@ namespace WeatherHistoryViewer.Web.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterUserSecrets(Configuration);
+            services.AddResponseCaching();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -43,7 +44,7 @@ namespace WeatherHistoryViewer.Web.Server
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore/hsts.
                 app.UseHsts();
             }
 
@@ -52,6 +53,7 @@ namespace WeatherHistoryViewer.Web.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseResponseCaching();
 
             app.UseEndpoints(endpoints =>
             {
@@ -60,19 +62,7 @@ namespace WeatherHistoryViewer.Web.Server
                 endpoints.MapFallbackToFile("index.html");
             });
 
-            //var dateHelper = new DateHelper();
-            //var oldestDate = dateHelper.GetDateStringOfDaysAgo(365);
-            //var yesterdayDate = dateHelper.GetDateStringOfDaysAgo(1);
-            //var locations = new LocationHandler().GetAllLocationNames();
-            //foreach (var locationName in locations)
-            //{
-            //    Task.Run(() =>
-            //    {
-            //        new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1,
-            //            oldestDate,
-            //            yesterdayDate);
-            //    });
-            //}
+            new WeatherHandler().UpdateAllSavedHistoricalWeather();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services.Helpers

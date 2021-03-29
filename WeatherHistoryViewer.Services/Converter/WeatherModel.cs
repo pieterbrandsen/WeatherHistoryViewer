@@ -1,4 +1,5 @@
-﻿using WeatherHistoryViewer.Core.Models.Weather;
+﻿using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
 using WeatherHistoryViewer.Services.Helpers;
 
@@ -16,7 +17,7 @@ namespace WeatherHistoryViewer.Services.Converter
         }
 
         public HistoricalWeather ToHistoricalWeatherModelConverter(HistoricalWeatherResponse historicalWeatherResponse,
-            string date, HourlyInterval hourlyInterval)
+            string date)
         {
             var day = historicalWeatherResponse.Historical.Day;
             var weather = new HistoricalWeather
@@ -30,7 +31,6 @@ namespace WeatherHistoryViewer.Services.Converter
                 SunHour = day.Sunhour,
                 TotalSnow = day.Totalsnow,
                 UvIndex = day.UvIndex,
-                HourlyInterval = hourlyInterval
             };
 
             return weather;

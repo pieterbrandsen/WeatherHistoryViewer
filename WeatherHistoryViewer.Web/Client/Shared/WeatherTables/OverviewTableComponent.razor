@@ -1,0 +1,38 @@
+﻿@using WeatherHistoryViewer.Core.Models;
+
+<table class="table table-bordered" style="width: auto;">
+    <thead>
+        <tr>
+            <th>Location name</th>
+            <th>Avg temp</th>
+            <th>Max temp</th>
+            <th>Date of max temp</th>
+            <th>Min temp</th>
+            <th>Date of min temp</th>
+            <th>Average sun hours</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var overview in WeatherOverviews)
+        {
+            <tr>
+                <th>@overview.LocationName</th>
+                <th class="@overview.CssBackgroundClass.AvgTemp">@overview.AvgTemp°C</th>
+                <th class="@overview.CssBackgroundClass.MaxTemp">@overview.MaxTemp°C</th>
+                <th>@overview.DateOfMaxTemp</th>
+
+                <th class="@overview.CssBackgroundClass.MinTemp">@overview.MinTemp°C</th>
+                <th>@overview.DateOfMinTemp</th>
+
+                <th class="@overview.CssBackgroundClass.SunHour">@overview.SunHour h</th>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<br />
+
+@code {
+    [Parameter]
+    public List<WeatherOverview> WeatherOverviews { get; set; }
+}

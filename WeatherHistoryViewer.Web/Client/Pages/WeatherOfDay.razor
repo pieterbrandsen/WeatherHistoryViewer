@@ -1,13 +1,13 @@
-﻿@page "/weatherPerYear"
-@using WeatherHistoryViewer.Core.Models.Weather
-@using WeatherHistoryViewer.Services.Handlers
-@using WeatherHistoryViewer.Core.Models
+﻿@page "/weatherOfDay"
 @using WeatherHistoryViewer.Services.Helpers
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Services.Handlers
 @using WeatherHistoryViewer.Core.ViewModels
 @using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
 @inject HttpClient Http
 
-@if (_weatherOfYears == null)
+@if (_weatherOfDay == null)
 {
     <p>
         <em>Loading...</em>
@@ -18,7 +18,7 @@ else
     <div class="form-style">
         <div class="form-style-heading">Load weather data</div>
         <p>
-            Currently loaded data for @_weatherOfYears.First().LocationName
+            Currently loaded data for date @_formResponse.Date.ToString("MM/dd") in @_weatherOfDay.First().Location.Name
         </p>
         <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator />
@@ -30,36 +30,40 @@ else
                     <option>@name</option>
                 }
             </datalist>
+            <label for="date"><span>Date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.Date"></InputDate></label>
 
             <label><span> </span><input type="submit" value="Load" /></label>
         </EditForm>
     </div>
+
     <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
-    <YearsTableComponent WeatherOfYears="@_weatherOfYears"></YearsTableComponent>
+    <DayTableComponent WeatherOfDay="@_weatherOfDay"></DayTableComponent>
 }
 
+
 @code {
-    private readonly WeatherHelper _weatherHelper = new();
-    private readonly DateHelper _dateHelper = new();
+    private readonly WeatherHelper weatherHelper = new();
 
-    private readonly YearForm _formResponse = new();
+    private readonly FormResponse _formResponse = new();
 
-    private List<WeatherOverview> _weatherOfYears;
+    private List<HistoricalWeather> _weatherOfDay;
     private WeatherLegenda _weatherLegenda;
     private List<string> _locationNames;
 
     protected override async Task OnInitializedAsync()
     {
+        _formResponse.Date = DateTime.Today;
+
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
-        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years");
-        _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
-        _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
+        var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>("/api/weatherOf/day");
+        _weatherOfDay = weatherOfDayViewModel.HistoricalWeather;
+        _weatherLegenda = weatherOfDayViewModel.WeatherLegenda;
     }
 
     async Task HandleValidSubmit()
     {
-        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years?location={_formResponse.Location}");
-        _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
-        _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
+        var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>($"/api/weatherOf/day?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
+        _weatherOfDay = weatherOfDayViewModel.HistoricalWeather;
+        _weatherLegenda = weatherOfDayViewModel.WeatherLegenda;
     }
 }

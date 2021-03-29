@@ -1,9 +1,11 @@
 ﻿@page "/"
-@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Core.ViewModels
 @using WeatherHistoryViewer.Services.Helpers
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables
 @inject HttpClient Http
 
-@if (weatherOverviews == null)
+@if (_weatherOverviews == null)
 {
     <p>
         <em>Loading...</em>
@@ -11,44 +13,18 @@
 }
 else
 {
-    <table class="table table-bordered" style="width: auto;">
-        <thead>
-            <tr>
-                <th>City</th>
-                <th>Avg temp</th>
-                <th>Max temp</th>
-                <th>Date of max temp</th>
-                <th>Min temp</th>
-                <th>Date of min temp</th>
-                <th>Average sun hours</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var overview in weatherOverviews)
-            {
-                var backgroundColor = $"hsla({(overview.AvgTemp / avgTempMax - 1) * -1 * 240},100%,50%,0.5)";
-                <tr>
-                    <th>@overview.LocationName</th>
-                    <th style="background-color:@backgroundColor">@overview.AvgTemp</th>
-                    <th>@overview.MaxTemp</th>
-                    <th>@overview.DateOfMaxTemp</th>
-                    <th>@overview.MinTemp</th>
-                    <th>@overview.DateOfMinTemp</th>
-                    <th>@overview.AvgSunHours</th>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <OverviewTableComponent WeatherOverviews="@_weatherOverviews"></OverviewTableComponent>
 }
 
 @code {
 
-    private List<WeatherOverview> weatherOverviews;
-    private double avgTempMax = double.NaN;
+    private List<WeatherOverview> _weatherOverviews;
+    private WeatherLegenda _weatherLegenda;
 
     protected override async Task OnInitializedAsync()
     {
-        weatherOverviews = await Http.GetFromJsonAsync<List<WeatherOverview>>("/api/overview");
-        avgTempMax = weatherOverviews.Max(s => s.AvgTemp);
+        var weatherOverviewViewModel = await Http.GetFromJsonAsync<WeatherOverviewViewModel>("/api/overview");
+        _weatherOverviews = weatherOverviewViewModel.WeatherOverviews;
+        _weatherLegenda = weatherOverviewViewModel.WeatherLegenda;
     }
 }

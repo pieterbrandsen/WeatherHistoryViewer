@@ -27,7 +27,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public string Info { get; set; }
     }
 
-    public class Request
+    public class RequestJSON
     {
         [JsonPropertyName("type")] public string Type { get; set; }
 
@@ -63,7 +63,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         [JsonPropertyName("utc_offset")] public string UtcOffset { get; set; }
     }
 
-    public class Current
+    public class CurrentJSON
     {
         [JsonPropertyName("observation_time")] public string ObservationTime { get; set; }
 
@@ -102,7 +102,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         [JsonPropertyName("is_day")] public string IsDay { get; set; }
     }
 
-    public class Astro
+    public class AstroJSON
     {
         [JsonPropertyName("sunrise")] public string Sunrise { get; set; }
 
@@ -118,12 +118,8 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public int MoonIllumination { get; set; }
     }
 
-    public class WeatherSnapshot
+    public class WeatherSnapshotJSON
     {
-        public int Id { get; set; }
-        public int HistoricalWeatherId { get; set; }
-        public HistoricalWeather HistoricalWeather { get; set; }
-        public string FullDate { get; set; }
         [JsonPropertyName("time")] public string Time { get; set; }
 
         [JsonPropertyName("temperature")] public int Temperature { get; set; }
@@ -187,13 +183,13 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         [JsonPropertyName("uv_index")] public int UvIndex { get; set; }
     }
 
-    public class Day
+    public class DayJSON
     {
         [JsonPropertyName("date")] public string Date { get; set; }
 
         [JsonPropertyName("date_epoch")] public int DateEpoch { get; set; }
 
-        [JsonPropertyName("astro")] public Astro Astro { get; set; }
+        [JsonPropertyName("astro")] public AstroJSON Astro { get; set; }
 
         [JsonPropertyName("mintemp")] public int Mintemp { get; set; }
 
@@ -207,12 +203,12 @@ namespace WeatherHistoryViewer.Core.Models.Weather
 
         [JsonPropertyName("uv_index")] public int UvIndex { get; set; }
 
-        [JsonPropertyName("hourly")] public List<WeatherSnapshot> HourlyModels { get; set; }
+        [JsonPropertyName("hourly")] public List<WeatherSnapshotJSON> HourlyModels { get; set; }
     }
 
-    public class Historical
+    public class HistoricalJSON
     {
-        public Day Day { get; set; }
+        public DayJSON Day { get; set; }
     }
 
     #endregion

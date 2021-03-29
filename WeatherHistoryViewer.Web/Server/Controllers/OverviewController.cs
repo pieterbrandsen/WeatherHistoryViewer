@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WeatherHistoryViewer.Core.Models.Weather;
+using WeatherHistoryViewer.Core.ViewModels;
 using WeatherHistoryViewer.Services.Helpers;
 
 namespace WeatherHistoryViewer.Web.Server.Controllers
@@ -13,12 +14,21 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
     public class OverviewController : ControllerBase
     {
         private WeatherHelper _weatherHelper = new();
-
+        private WebsiteHelper _websiteHelper = new();
         [HttpGet]
+        [ResponseCache(Duration = 60*60*24*30)]
         public IActionResult Get()
         {
             var weatherOverviews = _weatherHelper.GetWeatherOverview();
-            return Ok(weatherOverviews);
+            var weatherLegenda = _websiteHelper.GetWeatherLegenda(weatherOverviews);
+            weatherOverviews = _websiteHelper.GetWeatherCssLegendaClasses(weatherOverviews, weatherLegenda);
+            var weatherOverviewViewModel = new WeatherOverviewViewModel()
+            {
+                WeatherOverviews = weatherOverviews,
+                WeatherLegenda = weatherLegenda
+            };
+
+            return Ok(weatherOverviewViewModel);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Timers;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
@@ -26,22 +27,14 @@ namespace WeatherHistoryViewer.Services
             {
                 Enabled = true,
                 AutoReset = true,
-                Interval = 60 * 60 * 1000
+                Interval = 12 *60 * 60 * 1000
             };
             timer.Elapsed += OnTimedEvent;
         }
 
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            var oldestDate = _dateHelper.GetDateStringOfDaysAgo();
-            var yesterdayDate = _dateHelper.GetDateStringOfDaysAgo(1);
-            var locations = _locationHandler.GetAllLocationNames();
-            Task.Run(() =>
-            {
-                foreach (var locationName in locations)
-                    _weatherHandler.UpdateHistoricalWeatherRangeToDb(locationName, HourlyInterval.Hours1, oldestDate,
-                        yesterdayDate);
-            });
+            new WeatherHandler().UpdateAllSavedHistoricalWeather();
         }
     }
 }
