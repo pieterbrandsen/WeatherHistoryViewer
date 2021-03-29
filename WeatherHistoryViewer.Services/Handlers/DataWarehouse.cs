@@ -41,7 +41,9 @@ namespace WeatherHistoryViewer.Services.Handlers
                 var missingWeather = context.Weather.Include(w => w.Location).Where(w => !alreadyIncludedInWarehouse.Contains(w.Date + w.Location.Name)).ToList();
                 foreach (var weather in missingWeather)
                 {
-                    var time = new TimeHelper().GetTime(weather.Date, new() { Day = Convert.ToInt16(weather.Date.Split("/")[2]), Month = Convert.ToInt16(weather.Date.Split("/")[1]), Year = Convert.ToInt16(weather.Date.Split("/")[0]), Date = weather.Date });
+            Task.Run(() =>
+            {
+                var time = new TimeHelper().GetTime(weather.Date, new() { Day = Convert.ToInt16(weather.Date.Split("/")[2]), Month = Convert.ToInt16(weather.Date.Split("/")[1]), Year = Convert.ToInt16(weather.Date.Split("/")[0]), Date = weather.Date });
                     var weatherWarehouse = new WeatherWarehouse()
                     {
                         Location = new() { LocationName = weather.Location.Name },
@@ -49,8 +51,9 @@ namespace WeatherHistoryViewer.Services.Handlers
                         WeatherMeasurment = new() { AvgTemp = weather.AvgTemp, MaxTemp = weather.MaxTemp, MinTemp = weather.MinTemp, SunHour = weather.SunHour }
                     };
                     _databaseHandler.AddWeatherInWarehouse(weatherWarehouse);
+            });
                 }
             });
-        }
+            }
     }
 }

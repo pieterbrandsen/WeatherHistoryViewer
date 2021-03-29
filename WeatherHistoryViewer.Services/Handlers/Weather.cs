@@ -9,6 +9,7 @@ using WeatherHistoryViewer.Services.Converter;
 using WeatherHistoryViewer.Services.Helpers;
 using WeatherHistoryViewer.Services.Requester;
 using Microsoft.EntityFrameworkCore;
+using WeatherHistoryViewer.Core.Models.DataWarehouse;
 
 namespace WeatherHistoryViewer.Services.Handlers
 {
@@ -93,6 +94,9 @@ namespace WeatherHistoryViewer.Services.Handlers
                             newestDate);
                     }
                 });
+
+                if (new WeatherHelper().DoesWeatherWarehouseNeedToBeUpdated(MinDaysBeforeUpdatingWeather.Week))
+                    new DataWarehouseHandlers().UpdateWeatherWarehouse();
             }
             catch (Exception e)
             {
