@@ -56,14 +56,14 @@ else
 
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
         var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>("/api/weatherOf/day");
-        _weatherOfDay = weatherOfDayViewModel.HistoricalWeathers;
+        _weatherOfDay = weatherOfDayViewModel.HistoricalWeather;
         _weatherLegenda = weatherOfDayViewModel.WeatherLegenda;
     }
 
     async void HandleValidSubmit()
     {
         var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>($"/api/weatherOf/day?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
-        _weatherOfDay = weatherOfDayViewModel.HistoricalWeathers;
+        _weatherOfDay = weatherOfDayViewModel.HistoricalWeather;
         _weatherLegenda = weatherOfDayViewModel.WeatherLegenda;
     }
 }

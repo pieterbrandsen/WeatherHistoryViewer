@@ -17,7 +17,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         private WeatherHelper _weatherHelper = new();
         private WebsiteHelper _websiteHelper = new();
 
-        private string _defaultDate = "2020-01-01";
+        private string _defaultDate = "2020/01/01";
 
         public WeatherOf()
         {
@@ -41,7 +41,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         {
             if (date == null) date = _defaultDate;
 
-            var weatherOfWeek = _weatherHelper.GetWeatherWeekOfDateInThePastYears(location, date);
+            var weatherOfWeek = _weatherHelper.GetWeatherWeekOfDate(location, date);
             var weatherOfWeekSimpleList = new List<HistoricalWeather>();
             weatherOfWeek.ForEach(w =>
             {
@@ -58,7 +58,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
             var averageHistoricalWeatherEachWeek = _websiteHelper.GetWeatherCssLegendaClasses(weatherOfWeekSimpleList, weatherLegenda,true);
             var weatherOfWeekViewModel = new WeatherOfWeekViewModel()
             {
-                HistoricalWeathers = weatherOfWeek,
+                HistoricalWeather = weatherOfWeek,
                 AverageHistoricalWeatherEachWeek =  averageHistoricalWeatherEachWeek,
                 WeatherLegenda = weatherLegenda
             };
@@ -70,12 +70,12 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         {
             if (date == null) date = _defaultDate;
 
-            var weatherOfDay = _weatherHelper.GetWeatherOfDayInThePastYears(location,date);
+            var weatherOfDay = _weatherHelper.GetWeatherOfDay(location,date);
             var weatherLegenda = _websiteHelper.GetWeatherLegenda(weatherOfDay);
             weatherOfDay = _websiteHelper.GetWeatherCssLegendaClasses(weatherOfDay, weatherLegenda);
             var weatherOfDayViewModel = new WeatherOfDayViewModel()
             {
-                HistoricalWeathers = weatherOfDay,
+                HistoricalWeather = weatherOfDay,
                 WeatherLegenda = weatherLegenda
             };
             return Ok(weatherOfDayViewModel);

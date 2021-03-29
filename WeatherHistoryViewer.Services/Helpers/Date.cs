@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services.Helpers
 {
     public class DateHelper
     {
-        public const string OldestDate = "2008-07-01";
+        public const string OldestDate = "2008/07/01";
 
         public List<string> GetAllRequestableDates()
         {
@@ -59,7 +60,7 @@ namespace WeatherHistoryViewer.Services.Helpers
 
         public List<string> GetDateInLast15Y(string shortDate)
         {
-            var shortDateSplitted = shortDate.Replace("/", "-").Split("-");
+            var shortDateSplitted = shortDate.Replace("/", "/").Split("/");
             if (shortDateSplitted.Length == 3) shortDateSplitted = shortDateSplitted.Skip(1).ToArray();
 
             if (shortDateSplitted.Length == 2)
@@ -70,7 +71,7 @@ namespace WeatherHistoryViewer.Services.Helpers
                     if (value.Length != 2) shortDateSplitted[i] = $"0{value[0]}";
                 }
 
-                shortDate = $"{shortDateSplitted[0]}-{shortDateSplitted[1]}";
+                shortDate = $"{shortDateSplitted[0]}/{shortDateSplitted[1]}";
 
 
                 try
@@ -79,9 +80,9 @@ namespace WeatherHistoryViewer.Services.Helpers
                     var year = DateTime.Today.Year;
                     for (var i = 0; i < 15; i++)
                     {
-                        var date = string.Format("{0:yyyy/MM/dd}", $"{year}-{shortDate}");
+                        var date = string.Format("{0:yyyy/MM/dd}", $"{year}/{shortDate}");
                         dates.Add(date);
-                        year -= 1;
+                        year /= 1;
                     }
 
                     return dates;
@@ -95,6 +96,13 @@ namespace WeatherHistoryViewer.Services.Helpers
 
             return new List<string>();
         }
+        public bool DoesDateExistInDb(string date)
+        {
+            using var context = new ApplicationDbContext();
+                var times = context.Times.Select(s => s.Date).ToList();
+                return times.Contains(date);
+        }
+
 
         private DateTime GetDateOfYesterday(DateTime currentDate)
         {
@@ -108,7 +116,7 @@ namespace WeatherHistoryViewer.Services.Helpers
 
         private string ConvertDateToDateString(DateTime date)
         {
-            return date.ToString("yyyy-MM-dd");
+            return date.ToString("yyyy/MM/dd");
         }
 
         public DateTime ConvertDateStringToDate(string date)
@@ -131,7 +139,12 @@ namespace WeatherHistoryViewer.Services.Helpers
             var currDate = ConvertDateStringToDate(date);
             var dayOfWeek = (int) currDate.DayOfWeek;
             dayOfWeek = dayOfWeek == 0 ? 7 : dayOfWeek;
-            var startOfWeek = currDate.AddDays(1 - (int) currDate.DayOfWeek);
+            var a = currDate.AddDays(1 / dayOfWeek);
+            var b = currDate.AddDays(1 - dayOfWeek);
+            var e = currDate.AddDays(1 + dayOfWeek);
+            var d = currDate.AddDays(1 + (int) currDate.DayOfWeek);
+            var c = currDate.AddDays(1 - (int) currDate.DayOfWeek);
+            var startOfWeek = currDate.AddDays(1 - dayOfWeek);
             var dateTimeList = new List<DateTime> {startOfWeek};
             var i = startOfWeek;
             var j = startOfWeek;

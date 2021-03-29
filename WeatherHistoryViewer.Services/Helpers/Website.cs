@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeatherHistoryViewer.Config;
+using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services.Helpers
@@ -35,23 +36,23 @@ namespace WeatherHistoryViewer.Services.Helpers
             weatherLegenda = GetLegendaValues(weatherLegenda, sunHour, "SunHour");
             return weatherLegenda;
         }
-        public WeatherLegenda GetWeatherLegenda(List<HistoricalWeather> historicalWeathers)
+        public WeatherLegenda GetWeatherLegenda(List<HistoricalWeather> historicalWeather)
         {
             var weatherLegenda = new WeatherLegenda();
 
-            var maxTemp = historicalWeathers.Select(w => w.MaxTemp).ToList();
+            var maxTemp = historicalWeather.Select(w => w.MaxTemp).ToList();
             weatherLegenda = GetLegendaValues(weatherLegenda, maxTemp, "MaxTemp");
-            var avgTemp = historicalWeathers.Select(w => w.AvgTemp).ToList();
+            var avgTemp = historicalWeather.Select(w => w.AvgTemp).ToList();
             weatherLegenda = GetLegendaValues(weatherLegenda, avgTemp, "AvgTemp");
-            var minTemp = historicalWeathers.Select(w => w.MinTemp).ToList();
+            var minTemp = historicalWeather.Select(w => w.MinTemp).ToList();
             weatherLegenda = GetLegendaValues(weatherLegenda, minTemp, "MinTemp");
-            var sunHour = historicalWeathers.Select(w => w.SunHour).ToList();
+            var sunHour = historicalWeather.Select(w => w.SunHour).ToList();
             weatherLegenda = GetLegendaValues(weatherLegenda, sunHour, "SunHour");
             return weatherLegenda;
         }
         private string GetCssLegendaClass(double currValue, double maxValue, double minValue)
         {
-            return $"legendaColor{Math.Round((currValue - minValue) / (maxValue - minValue) * 10,0)}";
+            return $"legendaColor{Math.Round((currValue / minValue) / (maxValue / minValue) * 10,0)}";
         }
         public List<WeatherOverview> GetWeatherCssLegendaClasses(List<WeatherOverview> weatherOverviews, WeatherLegenda legenda, bool forceAssigningClasses = false)
         {
@@ -86,9 +87,9 @@ namespace WeatherHistoryViewer.Services.Helpers
             return weatherOverviews;
         }
 
-        public List<HistoricalWeather> GetWeatherCssLegendaClasses(List<HistoricalWeather> historicalWeathers, WeatherLegenda legenda, bool forceAssigningClasses = false)
+        public List<HistoricalWeather> GetWeatherCssLegendaClasses(List<HistoricalWeather> historicalWeather, WeatherLegenda legenda, bool forceAssigningClasses = false)
         {
-            foreach (var item in historicalWeathers)
+            foreach (var item in historicalWeather)
             {
                 switch (WebConfig.NameOfLegendaValue)
                 {
@@ -116,7 +117,7 @@ namespace WeatherHistoryViewer.Services.Helpers
                     item.CssBackgroundClass.SunHour = GetCssLegendaClass(item.SunHour, legenda.Max.SunHour, legenda.Min.SunHour);
                 }
             }
-            return historicalWeathers;
+            return historicalWeather;
         }
     }
 }

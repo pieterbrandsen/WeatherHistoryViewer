@@ -14,7 +14,7 @@
         @foreach (var day in WeatherOfDay)
         {
             <tr>
-                <td>@day.Date.Split("-")[0]</td>
+                <td>@day.Date.Split("/")[0]</td>
                 <td class="@day.CssBackgroundClass.AvgTemp">@day.AvgTemp</td>
                 <td class="@day.CssBackgroundClass.MinTemp">@day.MinTemp</td>
                 <td class="@day.CssBackgroundClass.MaxTemp">@day.MaxTemp</td>

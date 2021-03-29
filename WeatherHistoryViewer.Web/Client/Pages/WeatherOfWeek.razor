@@ -61,7 +61,7 @@ else
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
         var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week");
         _weatherLegenda = weatherOfWeekViewModel.WeatherLegenda;
-        _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeathers;
+        _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeather;
         _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
     }
 
@@ -69,7 +69,7 @@ else
     {
         var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week?location={_formResponse.Location}&date={_formResponse.Date.ToString("yyyy/MM/dd")}");
         _weatherLegenda = weatherOfWeekViewModel.WeatherLegenda;
-        _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeathers;
+        _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeather;
         _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
     }
 }

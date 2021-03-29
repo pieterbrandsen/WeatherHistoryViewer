@@ -2,16 +2,17 @@
 using System.IO;
 using System.Net;
 using System.Text.Json;
+using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services.Requester
 {
-    public class WeatherStackAPI
+    public class WeathertackAPI
     {
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date)
         {
             var uri =
-                $"https://api.weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1& interval=12& units=m";
+                $"https://api.Weathertack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1& interval=12& units=m";
             try
             {
                 var jsonResponse = HTTPGet(uri).Replace(date, "Day");
@@ -26,7 +27,7 @@ namespace WeatherHistoryViewer.Services.Requester
 
         public CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, string units)
         {
-            var uri = $"https://api.weatherstack.com/current?access_key={apiKey}& query={cityName}& units={units}";
+            var uri = $"https://api.Weathertack.com/current?access_key={apiKey}& query={cityName}& units={units}";
             try
             {
                 var jsonResponse = HTTPGet(uri);

@@ -3,14 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeatherHistoryViewer.Core.Models.Weather
 {
-    public class CssBackgroundClass
-    {
-        public string AvgTemp { get; set; }
-        public string MinTemp { get; set; }
-        public string MaxTemp { get; set; }
-        public string SunHour { get; set; }
-    }
-
     public class HistoricalWeather
     {
         public HistoricalWeather()

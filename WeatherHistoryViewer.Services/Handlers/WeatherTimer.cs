@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Timers;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
@@ -26,7 +27,7 @@ namespace WeatherHistoryViewer.Services
             {
                 Enabled = true,
                 AutoReset = true,
-                Interval = 6 *60 * 60 * 1000
+                Interval = 12 *60 * 60 * 1000
             };
             timer.Elapsed += OnTimedEvent;
         }

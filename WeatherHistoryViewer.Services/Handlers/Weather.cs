@@ -14,17 +14,17 @@ namespace WeatherHistoryViewer.Services.Handlers
 {
     public class WeatherHandler
     {
-        private readonly WeatherStackAPI _apiRequester;
-        private readonly Database _database;
+        private readonly WeathertackAPI _apiRequester;
+        private readonly DatabaseHandler _database;
         private readonly DateHelper _dateHelper;
         private readonly WeatherModelConverter _weatherModelConverter;
 
         public WeatherHandler()
         {
-            _apiRequester = new WeatherStackAPI();
+            _apiRequester = new WeathertackAPI();
             _weatherModelConverter = new WeatherModelConverter();
             _dateHelper = new DateHelper();
-            _database = new Database();
+            _database = new DatabaseHandler();
         }
 
         public void UpdateWeatherToDb(string cityName, string date)
@@ -33,10 +33,10 @@ namespace WeatherHistoryViewer.Services.Handlers
 
             try
             {
-                var weatherStackApiKey = UserSecrets.WeatherStackApiKey;
+                var WeathertackApiKey = UserSecrets.WeathertackApiKey;
 
                 var response =
-                    _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date);
+                    _apiRequester.GetHistoricalWeather(WeathertackApiKey, cityName, date);
                 if (response.Historical != null)
                 {
                 var weatherModel =
@@ -88,7 +88,6 @@ namespace WeatherHistoryViewer.Services.Handlers
                 {
                     foreach (var locationName in locations)
                     {
-
                         new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName,
                             oldestDate,
                             newestDate);

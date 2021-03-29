@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
 
@@ -17,7 +18,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         [HttpPost]
         public IActionResult Index(AddWeatherDataForm form)
         {
-            Task.Run(() => { _weatherHandler.UpdateHistoricalWeatherRangeToDb(form.Location, form.OldestDate.ToString("yyyy/MM/dd"), form.NewestDate.ToString("yyyy/MM/dd")); });
+            Task.Run(() => { _weatherHandler.UpdateHistoricalWeatherRangeToDb(form.Location, form.OldestDate.ToString("yyyy/MM/dd"), form.NewestDate.ToString("yyyy/MM/dd")); new DataWarehouseHandlers().UpdateWeatherWarehouse(); });
             return Ok();
         }
     }

@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Core.ViewModels
 @using WeatherHistoryViewer.Services.Helpers
 @using WeatherHistoryViewer.Web.Client.Shared.WeatherTables
@@ -13,7 +13,7 @@
 }
 else
 {
-    <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
+    @*<LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>*@
     <OverviewTableComponent WeatherOverviews="@_weatherOverviews"></OverviewTableComponent>
 }
 

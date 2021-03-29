@@ -1,5 +1,5 @@
 ﻿@page "/addWeatherData"
-@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Handlers
 @using System.ComponentModel.DataAnnotations
 @inject HttpClient Http
@@ -51,7 +51,6 @@ else
 
     void HandleValidSubmit()
     {
-        //await Http.PostAsJsonAsync($"/api/addWeatherData?location={_formResponse.Location}&oldestDate={_formResponse.OldestDate.ToString("yyyy/MM/dd")}&newestDate={_formResponse.NewestDate.ToString("yyyy/MM/dd")}");
         Http.PostAsJsonAsync($"/api/addWeatherData",_formResponse);
     }
 

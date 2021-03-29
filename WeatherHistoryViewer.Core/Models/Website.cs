@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WeatherHistoryViewer.Core.Models.Weather
+namespace WeatherHistoryViewer.Core.Models
 {
     public enum DisplayedPropertys
     {
@@ -11,6 +11,14 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         MinTemp,
         SunHour
     }
+    public class CssBackgroundClass
+    {
+        public string AvgTemp { get; set; }
+        public string MinTemp { get; set; }
+        public string MaxTemp { get; set; }
+        public string SunHour { get; set; }
+    }
+
     public class WeatherOverview
     {
         public WeatherOverview()

@@ -1,4 +1,5 @@
-﻿using WeatherHistoryViewer.Core.Models.Weather;
+﻿using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Services.Handlers;
 using WeatherHistoryViewer.Services.Helpers;
 
