@@ -19,9 +19,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WeatherHistoryViewer.Db\WeatherHistoryViewer.Db.csproj" />
-    <ProjectReference Include="..\WeatherHistoryViewer.Services\WeatherHistoryViewer.Services.csproj" />
-  </ItemGroup>
-
 </Project>

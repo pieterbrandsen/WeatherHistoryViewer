@@ -10,8 +10,8 @@ namespace WeatherHistoryViewer.UnitTests.Services
 {
     public class Date
     {
-        private static DateHelper _dateHelper = new ();
-        
+        private static DateHelper _dateHelper = new();
+
         [Fact]
         public void GetAllRequestableDatesReturnShouldHaveALenghtLargerThenZero()
         {
@@ -42,7 +42,7 @@ namespace WeatherHistoryViewer.UnitTests.Services
         {
             var dateList = _dateHelper.GetRangeOfRequestableDates(oldestDateString, newestDateString);
 
-            Assert.Equal(expectedLength,dateList.Count);
+            Assert.Equal(expectedLength, dateList.Count);
         }
 
         [Theory]
@@ -58,20 +58,20 @@ namespace WeatherHistoryViewer.UnitTests.Services
             if (shortDate.Split("-").Length == 2) Assert.Equal(15, dateList.Count);
             else Assert.Empty(dateList);
         }
- 
+
         [Fact]
         public void ConvertDateStringToDateShouldReturnDatesWhenCorrectlyFormatted()
         {
             var dateString = "1-1-2001";
             var dateTimeObj = _dateHelper.ConvertDateStringToDate(dateString);
             Assert.IsType<DateTime>(dateTimeObj);
-            Assert.Equal(new DateTime(2001, 1, 1).Ticks,dateTimeObj.Ticks);
+            Assert.Equal(new DateTime(2001, 1, 1).Ticks, dateTimeObj.Ticks);
         }
 
 
         public static IEnumerable<object[]> GetListOfDates()
         {
-            for (int i = 1; i < 100; i+=4)
+            for (int i = 1; i < 100; i += 4)
             {
                 yield return new object[] { _dateHelper.GetDateStringOfDaysAgo(i) };
             }

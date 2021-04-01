@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Web.Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeatherHistoryViewer.Config", "WeatherHistoryViewer.Config\WeatherHistoryViewer.Config.csproj", "{6C709493-EB8C-4721-904E-BF87CA79F92B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherHistoryViewer.UnitTests", "WeatherHistoryViewer.UnitTests\WeatherHistoryViewer.UnitTests.csproj", "{1BD7AAD7-146D-4792-BD77-75F56604026D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{6C709493-EB8C-4721-904E-BF87CA79F92B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C709493-EB8C-4721-904E-BF87CA79F92B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C709493-EB8C-4721-904E-BF87CA79F92B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BD7AAD7-146D-4792-BD77-75F56604026D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD7AAD7-146D-4792-BD77-75F56604026D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD7AAD7-146D-4792-BD77-75F56604026D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD7AAD7-146D-4792-BD77-75F56604026D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
