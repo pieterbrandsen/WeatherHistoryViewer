@@ -3,7 +3,6 @@ using System.IO;
 using System.Net;
 using System.Text.Json;
 using WeatherHistoryViewer.Core.Models;
-using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services.Requester
 {

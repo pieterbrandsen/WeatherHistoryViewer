@@ -1,11 +1,9 @@
 ﻿@page "/weatherOfWeek"
 @using WeatherHistoryViewer.Services.Helpers
-@using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Core.Models
-@using WeatherHistoryViewer.Services.Handlers
+@using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Core.ViewModels
 @using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
-@using System.Linq
 @inject HttpClient Http
 
 @if (_weatherOfWeek == null)
@@ -24,16 +22,22 @@ else
         <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator />
             <ValidationSummary />
-            <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
+            <label for="location">
+                <span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" />
+            </label>
             <datalist id="locationSearch">
                 @foreach (var name in _locationNames)
                 {
                     <option>@name</option>
                 }
             </datalist>
-            <label for="date"><span>Date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.Date"></InputDate></label>
+            <label for="date">
+                <span>Date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.Date"></InputDate>
+            </label>
 
-            <label><span> </span><input type="submit" value="Load" /></label>
+            <label>
+                <span> </span><input type="submit" value="Load" />
+            </label>
         </EditForm>
     </div>
     <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegenda="@_weatherLegenda" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" DisplayedPropertys="@DisplayedPropertys.AvgTemp"></WeekTableComponent>
@@ -59,7 +63,7 @@ else
         _formResponse.Date = DateTime.Today;
 
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
-        var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week");
+        var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>("/api/weatherOf/week");
         _weatherLegenda = weatherOfWeekViewModel.WeatherLegenda;
         _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeather;
         _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
@@ -72,4 +76,5 @@ else
         _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeather;
         _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
     }
+
 }

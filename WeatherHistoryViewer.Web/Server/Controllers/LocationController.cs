@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WeatherHistoryViewer.Services.Handlers;
 
 namespace WeatherHistoryViewer.Web.Server.Controllers
@@ -11,7 +7,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
     [Route("/api/[controller]/[action]")]
     public class LocationController : ControllerBase
     {
-        private LocationHandler _locationHanlder = new();
+        private readonly LocationHandler _locationHanlder = new();
 
         [HttpGet]
         public IActionResult GetLocationNames()

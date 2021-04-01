@@ -7,25 +7,25 @@ namespace WeatherHistoryViewer.Db.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<double>(
-                name: "MinTemp",
-                table: "Weather",
-                type: "float",
+                "MinTemp",
+                "Weather",
+                "float",
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
 
             migrationBuilder.AlterColumn<double>(
-                name: "MaxTemp",
-                table: "Weather",
-                type: "float",
+                "MaxTemp",
+                "Weather",
+                "float",
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
 
             migrationBuilder.AlterColumn<double>(
-                name: "AvgTemp",
-                table: "Weather",
-                type: "float",
+                "AvgTemp",
+                "Weather",
+                "float",
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
@@ -34,25 +34,25 @@ namespace WeatherHistoryViewer.Db.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<int>(
-                name: "MinTemp",
-                table: "Weather",
-                type: "int",
+                "MinTemp",
+                "Weather",
+                "int",
                 nullable: false,
                 oldClrType: typeof(double),
                 oldType: "float");
 
             migrationBuilder.AlterColumn<int>(
-                name: "MaxTemp",
-                table: "Weather",
-                type: "int",
+                "MaxTemp",
+                "Weather",
+                "int",
                 nullable: false,
                 oldClrType: typeof(double),
                 oldType: "float");
 
             migrationBuilder.AlterColumn<int>(
-                name: "AvgTemp",
-                table: "Weather",
-                type: "int",
+                "AvgTemp",
+                "Weather",
+                "int",
                 nullable: false,
                 oldClrType: typeof(double),
                 oldType: "float");

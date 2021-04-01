@@ -1,6 +1,5 @@
-﻿@using WeatherHistoryViewer.Core.Models;
-@using WeatherHistoryViewer.Config;
-
+﻿@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Config
 <div class="legenda-container">
     <div>
         <h3 class="text/center">
@@ -19,10 +18,11 @@
             @Math.Round(MaxValue, 0)@Symbol
         </p>
     </div>
-    <br />
+    <br/>
 </div>
 
 @code {
+
     [Parameter]
     public WeatherLegenda WeatherLegenda { get; set; }
 
@@ -42,8 +42,9 @@
         {
             Symbol = " h";
         }
-        MaxValue = (double)WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Max);
-        AvgValue = (double)WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Avg);
-        MinValue = (double)WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Min);
+        MaxValue = (double) WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Max);
+        AvgValue = (double) WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Avg);
+        MinValue = (double) WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Min);
     }
+
 }

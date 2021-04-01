@@ -1,6 +1,5 @@
 ﻿@using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Core.Models
-
 <LegendaComponent WeatherLegenda="@WeatherLegenda" OverrideNameOfLegendaValue="@DisplayedPropertys.ToString()"></LegendaComponent>
 <table class="table table-bordered" style="width: auto;">
     <tr>
@@ -14,7 +13,7 @@
         <th>Sunday</th>
         <th>Average</th>
     </tr>
-    @for (int i = 0; i < WeatherOfWeek.Count; i++)
+    @for (var i = 0; i < WeatherOfWeek.Count; i++)
     {
         var week = WeatherOfWeek[i];
         <tr>
@@ -30,10 +29,11 @@
         </tr>
     }
 </table>
-<br />
-<br />
+<br/>
+<br/>
 
 @code {
+
     [Parameter]
     public List<List<HistoricalWeather>> WeatherOfWeek { get; set; }
 
@@ -45,6 +45,7 @@
 
     [Parameter]
     public DisplayedPropertys DisplayedPropertys { get; set; }
+
     private string Symbol = "°C";
 
     protected override void OnInitialized()
@@ -54,4 +55,5 @@
             Symbol = " h";
         }
     }
+
 }

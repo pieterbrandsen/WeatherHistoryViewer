@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeatherHistoryViewer.Core.Models.Weather
 {
@@ -9,6 +8,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         {
             CssBackgroundClass = new CssBackgroundClass();
         }
+
         public int Id { get; set; }
         public Location Location { get; set; }
 
@@ -20,7 +20,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public double TotalSnow { get; set; }
         public double SunHour { get; set; }
         public int UvIndex { get; set; }
-        [NotMapped]
-        public CssBackgroundClass CssBackgroundClass { get; set; }
+
+        [NotMapped] public CssBackgroundClass CssBackgroundClass { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿@page "/"
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Core.ViewModels
-@using WeatherHistoryViewer.Services.Helpers
 @using WeatherHistoryViewer.Web.Client.Shared.WeatherTables
 @inject HttpClient Http
 
@@ -27,4 +26,5 @@ else
         _weatherOverviews = weatherOverviewViewModel.WeatherOverviews;
         _weatherLegenda = weatherOverviewViewModel.WeatherLegenda;
     }
+
 }

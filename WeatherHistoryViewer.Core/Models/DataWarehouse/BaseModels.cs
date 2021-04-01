@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WeatherHistoryViewer.Core.Models.DataWarehouse
 {
@@ -11,10 +7,12 @@ namespace WeatherHistoryViewer.Core.Models.DataWarehouse
         public string Name { get; set; }
         public string Date { get; set; }
     }
+
     public class CssClasses
     {
         public string BackgroundColor { get; set; }
     }
+
     public class Time
     {
         public int Id { get; set; }

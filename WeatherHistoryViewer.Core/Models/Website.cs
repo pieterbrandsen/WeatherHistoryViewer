@@ -11,6 +11,7 @@ namespace WeatherHistoryViewer.Core.Models
         MinTemp,
         SunHour
     }
+
     public class CssBackgroundClass
     {
         public string AvgTemp { get; set; }
@@ -25,6 +26,7 @@ namespace WeatherHistoryViewer.Core.Models
         {
             CssBackgroundClass = new CssBackgroundClass();
         }
+
         public string Year { get; set; }
         public string LocationName { get; set; }
         public double MaxTemp { get; set; }
@@ -33,34 +35,29 @@ namespace WeatherHistoryViewer.Core.Models
         public string DateOfMinTemp { get; set; }
         public double AvgTemp { get; set; }
         public double SunHour { get; set; }
-        [NotMapped]
-        public CssBackgroundClass CssBackgroundClass { get; set; }
+
+        [NotMapped] public CssBackgroundClass CssBackgroundClass { get; set; }
     }
 
     public class FormResponse
     {
-        [Required]
-        public string Location { get; set; }
+        [Required] public string Location { get; set; }
 
-        [Required]
-        public DateTime Date { get; set; }
+        [Required] public DateTime Date { get; set; }
     }
+
     public class YearForm
     {
-        [Required]
-        public string Location { get; set; }
+        [Required] public string Location { get; set; }
     }
 
     public class AddWeatherDataForm
     {
-        [Required]
-        public string Location { get; set; }
+        [Required] public string Location { get; set; }
 
-        [Required]
-        public DateTime OldestDate { get; set; }
+        [Required] public DateTime OldestDate { get; set; }
 
-        [Required]
-        public DateTime NewestDate { get; set; }
+        [Required] public DateTime NewestDate { get; set; }
     }
 
     public class LegendaValues
@@ -71,13 +68,15 @@ namespace WeatherHistoryViewer.Core.Models
         public double SunHour { get; set; }
     }
 
-    public class WeatherLegenda {
+    public class WeatherLegenda
+    {
         public WeatherLegenda()
         {
             Max = new LegendaValues();
             Avg = new LegendaValues();
             Min = new LegendaValues();
         }
+
         public LegendaValues Max { get; set; }
         public LegendaValues Avg { get; set; }
         public LegendaValues Min { get; set; }

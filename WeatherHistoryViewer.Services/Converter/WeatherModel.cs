@@ -30,7 +30,7 @@ namespace WeatherHistoryViewer.Services.Converter
                 MinTemp = day.Mintemp,
                 SunHour = day.Sunhour,
                 TotalSnow = day.Totalsnow,
-                UvIndex = day.UvIndex,
+                UvIndex = day.UvIndex
             };
 
             return weather;

@@ -7,16 +7,16 @@ namespace WeatherHistoryViewer.Db.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "HourlyInterval",
-                table: "Weather");
+                "HourlyInterval",
+                "Weather");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "HourlyInterval",
-                table: "Weather",
-                type: "int",
+                "HourlyInterval",
+                "Weather",
+                "int",
                 nullable: false,
                 defaultValue: 0);
         }

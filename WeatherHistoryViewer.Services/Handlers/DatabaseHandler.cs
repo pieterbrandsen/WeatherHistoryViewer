@@ -66,7 +66,7 @@ namespace WeatherHistoryViewer.Services.Handlers
                     context.LocationsWarehouse.Attach(weatherWarehouse.Location);
                 if (new DateHelper().DoesDateExistInDb(weatherWarehouse.Time.Date))
                     context.Times.Attach(weatherWarehouse.Time);
-                    context.WeatherWarehouse.Add(weatherWarehouse);
+                context.WeatherWarehouse.Add(weatherWarehouse);
                 SaveChanges(context);
                 context.Database.CommitTransaction();
             }

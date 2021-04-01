@@ -8,6 +8,5 @@
         public static short NewestDaysAgo = 10;
 
         public static string NameOfLegendaValue = "AvgTemp";
-
     }
 }

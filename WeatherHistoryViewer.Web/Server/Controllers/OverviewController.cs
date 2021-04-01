@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Core.ViewModels;
 using WeatherHistoryViewer.Services.Helpers;
 
@@ -13,16 +8,17 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
     [Route("api/[controller]")]
     public class OverviewController : ControllerBase
     {
-        private WeatherHelper _weatherHelper = new();
-        private WebsiteHelper _websiteHelper = new();
+        private readonly LegendaHelper _legendaHelper = new();
+        private readonly WeatherHelper _weatherHelper = new();
+
         [HttpGet]
-        [ResponseCache(Duration = 60*60*24*30)]
+        [ResponseCache(Duration = 60 * 60 * 24 * 30)]
         public IActionResult Get()
         {
             var weatherOverviews = _weatherHelper.GetWeatherOverview();
-            var weatherLegenda = _websiteHelper.GetWeatherLegenda(weatherOverviews);
-            weatherOverviews = _websiteHelper.GetWeatherCssLegendaClasses(weatherOverviews, weatherLegenda);
-            var weatherOverviewViewModel = new WeatherOverviewViewModel()
+            var weatherLegenda = _legendaHelper.GetWeatherLegenda(weatherOverviews);
+            weatherOverviews = _legendaHelper.GetWeatherWithCssLegendaClasses(weatherOverviews, weatherLegenda);
+            var weatherOverviewViewModel = new WeatherOverviewViewModel
             {
                 WeatherOverviews = weatherOverviews,
                 WeatherLegenda = weatherLegenda

@@ -1,8 +1,6 @@
 ﻿@page "/weatherPerYear"
-@using WeatherHistoryViewer.Core.Models.Weather
-@using WeatherHistoryViewer.Services.Handlers
-@using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Services.Helpers
+@using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Core.ViewModels
 @using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
 @inject HttpClient Http
@@ -23,7 +21,9 @@ else
         <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator />
             <ValidationSummary />
-            <label for="location"><span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" /></label>
+            <label>
+                <span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" />
+            </label>
             <datalist id="locationSearch">
                 @foreach (var name in _locationNames)
                 {
@@ -31,7 +31,9 @@ else
                 }
             </datalist>
 
-            <label><span> </span><input type="submit" value="Load" /></label>
+            <label>
+                <span> </span><input type="submit" value="Load" />
+            </label>
         </EditForm>
     </div>
     <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
@@ -51,7 +53,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
-        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years");
+        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>("/api/weatherOf/years");
         _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
         _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
     }
@@ -62,4 +64,5 @@ else
         _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
         _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
     }
+
 }

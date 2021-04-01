@@ -25,18 +25,18 @@ namespace WeatherHistoryViewer.Db
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<UpdateTime>().HasData(new UpdateTime() {Name = "Weather",Date="0001/01/01" });
+            builder.Entity<UpdateTime>().HasData(new UpdateTime {Name = "Weather", Date = "0001/01/01"});
 
             builder.Entity<HistoricalWeather>()
                 .HasOne(i => i.Location)
                 .WithMany();
 
             builder.Entity<WeatherWarehouse>()
-    .HasOne(i => i.Location)
-    .WithMany();
+                .HasOne(i => i.Location)
+                .WithMany();
             builder.Entity<WeatherWarehouse>()
-.HasOne(i => i.Time)
-.WithMany();
+                .HasOne(i => i.Time)
+                .WithMany();
             builder.Entity<WeatherWarehouse>().Navigation(i => i.WeatherMeasurment);
 //.HasOne(i => i.WeatherMeasurment)
 //.WithOne();
@@ -46,10 +46,9 @@ namespace WeatherHistoryViewer.Db
 
             builder.Entity<LocationWarehouse>().HasKey(o => o.LocationName);
             builder.Entity<WeatherWarehouse>().HasKey(o => o.Id);
-            builder.Entity<Time>().HasKey(o=>o.Id);
+            builder.Entity<Time>().HasKey(o => o.Id);
             builder.Entity<WeatherMeasurment>().HasKey(o => o.Id);
             builder.Entity<UpdateTime>().HasKey(o => o.Name);
-
         }
     }
 }
