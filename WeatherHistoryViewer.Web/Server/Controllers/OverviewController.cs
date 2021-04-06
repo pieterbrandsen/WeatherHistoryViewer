@@ -13,7 +13,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         private readonly WeatherHelper _weatherHelper = new();
         private readonly ILogger _logger;
 
-        public OverviewController(ILogger<string> logger)
+        public OverviewController(ILogger<OverviewController> logger)
         {
             _logger = logger;
         }

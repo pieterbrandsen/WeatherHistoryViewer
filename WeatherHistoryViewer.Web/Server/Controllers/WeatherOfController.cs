@@ -19,7 +19,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         private readonly WeatherHelper _weatherHelper = new();
         private readonly ILogger _logger;
 
-        public WeatherOfController(ILogger<string> logger)
+        public WeatherOfController(ILogger<WeatherOfController> logger)
         {
             _defaultDate = DateTime.Now.AddDays(-1).ToString("MM/dd");
             _logger = logger;
