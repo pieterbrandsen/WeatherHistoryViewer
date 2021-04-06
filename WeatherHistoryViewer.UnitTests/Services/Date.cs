@@ -10,12 +10,12 @@ namespace WeatherHistoryViewer.UnitTests.Services
 {
     public class Date
     {
-        private static DateHelper _dateHelper = new();
+        private static readonly DateHelper DateHelper = new();
 
         [Fact]
-        public void GetAllRequestableDatesReturnShouldHaveALenghtLargerThenZero()
+        public void GetAllDatesReturnShouldHaveALengthLargerThenZero()
         {
-            var dateList = _dateHelper.GetAllRequestableDates();
+            var dateList = DateHelper.GetAllDates();
 
             Assert.InRange(dateList.Count, 1, 99999);
         }
@@ -24,15 +24,15 @@ namespace WeatherHistoryViewer.UnitTests.Services
         {
             for (int i = 1; i < 15; i++)
             {
-                var newestDate = _dateHelper.GetDateStringOfDaysAgo(i);
-                var oldestDate = _dateHelper.GetDateStringOfDaysAgo(i * 2);
+                var newestDate = DateHelper.GetDateStringOfDaysAgo(i);
+                var oldestDate = DateHelper.GetDateStringOfDaysAgo(i * 2);
                 var expectedLength = i + 1;
                 yield return new object[] { oldestDate, newestDate, expectedLength };
             }
 
-            yield return new object[] { null, null, _dateHelper.GetAllRequestableDates().Count + 1 };
-            yield return new object[] { _dateHelper.GetDateStringOfDaysAgo(2), null, 3 };
-            yield return new object[] { _dateHelper.GetDateStringOfDaysAgo(), _dateHelper.GetDateStringOfDaysAgo(2), 6 };
+            yield return new object[] { null, null, DateHelper.GetAllDates().Count + 1 };
+            yield return new object[] { DateHelper.GetDateStringOfDaysAgo(2), null, 3 };
+            yield return new object[] { DateHelper.GetDateStringOfDaysAgo(), DateHelper.GetDateStringOfDaysAgo(2), 6 };
 
         }
 
@@ -40,30 +40,16 @@ namespace WeatherHistoryViewer.UnitTests.Services
         [MemberData(nameof(GetDateRanges))]
         public void GetRangeOfRequestableDatesShouldReturnExpectedLength(string oldestDateString, string newestDateString, int expectedLength)
         {
-            var dateList = _dateHelper.GetRangeOfRequestableDates(oldestDateString, newestDateString);
+            var dateList = DateHelper.GetRangeOfDates(oldestDateString, newestDateString);
 
             Assert.Equal(expectedLength, dateList.Count);
-        }
-
-        [Theory]
-        [InlineData("02-7")]
-        [InlineData("2-07")]
-        [InlineData("25-7")]
-        [InlineData("25-7-2001")]
-        [InlineData("")]
-        [InlineData("abc")]
-        public void GetDateInLast15YShouldReturnEmptyOrListWith15Dates(string shortDate)
-        {
-            var dateList = _dateHelper.GetDateInLast15Y(shortDate);
-            if (shortDate.Split("-").Length == 2) Assert.Equal(15, dateList.Count);
-            else Assert.Empty(dateList);
         }
 
         [Fact]
         public void ConvertDateStringToDateShouldReturnDatesWhenCorrectlyFormatted()
         {
             var dateString = "1-1-2001";
-            var dateTimeObj = _dateHelper.ConvertDateStringToDate(dateString);
+            var dateTimeObj = DateHelper.ConvertDateStringToDate(dateString);
             Assert.IsType<DateTime>(dateTimeObj);
             Assert.Equal(new DateTime(2001, 1, 1).Ticks, dateTimeObj.Ticks);
         }
@@ -73,7 +59,7 @@ namespace WeatherHistoryViewer.UnitTests.Services
         {
             for (int i = 1; i < 100; i += 4)
             {
-                yield return new object[] { _dateHelper.GetDateStringOfDaysAgo(i) };
+                yield return new object[] { DateHelper.GetDateStringOfDaysAgo(i) };
             }
         }
 
@@ -81,7 +67,7 @@ namespace WeatherHistoryViewer.UnitTests.Services
         [MemberData(nameof(GetListOfDates))]
         public void GetWeekDatesFromDateShouldReturn7AsLength(string date)
         {
-            var dateList = _dateHelper.GetWeekDatesFromDate(date);
+            var dateList = DateHelper.GetWeekDatesFromDate(date);
             Assert.Equal(7, dateList.Count);
         }
     }

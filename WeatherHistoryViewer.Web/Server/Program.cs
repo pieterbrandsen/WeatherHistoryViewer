@@ -3,6 +3,7 @@ using Azure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace WeatherHistoryViewer.Web.Server
 {
@@ -16,6 +17,11 @@ namespace WeatherHistoryViewer.Web.Server
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                })
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));

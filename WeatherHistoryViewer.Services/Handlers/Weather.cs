@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using WeatherHistoryViewer.Config;
+using Microsoft.Extensions.Logging;
+using WeatherHistoryViewer.Core.Constants;
 using WeatherHistoryViewer.Core.Models.DataWarehouse;
 using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services.Converter;
@@ -15,14 +16,14 @@ namespace WeatherHistoryViewer.Services.Handlers
 {
     public class WeatherHandler
     {
-        private readonly WeathertackAPI _apiRequester;
+        private readonly WeatherStackApi _apiRequester;
         private readonly DatabaseHandler _database;
         private readonly DateHelper _dateHelper;
         private readonly WeatherModelConverter _weatherModelConverter;
 
         public WeatherHandler()
         {
-            _apiRequester = new WeathertackAPI();
+            _apiRequester = new WeatherStackApi();
             _weatherModelConverter = new WeatherModelConverter();
             _dateHelper = new DateHelper();
             _database = new DatabaseHandler();
@@ -34,11 +35,11 @@ namespace WeatherHistoryViewer.Services.Handlers
 
             try
             {
-                var WeathertackApiKey = UserSecrets.WeathertackApiKey;
+                var weatherStackApiKey = UserSecrets.WeatherStackApiKey;
 
                 var response =
-                    _apiRequester.GetHistoricalWeather(WeathertackApiKey, cityName, date);
-                if (response.Historical != null)
+                    _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date);
+                if (response?.Historical != null)
                 {
                     var weatherModel =
                         _weatherModelConverter.ToHistoricalWeatherModelConverter(response, date);
@@ -62,9 +63,9 @@ namespace WeatherHistoryViewer.Services.Handlers
             }
             else
             {
-                if (!_dateHelper.IsDateOlderThenOldestDate(oldestDate))
-                    dateList = _dateHelper.GetRangeOfDates(oldestDate, newestDate);
-                else dateList = _dateHelper.GetRangeOfDates(newestDateString: newestDate);
+                dateList = !_dateHelper.IsDateOlderThenOldestDate(oldestDate)
+                    ? _dateHelper.GetRangeOfDates(oldestDate, newestDate)
+                    : _dateHelper.GetRangeOfDates(newestDateString: newestDate);
             }
 
             using var context = new ApplicationDbContext();
@@ -85,8 +86,8 @@ namespace WeatherHistoryViewer.Services.Handlers
             try
             {
                 var dateHelper = new DateHelper();
-                var oldestDate = dateHelper.GetDateStringOfDaysAgo(365);
-                var newestDate = dateHelper.GetDateStringOfDaysAgo(WebConfig.NewestDaysAgo);
+                var oldestDate = dateHelper.GetDateStringOfDaysAgo(WeatherConstants.OldestDaysAgo);
+                var newestDate = dateHelper.GetDateStringOfDaysAgo(WeatherConstants.NewestDaysAgo);
                 var locations = new LocationHandler().GetLocationNames();
                 Task.Run(() =>
                 {
@@ -96,7 +97,7 @@ namespace WeatherHistoryViewer.Services.Handlers
                             newestDate);
                 });
 
-                if (new WeatherHelper().DoesWeatherWarehouseNeedToBeUpdated(MinDaysBeforeUpdatingWeather.Week))
+                if (new WeatherHelper().DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb.WeekPage))
                     new DataWarehouseHandlers().UpdateWeatherWarehouse();
             }
             catch (Exception e)

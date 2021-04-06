@@ -6,7 +6,7 @@ namespace WeatherHistoryViewer.Web.Server.ViewModels
 {
     public abstract class WeatherViewModel
     {
-        public WeatherLegenda WeatherLegenda { get; set; }
+        public WeatherLegend WeatherLegend { get; set; }
     }
 
     public sealed class WeatherOverviewViewModel : WeatherViewModel

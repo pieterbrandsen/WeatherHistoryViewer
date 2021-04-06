@@ -32,7 +32,7 @@ namespace WeatherHistoryViewer.Services
             var secretRevealer = new RevealUserSecrets(configuration);
             UserSecrets.ConnectionString = secretRevealer.ConnectionString();
             UserSecrets.WeatherHistoryApiKey = secretRevealer.WeatherHistoryApiKey();
-            UserSecrets.WeathertackApiKey = secretRevealer.WeathertackApiKey();
+            UserSecrets.WeatherStackApiKey = secretRevealer.WeatherStackApiKey();
 
             return services;
         }

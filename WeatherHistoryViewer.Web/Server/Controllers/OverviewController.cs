@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WeatherHistoryViewer.Core.ViewModels;
 using WeatherHistoryViewer.Services.Helpers;
 
@@ -8,22 +9,31 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
     [Route("api/[controller]")]
     public class OverviewController : ControllerBase
     {
-        private readonly LegendaHelper _legendaHelper = new();
+        private readonly LegendHelper _legendHelper = new();
         private readonly WeatherHelper _weatherHelper = new();
+        private readonly ILogger _logger;
+
+        public OverviewController(ILogger<string> logger)
+        {
+            _logger = logger;
+        }
 
         [HttpGet]
         [ResponseCache(Duration = 60 * 60 * 24 * 30)]
         public IActionResult Get()
         {
+            _logger.LogInformation("Started loading OverviewPage");
+
             var weatherOverviews = _weatherHelper.GetWeatherOverview();
-            var weatherLegenda = _legendaHelper.GetWeatherLegenda(weatherOverviews);
-            weatherOverviews = _legendaHelper.GetWeatherWithCssLegendaClasses(weatherOverviews, weatherLegenda);
+            var weatherLegend = _legendHelper.GetWeatherLegend(weatherOverviews);
+            weatherOverviews = _legendHelper.GetWeatherWithLegendClasses(weatherOverviews, weatherLegend);
             var weatherOverviewViewModel = new WeatherOverviewViewModel
             {
                 WeatherOverviews = weatherOverviews,
-                WeatherLegenda = weatherLegenda
+                WeatherLegend = weatherLegend
             };
 
+            _logger.LogInformation("Finished loading OverviewPage");
             return Ok(weatherOverviewViewModel);
         }
     }

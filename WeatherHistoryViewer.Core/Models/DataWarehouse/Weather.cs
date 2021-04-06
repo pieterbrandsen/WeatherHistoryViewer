@@ -2,26 +2,28 @@
 
 namespace WeatherHistoryViewer.Core.Models.DataWarehouse
 {
-    public enum MinDaysBeforeUpdatingWeather
+    public enum MinCachingDaysBeforeUpdatingWeatherDb
     {
-        Overview = 60,
-        Years = 30,
-        Week = 7,
-        Day = 1
+        OverviewPage = 60,
+        YearsPage = 30,
+        WeekPage = 7,
+        DayPage = 1
     }
 
-    public class WeatherMeasurment
+    public enum PossibleLegendValues
+    {
+        AvgTemp,
+        MaxTemp,
+        MinTemp,
+        SunHour
+    }
+
+    public class WeatherMeasurement
     {
         public int Id { get; set; }
         public double AvgTemp { get; set; }
         public double MaxTemp { get; set; }
-
-        [NotMapped] public Time TimeOfHighestMaxTemp { get; set; }
-
         public double MinTemp { get; set; }
-
-        [NotMapped] public Time TimeOfLowestMinTemp { get; set; }
-
         public double SunHour { get; set; }
     }
 
@@ -30,8 +32,6 @@ namespace WeatherHistoryViewer.Core.Models.DataWarehouse
         public int Id { get; set; }
         public LocationWarehouse Location { get; set; }
         public Time Time { get; set; }
-        public WeatherMeasurment WeatherMeasurment { get; set; }
-
-        [NotMapped] public CssClasses CssClasses { get; set; }
+        public WeatherMeasurement WeatherMeasurement { get; set; }
     }
 }

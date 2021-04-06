@@ -1,137 +1,140 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WeatherHistoryViewer.Config;
+using WeatherHistoryViewer.Core.Constants;
 using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Core.Models.DataWarehouse;
 using WeatherHistoryViewer.Core.Models.Weather;
 
 namespace WeatherHistoryViewer.Services.Helpers
 {
-    public class LegendaHelper
+    public class LegendHelper
     {
-        private WeatherLegenda GetLegendaValues(WeatherLegenda legenda, List<double> weatherValues, string propertyName)
+        private WeatherLegend GetLegendValues(WeatherLegend legend, List<double> weatherValues, string propertyName)
         {
-            legenda.Max.GetType().GetProperty(propertyName)?.SetValue(legenda.Max,
+            legend.Max.GetType().GetProperty(propertyName)?.SetValue(legend.Max,
                 Math.Round(weatherValues.Max(), 2));
-            legenda.Avg.GetType().GetProperty(propertyName)?.SetValue(legenda.Avg,
+            legend.Avg.GetType().GetProperty(propertyName)?.SetValue(legend.Avg,
                 Math.Round(weatherValues.Average(), 2));
-            legenda.Min.GetType().GetProperty(propertyName)?.SetValue(legenda.Min,
+            legend.Min.GetType().GetProperty(propertyName)?.SetValue(legend.Min,
                 Math.Round(weatherValues.Min(), 2));
 
-            return legenda;
+            return legend;
         }
 
-        public WeatherLegenda GetWeatherLegenda(List<WeatherOverview> weatherOverviews)
+        public WeatherLegend GetWeatherLegend(List<WeatherOverview> weatherOverviews)
         {
-            var weatherLegenda = new WeatherLegenda();
+            var weatherLegend = new WeatherLegend();
 
             var maxTemp = weatherOverviews.Select(w => w.MaxTemp).ToList();
-            weatherLegenda = GetLegendaValues(weatherLegenda, maxTemp, "MaxTemp");
+            weatherLegend = GetLegendValues(weatherLegend, maxTemp, "MaxTemp");
             var avgTemp = weatherOverviews.Select(w => w.AvgTemp).ToList();
-            weatherLegenda = GetLegendaValues(weatherLegenda, avgTemp, "AvgTemp");
+            weatherLegend = GetLegendValues(weatherLegend, avgTemp, "AvgTemp");
             var minTemp = weatherOverviews.Select(w => w.MinTemp).ToList();
-            weatherLegenda = GetLegendaValues(weatherLegenda, minTemp, "MinTemp");
+            weatherLegend = GetLegendValues(weatherLegend, minTemp, "MinTemp");
             var sunHour = weatherOverviews.Select(w => w.SunHour).ToList();
-            weatherLegenda = GetLegendaValues(weatherLegenda, sunHour, "SunHour");
-            return weatherLegenda;
+            weatherLegend = GetLegendValues(weatherLegend, sunHour, "SunHour");
+            return weatherLegend;
         }
 
-        public WeatherLegenda GetWeatherLegenda(List<HistoricalWeather> historicalWeather)
+        public WeatherLegend GetWeatherLegend(List<HistoricalWeather> historicalWeather)
         {
-            var weatherLegenda = new WeatherLegenda();
+            var weatherLegenda = new WeatherLegend();
 
             var maxTemp = historicalWeather.Select(w => w.MaxTemp).ToList();
-            weatherLegenda = GetLegendaValues(weatherLegenda, maxTemp, "MaxTemp");
+            weatherLegenda = GetLegendValues(weatherLegenda, maxTemp, "MaxTemp");
             var avgTemp = historicalWeather.Select(w => w.AvgTemp).ToList();
-            weatherLegenda = GetLegendaValues(weatherLegenda, avgTemp, "AvgTemp");
+            weatherLegenda = GetLegendValues(weatherLegenda, avgTemp, "AvgTemp");
             var minTemp = historicalWeather.Select(w => w.MinTemp).ToList();
-            weatherLegenda = GetLegendaValues(weatherLegenda, minTemp, "MinTemp");
+            weatherLegenda = GetLegendValues(weatherLegenda, minTemp, "MinTemp");
             var sunHour = historicalWeather.Select(w => w.SunHour).ToList();
-            weatherLegenda = GetLegendaValues(weatherLegenda, sunHour, "SunHour");
+            weatherLegenda = GetLegendValues(weatherLegenda, sunHour, "SunHour");
             return weatherLegenda;
         }
 
-        private static string GetCssLegendaClass(double currValue, double maxValue, double minValue)
+        private static string GetCssLegendClass(double currentValue, double maxValue, double minValue)
         {
-            return $"legendaColor{Math.Round((currValue - minValue) / (maxValue - minValue) * 10, 0)}";
+            return $"legendColor{Math.Round((currentValue - minValue) / (maxValue - minValue) * 10, 0)}";
         }
 
-        public List<WeatherOverview> GetWeatherWithCssLegendaClasses(List<WeatherOverview> weatherOverviews,
-            WeatherLegenda legenda, bool forceAssigningClasses = false)
+        public List<WeatherOverview> GetWeatherWithLegendClasses(List<WeatherOverview> weatherOverviews,
+            WeatherLegend legend, bool forceAssigningClasses = false)
         {
             foreach (var item in weatherOverviews)
             {
-                switch (WebConfig.NameOfLegendaValue)
-                {
-                    case "MaxTemp":
-                        item.CssBackgroundClass.MaxTemp =
-                            GetCssLegendaClass(item.MaxTemp, legenda.Max.MaxTemp, legenda.Min.MaxTemp);
-                        break;
-                    case "AvgTemp":
-                        item.CssBackgroundClass.AvgTemp =
-                            GetCssLegendaClass(item.AvgTemp, legenda.Max.AvgTemp, legenda.Min.AvgTemp);
-                        break;
-                    case "MinTemp":
-                        item.CssBackgroundClass.MinTemp =
-                            GetCssLegendaClass(item.MinTemp, legenda.Max.MinTemp, legenda.Min.MinTemp);
-                        break;
-                    case "SunHour":
-                        item.CssBackgroundClass.SunHour =
-                            GetCssLegendaClass(item.SunHour, legenda.Max.SunHour, legenda.Min.SunHour);
-                        break;
-                }
-
                 if (forceAssigningClasses)
                 {
-                    item.CssBackgroundClass.MaxTemp =
-                        GetCssLegendaClass(item.MaxTemp, legenda.Max.MaxTemp, legenda.Min.MaxTemp);
-                    item.CssBackgroundClass.AvgTemp =
-                        GetCssLegendaClass(item.AvgTemp, legenda.Max.AvgTemp, legenda.Min.AvgTemp);
-                    item.CssBackgroundClass.MinTemp =
-                        GetCssLegendaClass(item.MinTemp, legenda.Max.MinTemp, legenda.Min.MinTemp);
-                    item.CssBackgroundClass.SunHour =
-                        GetCssLegendaClass(item.SunHour, legenda.Max.SunHour, legenda.Min.SunHour);
+                    item.CssClass.MaxTemp =
+                        GetCssLegendClass(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp);
+                    item.CssClass.AvgTemp =
+                        GetCssLegendClass(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp);
+                    item.CssClass.MinTemp =
+                        GetCssLegendClass(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp);
+                    item.CssClass.SunHour =
+                        GetCssLegendClass(item.SunHour, legend.Max.SunHour, legend.Min.SunHour);
+                    continue;
+                }
+
+                switch (WeatherConstants.NameOfLegendValue)
+                {
+                    case PossibleLegendValues.MaxTemp:
+                        item.CssClass.MaxTemp =
+                            GetCssLegendClass(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp);
+                        break;
+                    case PossibleLegendValues.AvgTemp:
+                        item.CssClass.AvgTemp =
+                            GetCssLegendClass(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp);
+                        break;
+                    case PossibleLegendValues.MinTemp:
+                        item.CssClass.MinTemp =
+                            GetCssLegendClass(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp);
+                        break;
+                    case PossibleLegendValues.SunHour:
+                        item.CssClass.SunHour =
+                            GetCssLegendClass(item.SunHour, legend.Max.SunHour, legend.Min.SunHour);
+                        break;
                 }
             }
 
             return weatherOverviews;
         }
 
-        public List<HistoricalWeather> GetWeatherWithCssLegendaClasses(List<HistoricalWeather> historicalWeather,
-            WeatherLegenda legenda, bool forceAssigningClasses = false)
+        public List<HistoricalWeather> GetWeatherWithLegendClasses(List<HistoricalWeather> historicalWeather,
+            WeatherLegend legend, bool forceAssigningClasses = false)
         {
             foreach (var item in historicalWeather)
             {
-                switch (WebConfig.NameOfLegendaValue)
-                {
-                    case "MaxTemp":
-                        item.CssBackgroundClass.MaxTemp =
-                            GetCssLegendaClass(item.MaxTemp, legenda.Max.MaxTemp, legenda.Min.MaxTemp);
-                        break;
-                    case "AvgTemp":
-                        item.CssBackgroundClass.AvgTemp =
-                            GetCssLegendaClass(item.AvgTemp, legenda.Max.AvgTemp, legenda.Min.AvgTemp);
-                        break;
-                    case "MinTemp":
-                        item.CssBackgroundClass.MinTemp =
-                            GetCssLegendaClass(item.MinTemp, legenda.Max.MinTemp, legenda.Min.MinTemp);
-                        break;
-                    case "SunHour":
-                        item.CssBackgroundClass.SunHour =
-                            GetCssLegendaClass(item.SunHour, legenda.Max.SunHour, legenda.Min.SunHour);
-                        break;
-                }
-
                 if (forceAssigningClasses)
                 {
-                    item.CssBackgroundClass.MaxTemp =
-                        GetCssLegendaClass(item.MaxTemp, legenda.Max.MaxTemp, legenda.Min.MaxTemp);
-                    item.CssBackgroundClass.AvgTemp =
-                        GetCssLegendaClass(item.AvgTemp, legenda.Max.AvgTemp, legenda.Min.AvgTemp);
-                    item.CssBackgroundClass.MinTemp =
-                        GetCssLegendaClass(item.MinTemp, legenda.Max.MinTemp, legenda.Min.MinTemp);
-                    item.CssBackgroundClass.SunHour =
-                        GetCssLegendaClass(item.SunHour, legenda.Max.SunHour, legenda.Min.SunHour);
+                    item.CssClass.MaxTemp =
+                        GetCssLegendClass(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp);
+                    item.CssClass.AvgTemp =
+                        GetCssLegendClass(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp);
+                    item.CssClass.MinTemp =
+                        GetCssLegendClass(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp);
+                    item.CssClass.SunHour =
+                        GetCssLegendClass(item.SunHour, legend.Max.SunHour, legend.Min.SunHour);
+                    continue;
+                }
+
+                switch (WeatherConstants.NameOfLegendValue)
+                {
+                    case PossibleLegendValues.MaxTemp:
+                        item.CssClass.MaxTemp =
+                            GetCssLegendClass(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp);
+                        break;
+                    case PossibleLegendValues.AvgTemp:
+                        item.CssClass.AvgTemp =
+                            GetCssLegendClass(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp);
+                        break;
+                    case PossibleLegendValues.MinTemp:
+                        item.CssClass.MinTemp =
+                            GetCssLegendClass(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp);
+                        break;
+                    case PossibleLegendValues.SunHour:
+                        item.CssClass.SunHour =
+                            GetCssLegendClass(item.SunHour, legend.Max.SunHour, legend.Min.SunHour);
+                        break;
                 }
             }
 

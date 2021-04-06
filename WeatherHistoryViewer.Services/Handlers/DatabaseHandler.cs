@@ -25,15 +25,17 @@ namespace WeatherHistoryViewer.Services.Handlers
                 if (_locationHandler.DoesLocationExistInDb(weather.Location.Name))
                     context.Locations.Attach(weather.Location);
                 context.Weather.Add(weather);
-                SaveChanges(context);
+            context.SaveChanges();
                 context.Database.CommitTransaction();
             }
             catch (Exception e)
             {
                 context.Database.RollbackTransaction();
-                context.Database.CloseConnection();
                 Console.WriteLine(e);
-                throw;
+            }
+            finally
+            {
+                context.Database.CloseConnection();
             }
         }
 
@@ -42,15 +44,11 @@ namespace WeatherHistoryViewer.Services.Handlers
             using var context = new ApplicationDbContext();
             try
             {
-                context.Database.BeginTransaction();
                 context.LocationsWarehouse.Add(locationWarehouse);
-                SaveChanges(context);
-                context.Database.CommitTransaction();
+            context.SaveChanges();
             }
             catch (Exception e)
             {
-                context.Database.RollbackTransaction();
-                context.Database.CloseConnection();
                 Console.WriteLine(e);
                 throw;
             }
@@ -67,23 +65,18 @@ namespace WeatherHistoryViewer.Services.Handlers
                 if (new DateHelper().DoesDateExistInDb(weatherWarehouse.Time.Date))
                     context.Times.Attach(weatherWarehouse.Time);
                 context.WeatherWarehouse.Add(weatherWarehouse);
-                SaveChanges(context);
+            context.SaveChanges();
                 context.Database.CommitTransaction();
             }
             catch (Exception e)
             {
                 context.Database.RollbackTransaction();
-                context.Database.CloseConnection();
                 Console.WriteLine(e);
-                throw;
             }
-        }
-
-        private void SaveChanges(ApplicationDbContext context)
-        {
-            context.Database.OpenConnection();
-            context.SaveChanges();
-            context.Database.CloseConnection();
+            finally
+            {
+                context.Database.CloseConnection();
+            }
         }
     }
 }

@@ -11,17 +11,17 @@ else
 {
     <div class="form-style">
         <div class="form-style-heading">Add weather data</div>
-        @if (_formResponse.Location != null)
+        @if (_response.Location != null)
         {
             <p>
-                <b>Currently downloading data for @_formResponse.Location </b>
+                <b>Currently downloading data for @_response.Location </b>
             </p>
         }
-        <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+        <EditForm Model="@_response" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator/>
             <ValidationSummary/>
             <label for="location">
-                <span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch"/>
+                <span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_response.Location" list="locationSearch"/>
             </label>
             <datalist id="locationSearch">
                 @foreach (var name in _locationNames)
@@ -29,11 +29,11 @@ else
                     <option>@name</option>
                 }
             </datalist>
-            <label for="date">
-                <span>Oldest date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.OldestDate"></InputDate>
+            <label>
+                <span>Oldest date <span class="required">*</span></span><InputDate @bind-Value="_response.OldestDate"></InputDate>
             </label>
-            <label for="date">
-                <span>Newest date <span class="required">*</span></span><InputDate @bind-Value="_formResponse.NewestDate"></InputDate>
+            <label>
+                <span>Newest date <span class="required">*</span></span><InputDate @bind-Value="_response.NewestDate"></InputDate>
             </label>
             <label>
                 <span> </span><input type="submit" value="Add"/>
@@ -43,20 +43,20 @@ else
 }
 
 @code {
-    private readonly AddWeatherDataForm _formResponse = new();
+    private readonly Core.Models.AddWeatherData _response = new();
 
     private List<string> _locationNames;
 
     protected override async Task OnInitializedAsync()
     {
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
-        _formResponse.NewestDate = DateTime.Today;
-        _formResponse.OldestDate = DateTime.Today.AddDays(-365);
+        _response.NewestDate = DateTime.Today;
+        _response.OldestDate = DateTime.Today.AddDays(-365);
     }
 
     void HandleValidSubmit()
     {
-        Http.PostAsJsonAsync("/api/addWeatherData", _formResponse);
+        Http.PostAsJsonAsync("/api/addWeatherData", _response);
     }
 
 }

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WeatherHistoryViewer.Core.Constants;
 using WeatherHistoryViewer.Db;
 
 namespace WeatherHistoryViewer.Services.Helpers
 {
     public class DateHelper
     {
-        public const string OldestDate = "2008/07/01";
-
         public List<string> GetAllDates()
         {
             var dateList = new List<string>();
@@ -16,7 +15,7 @@ namespace WeatherHistoryViewer.Services.Helpers
             var i = DateTime.Today;
             var latestDateString = ConvertDateToDateString(i);
 
-            while (latestDateString != OldestDate)
+            while (latestDateString != WeatherConstants.OldestWeatherDatePossible)
             {
                 i = GetDateOfYesterday(i);
                 latestDateString = ConvertDateToDateString(i);
@@ -34,9 +33,9 @@ namespace WeatherHistoryViewer.Services.Helpers
             dateList.Add(ConvertDateToDateString(newestDate));
             var i = newestDate;
             var latestDateString = ConvertDateToDateString(i);
-            if (oldestDateString == null)
-                oldestDateString = OldestDate;
-            else oldestDateString = ConvertDateStringToCorrectDateString(oldestDateString);
+            oldestDateString = oldestDateString == null
+                ? WeatherConstants.OldestWeatherDatePossible
+                : ConvertDateStringToCorrectDateString(oldestDateString);
 
             while (latestDateString != oldestDateString)
             {
@@ -90,7 +89,7 @@ namespace WeatherHistoryViewer.Services.Helpers
 
         public bool IsDateOlderThenOldestDate(string date)
         {
-            return ConvertDateStringToDate(date).Ticks < ConvertDateStringToDate(OldestDate).Ticks;
+            return ConvertDateStringToDate(date).Ticks < ConvertDateStringToDate(WeatherConstants.OldestWeatherDatePossible).Ticks;
         }
 
         public List<string> GetWeekDatesFromDate(string date)

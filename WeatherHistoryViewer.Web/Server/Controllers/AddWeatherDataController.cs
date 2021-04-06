@@ -12,7 +12,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         private readonly WeatherHandler _weatherHandler = new();
 
         [HttpPost]
-        public IActionResult Index(AddWeatherDataForm form)
+        public IActionResult Index(AddWeatherData form)
         {
             Task.Run(() =>
             {

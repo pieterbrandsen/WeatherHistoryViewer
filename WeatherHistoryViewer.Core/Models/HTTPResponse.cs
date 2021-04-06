@@ -13,19 +13,4 @@ namespace WeatherHistoryViewer.Core.Models
 
         [JsonPropertyName("historical")] public HistoricalJSON Historical { get; set; }
     }
-
-    public class CurrentWeatherResponse
-    {
-        [JsonPropertyName("request")] public RequestJSON Request { get; set; }
-
-        [JsonPropertyName("location")] public Location Location { get; set; }
-
-        [JsonPropertyName("current")] public CurrentJSON Current { get; set; }
-    }
-
-    public class HttpStatusResponse
-    {
-        public bool Result { get; set; } = false;
-        public HttpStatusModel StatusModel { get; set; }
-    }
 }

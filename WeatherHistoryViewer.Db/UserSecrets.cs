@@ -6,7 +6,7 @@ namespace WeatherHistoryViewer.Db
     {
         public static string ConnectionString;
         public static string WeatherHistoryApiKey;
-        public static string WeathertackApiKey;
+        public static string WeatherStackApiKey;
     }
 
     public class RevealUserSecrets
@@ -28,9 +28,9 @@ namespace WeatherHistoryViewer.Db
             return _configuration["WeatherHistoryViewer"];
         }
 
-        public string WeathertackApiKey()
+        public string WeatherStackApiKey()
         {
-            return _configuration["Weathertack"];
+            return _configuration["WeatherStack"];
         }
     }
 }

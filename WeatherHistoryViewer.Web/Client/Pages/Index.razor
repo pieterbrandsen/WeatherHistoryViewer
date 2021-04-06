@@ -12,19 +12,23 @@
 }
 else
 {
+    <LegendComponent WeatherLegend="@_weatherLegend"></LegendComponent>
     <OverviewTableComponent WeatherOverviews="@_weatherOverviews"></OverviewTableComponent>
 }
 
 @code {
 
     private List<WeatherOverview> _weatherOverviews;
-    private WeatherLegenda _weatherLegenda;
+    private WeatherLegend _weatherLegend;
 
     protected override async Task OnInitializedAsync()
     {
         var weatherOverviewViewModel = await Http.GetFromJsonAsync<WeatherOverviewViewModel>("/api/overview");
-        _weatherOverviews = weatherOverviewViewModel.WeatherOverviews;
-        _weatherLegenda = weatherOverviewViewModel.WeatherLegenda;
+        if (weatherOverviewViewModel != null)
+        {
+            _weatherOverviews = weatherOverviewViewModel.WeatherOverviews;
+            _weatherLegend = weatherOverviewViewModel.WeatherLegend;
+        }
     }
 
 }

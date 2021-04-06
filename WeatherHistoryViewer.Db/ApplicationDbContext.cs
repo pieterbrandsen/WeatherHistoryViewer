@@ -14,12 +14,11 @@ namespace WeatherHistoryViewer.Db
         public DbSet<HistoricalWeather> Weather { get; set; }
 
         public DbSet<Time> Times { get; set; }
-        public DbSet<WeatherMeasurment> WeatherMeasurments { get; set; }
+        public DbSet<WeatherMeasurement> WeatherMeasurements { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.EnableSensitiveDataLogging();
-            if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlServer(UserSecrets.ConnectionString);
+            if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlServer("Data Source=weather-history-db.database.windows.net;Initial Catalog=WeatherHistoryDataDb;User ID=pieterbrandsen;Password=Passw0rd;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -37,17 +36,10 @@ namespace WeatherHistoryViewer.Db
             builder.Entity<WeatherWarehouse>()
                 .HasOne(i => i.Time)
                 .WithMany();
-            builder.Entity<WeatherWarehouse>().Navigation(i => i.WeatherMeasurment);
-//.HasOne(i => i.WeatherMeasurment)
-//.WithOne();
+            builder.Entity<WeatherWarehouse>().Navigation(i => i.WeatherMeasurement);
 
-            builder.Entity<HistoricalWeather>().HasKey(o => o.Id);
             builder.Entity<Location>().HasKey(o => o.Name);
-
             builder.Entity<LocationWarehouse>().HasKey(o => o.LocationName);
-            builder.Entity<WeatherWarehouse>().HasKey(o => o.Id);
-            builder.Entity<Time>().HasKey(o => o.Id);
-            builder.Entity<WeatherMeasurment>().HasKey(o => o.Id);
             builder.Entity<UpdateTime>().HasKey(o => o.Name);
         }
     }

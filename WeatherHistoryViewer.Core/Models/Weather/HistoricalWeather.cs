@@ -6,7 +6,7 @@ namespace WeatherHistoryViewer.Core.Models.Weather
     {
         public HistoricalWeather()
         {
-            CssBackgroundClass = new CssBackgroundClass();
+            CssClass = new CssClass();
         }
 
         public int Id { get; set; }
@@ -21,6 +21,6 @@ namespace WeatherHistoryViewer.Core.Models.Weather
         public double SunHour { get; set; }
         public int UvIndex { get; set; }
 
-        [NotMapped] public CssBackgroundClass CssBackgroundClass { get; set; }
+        [NotMapped] public CssClass CssClass { get; set; }
     }
 }

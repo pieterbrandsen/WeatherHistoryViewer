@@ -8,11 +8,6 @@ namespace WeatherHistoryViewer.Core.Models.DataWarehouse
         public string Date { get; set; }
     }
 
-    public class CssClasses
-    {
-        public string BackgroundColor { get; set; }
-    }
-
     public class Time
     {
         public int Id { get; set; }

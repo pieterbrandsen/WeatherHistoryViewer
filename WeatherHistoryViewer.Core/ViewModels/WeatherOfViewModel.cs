@@ -6,7 +6,7 @@ namespace WeatherHistoryViewer.Core.ViewModels
 {
     public abstract class WeatherViewModel
     {
-        public WeatherLegenda WeatherLegenda { get; set; }
+        public WeatherLegend WeatherLegend { get; set; }
     }
 
     public sealed class WeatherOfYearsViewModel : WeatherViewModel

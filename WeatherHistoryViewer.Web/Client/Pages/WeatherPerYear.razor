@@ -3,6 +3,7 @@
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Core.ViewModels
 @using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
+@using WeatherHistoryViewer.Core.Constants
 @inject HttpClient Http
 
 @if (_weatherOfYears == null)
@@ -18,51 +19,54 @@ else
         <p>
             Currently loaded data for @_weatherOfYears.First().LocationName
         </p>
-        <EditForm Model="@_formResponse" OnValidSubmit="@HandleValidSubmit">
+        <EditForm Model="@_yearData" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <label>
-                <span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_formResponse.Location" list="locationSearch" />
+                <span>Location <span class="required">*</span></span>
+                <select @bind="@_yearData.Location" class="input-field">
+                    @foreach (var name in _locationNames)
+                    {
+                        <option>@name</option>
+                    }
+                </select>
             </label>
-            <datalist id="locationSearch">
-                @foreach (var name in _locationNames)
-                {
-                    <option>@name</option>
-                }
-            </datalist>
 
             <label>
                 <span> </span><input type="submit" value="Load" />
             </label>
         </EditForm>
     </div>
-    <LegendaComponent WeatherLegenda="@_weatherLegenda"></LegendaComponent>
+    <LegendComponent WeatherLegend="@_weatherLegend"></LegendComponent>
     <YearsTableComponent WeatherOfYears="@_weatherOfYears"></YearsTableComponent>
 }
 
 @code {
-    private readonly WeatherHelper _weatherHelper = new();
-    private readonly DateHelper _dateHelper = new();
-
-    private readonly YearForm _formResponse = new();
+    private readonly YearData _yearData = new();
 
     private List<WeatherOverview> _weatherOfYears;
-    private WeatherLegenda _weatherLegenda;
+    private WeatherLegend _weatherLegend;
     private List<string> _locationNames;
 
     protected override async Task OnInitializedAsync()
     {
+        _yearData.Location = WeatherConstants.DefaultLocationName;
         _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
-        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>("/api/weatherOf/years");
-        _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
-        _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
+        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years?location={_yearData.Location}");
+        if (weatherOfYearsViewModel != null)
+        {
+            _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
+            _weatherLegend = weatherOfYearsViewModel.WeatherLegend;
+        }
     }
 
     async Task HandleValidSubmit()
     {
-        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years?location={_formResponse.Location}");
-        _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
-        _weatherLegenda = weatherOfYearsViewModel.WeatherLegenda;
+        var weatherOfYearsViewModel = await Http.GetFromJsonAsync<WeatherOfYearsViewModel>($"/api/weatherOf/years?location={_yearData.Location}");
+        if (weatherOfYearsViewModel != null)
+        {
+            _weatherOfYears = weatherOfYearsViewModel.WeatherOverviews;
+            _weatherLegend = weatherOfYearsViewModel.WeatherLegend;
+        }
     }
-
 }

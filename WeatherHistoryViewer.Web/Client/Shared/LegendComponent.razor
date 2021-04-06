@@ -1,9 +1,9 @@
 ﻿@using WeatherHistoryViewer.Core.Models
-@using WeatherHistoryViewer.Config
+@using WeatherHistoryViewer.Core.Constants
 <div class="legenda-container">
     <div>
-        <h3 class="text/center">
-            <b>@NameOfLegendaValue</b>
+        <h3 class="text-center">
+            <b>@NameOfLegendValue</b>
         </h3>
     </div>
     <div class="color-range"></div>
@@ -24,27 +24,27 @@
 @code {
 
     [Parameter]
-    public WeatherLegenda WeatherLegenda { get; set; }
+    public WeatherLegend WeatherLegend { get; set; }
 
     [Parameter]
-    public string OverrideNameOfLegendaValue { get; set; }
+    public string OverrideNameOfLegendValue { get; set; }
 
     private double MaxValue { get; set; }
     private double AvgValue { get; set; }
     private double MinValue { get; set; }
-    private string NameOfLegendaValue { get; set; }
+    private string NameOfLegendValue { get; set; }
     private string Symbol = "°C";
 
     protected override void OnInitialized()
     {
-        NameOfLegendaValue = OverrideNameOfLegendaValue ?? WebConfig.NameOfLegendaValue;
-        if (NameOfLegendaValue == "SunHour")
+        NameOfLegendValue = OverrideNameOfLegendValue ?? WeatherConstants.NameOfLegendValue.ToString();
+        if (NameOfLegendValue == "SunHour")
         {
             Symbol = " h";
         }
-        MaxValue = (double) WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Max);
-        AvgValue = (double) WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Avg);
-        MinValue = (double) WeatherLegenda.Max.GetType().GetProperty(NameOfLegendaValue).GetValue(WeatherLegenda.Min);
+        MaxValue = (double) WeatherLegend.Max.GetType().GetProperty(NameOfLegendValue).GetValue(WeatherLegend.Max);
+        AvgValue = (double) WeatherLegend.Max.GetType().GetProperty(NameOfLegendValue).GetValue(WeatherLegend.Avg);
+        MinValue = (double) WeatherLegend.Max.GetType().GetProperty(NameOfLegendValue).GetValue(WeatherLegend.Min);
     }
 
 }

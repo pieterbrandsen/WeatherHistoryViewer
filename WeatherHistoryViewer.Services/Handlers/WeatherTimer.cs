@@ -6,7 +6,7 @@ namespace WeatherHistoryViewer.Services
 {
     public class WeatherTimer
     {
-        private static Timer timer;
+        private static Timer _timer;
         private static WeatherHandler _weatherHandler;
         private static DateHelper _dateHelper;
         private static LocationHandler _locationHandler;
@@ -20,13 +20,13 @@ namespace WeatherHistoryViewer.Services
 
         public void StartTimer()
         {
-            timer = new Timer
+            _timer = new Timer
             {
                 Enabled = true,
                 AutoReset = true,
                 Interval = 12 * 60 * 60 * 1000
             };
-            timer.Elapsed += OnTimedEvent;
+            _timer.Elapsed += OnTimedEvent;
         }
 
         private static void OnTimedEvent(object source, ElapsedEventArgs e)

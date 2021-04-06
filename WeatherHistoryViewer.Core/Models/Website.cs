@@ -4,15 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WeatherHistoryViewer.Core.Models
 {
-    public enum DisplayedPropertys
-    {
-        AvgTemp,
-        MaxTemp,
-        MinTemp,
-        SunHour
-    }
-
-    public class CssBackgroundClass
+    public class CssClass
     {
         public string AvgTemp { get; set; }
         public string MinTemp { get; set; }
@@ -24,7 +16,7 @@ namespace WeatherHistoryViewer.Core.Models
     {
         public WeatherOverview()
         {
-            CssBackgroundClass = new CssBackgroundClass();
+            CssClass = new CssClass();
         }
 
         public string Year { get; set; }
@@ -36,31 +28,33 @@ namespace WeatherHistoryViewer.Core.Models
         public double AvgTemp { get; set; }
         public double SunHour { get; set; }
 
-        [NotMapped] public CssBackgroundClass CssBackgroundClass { get; set; }
+        [NotMapped] public CssClass CssClass { get; set; }
     }
 
-    public class FormResponse
+    public class WeatherData
     {
         [Required] public string Location { get; set; }
 
         [Required] public DateTime Date { get; set; }
+        public string DateString => Date.ToString("yyyy/MM/dd");
     }
 
-    public class YearForm
+    public class YearData
     {
         [Required] public string Location { get; set; }
     }
 
-    public class AddWeatherDataForm
+    public class AddWeatherData
     {
         [Required] public string Location { get; set; }
 
         [Required] public DateTime OldestDate { get; set; }
-
+        public string OldestDateString => OldestDate.ToString("yyyy/MM/dd");
         [Required] public DateTime NewestDate { get; set; }
+        public string NewestDateString => NewestDate.ToString("yyyy/MM/dd");
     }
 
-    public class LegendaValues
+    public class LegendValues
     {
         public double AvgTemp { get; set; }
         public double MinTemp { get; set; }
@@ -68,17 +62,17 @@ namespace WeatherHistoryViewer.Core.Models
         public double SunHour { get; set; }
     }
 
-    public class WeatherLegenda
+    public class WeatherLegend
     {
-        public WeatherLegenda()
+        public WeatherLegend()
         {
-            Max = new LegendaValues();
-            Avg = new LegendaValues();
-            Min = new LegendaValues();
+            Max = new LegendValues();
+            Avg = new LegendValues();
+            Min = new LegendValues();
         }
 
-        public LegendaValues Max { get; set; }
-        public LegendaValues Avg { get; set; }
-        public LegendaValues Min { get; set; }
+        public LegendValues Max { get; set; }
+        public LegendValues Avg { get; set; }
+        public LegendValues Min { get; set; }
     }
 }

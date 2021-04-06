@@ -6,40 +6,26 @@ using WeatherHistoryViewer.Core.Models;
 
 namespace WeatherHistoryViewer.Services.Requester
 {
-    public class WeathertackAPI
+    public class WeatherStackApi
     {
         public HistoricalWeatherResponse GetHistoricalWeather(string apiKey, string cityName, string date)
         {
+            date = date.Replace("/", "-");
             var uri =
-                $"https://api.Weathertack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1& interval=12& units=m";
+                $"https://api.Weatherstack.com/historical?access_key={apiKey}& query={cityName}& historical_date={date}& hourly=1& interval=12& units=m";
             try
             {
-                var jsonResponse = HTTPGet(uri).Replace(date, "Day");
+                var jsonResponse = HttpGet(uri).Replace(date, "Day");
                 return JsonSerializer.Deserialize<HistoricalWeatherResponse>(jsonResponse);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return null;
+                return new HistoricalWeatherResponse();
             }
         }
 
-        public CurrentWeatherResponse GetCurrentWeather(string apiKey, string cityName, string units)
-        {
-            var uri = $"https://api.Weathertack.com/current?access_key={apiKey}& query={cityName}& units={units}";
-            try
-            {
-                var jsonResponse = HTTPGet(uri);
-                return JsonSerializer.Deserialize<CurrentWeatherResponse>(jsonResponse);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return null;
-            }
-        }
-
-        private static string HTTPGet(string uri)
+        private static string HttpGet(string uri)
         {
             var request = (HttpWebRequest) WebRequest.Create(uri);
             request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;

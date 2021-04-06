@@ -127,27 +127,27 @@ a, .btn-link { color: #0366d6; }
     color: #fff;
 }
 
-.legendaColor0 { background-color: hsla(240, 100%, 50%, 0.5); }
+.legendColor0 { background-color: hsla(240, 100%, 50%, 0.5); }
 
-.legendaColor1 { background-color: hsla(216, 100%, 50%, 0.5); }
+.legendColor1 { background-color: hsla(216, 100%, 50%, 0.5); }
 
-.legendaColor2 { background-color: hsla(192, 100%, 50%, 0.5); }
+.legendColor2 { background-color: hsla(192, 100%, 50%, 0.5); }
 
-.legendaColor3 { background-color: hsla(168, 100%, 50%, 0.5); }
+.legendColor3 { background-color: hsla(168, 100%, 50%, 0.5); }
 
-.legendaColor4 { background-color: hsla(144, 100%, 50%, 0.5); }
+.legendColor4 { background-color: hsla(144, 100%, 50%, 0.5); }
 
-.legendaColor5 { background-color: hsla(120, 100%, 50%, 0.5); }
+.legendColor5 { background-color: hsla(120, 100%, 50%, 0.5); }
 
-.legendaColor6 { background-color: hsla(96, 100%, 50%, 0.5); }
+.legendColor6 { background-color: hsla(96, 100%, 50%, 0.5); }
 
-.legendaColor7 { background-color: hsla(72, 100%, 50%, 0.5); }
+.legendColor7 { background-color: hsla(72, 100%, 50%, 0.5); }
 
-.legendaColor8 { background-color: hsla(48, 100%, 50%, 0.5); }
+.legendColor8 { background-color: hsla(48, 100%, 50%, 0.5); }
 
-.legendaColor9 { background-color: hsla(24, 100%, 50%, 0.5); }
+.legendColor9 { background-color: hsla(24, 100%, 50%, 0.5); }
 
-.legendaColor10 { background-color: hsla(0, 100%, 50%, 0.5); }
+.legendColor10 { background-color: hsla(0, 100%, 50%, 0.5); }
 
 .legenda-container {
     background-color: #f4f7f8;

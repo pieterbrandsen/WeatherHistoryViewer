@@ -4,8 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace WeatherHistoryViewer.Core.Models.Weather
 {
-    #region Classes
-
     public class RequestJSON
     {
         [JsonPropertyName("type")] public string Type { get; set; }
@@ -189,6 +187,4 @@ namespace WeatherHistoryViewer.Core.Models.Weather
     {
         public DayJSON Day { get; set; }
     }
-
-    #endregion
 }

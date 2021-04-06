@@ -1,6 +1,6 @@
 ﻿@using WeatherHistoryViewer.Core.Models.Weather
 @using WeatherHistoryViewer.Core.Models
-<LegendaComponent WeatherLegenda="@WeatherLegenda" OverrideNameOfLegendaValue="@DisplayedPropertys.ToString()"></LegendaComponent>
+<LegendComponent WeatherLegend="@WeatherLegend" OverrideNameOfLegendValue="@ChosenDisplayedProperty.ToString()"></LegendComponent>
 <table class="table table-bordered" style="width: auto;">
     <tr>
         <th>Year</th>
@@ -9,7 +9,7 @@
         <th>Wednesday</th>
         <th>Thursday</th>
         <th>Friday</th>
-        <th>Satuday</th>
+        <th>Saturday</th>
         <th>Sunday</th>
         <th>Average</th>
     </tr>
@@ -20,11 +20,11 @@
             <th>@week.First().Date.Split("/")[0]</th>
             @foreach (var day in week)
             {
-                <td>@day.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(day)@Symbol</td>
+                <td>@day.GetType().GetProperty(ChosenDisplayedProperty.ToString()).GetValue(day)@_symbol</td>
             }
             @if (week.Count == 7)
             {
-                <td class="@AverageHistoricalWeatherEachWeek[i].CssBackgroundClass.GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i].CssBackgroundClass)">@AverageHistoricalWeatherEachWeek[i].GetType().GetProperty(DisplayedPropertys.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i])@Symbol</td>
+                <td class="@AverageHistoricalWeatherEachWeek[i].CssClass.GetType().GetProperty(ChosenDisplayedProperty.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i].CssClass)">@AverageHistoricalWeatherEachWeek[i].GetType().GetProperty(ChosenDisplayedProperty.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i])@_symbol</td>
             }
         </tr>
     }
@@ -33,6 +33,13 @@
 <br/>
 
 @code {
+    public enum DisplayedProperties
+    {
+        AvgTemp,
+        MaxTemp,
+        MinTemp,
+        SunHour
+    }
 
     [Parameter]
     public List<List<HistoricalWeather>> WeatherOfWeek { get; set; }
@@ -41,18 +48,18 @@
     public List<HistoricalWeather> AverageHistoricalWeatherEachWeek { get; set; }
 
     [Parameter]
-    public WeatherLegenda WeatherLegenda { get; set; }
+    public WeatherLegend WeatherLegend { get; set; }
 
     [Parameter]
-    public DisplayedPropertys DisplayedPropertys { get; set; }
+    public DisplayedProperties ChosenDisplayedProperty{ get; set; }
 
-    private string Symbol = "°C";
+    private string _symbol = "°C";
 
     protected override void OnInitialized()
     {
-        if (DisplayedPropertys.ToString() == "SunHour")
+        if (ChosenDisplayedProperty.ToString() == "SunHour")
         {
-            Symbol = " h";
+            _symbol = " h";
         }
     }
 
