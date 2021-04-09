@@ -19,7 +19,6 @@
     <ProjectReference Include="..\..\WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj" />
     <ProjectReference Include="..\..\WeatherHistoryViewer.Services\WeatherHistoryViewer.Services.csproj" />
     <ProjectReference Include="..\Client\WeatherHistoryViewer.Web.Client.csproj" />
-    <ProjectReference Include="..\Shared\WeatherHistoryViewer.Web.Shared.csproj" />
   </ItemGroup>
 
 

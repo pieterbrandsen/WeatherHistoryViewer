@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WeatherHistoryViewer.Config\WeatherHistoryViewer.Config.csproj" />
     <ProjectReference Include="..\WeatherHistoryViewer.Core\WeatherHistoryViewer.Core.csproj" />
     <ProjectReference Include="..\WeatherHistoryViewer.Db\WeatherHistoryViewer.Db.csproj" />
   </ItemGroup>
