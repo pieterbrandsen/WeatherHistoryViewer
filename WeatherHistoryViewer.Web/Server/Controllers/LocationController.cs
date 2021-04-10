@@ -7,12 +7,12 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
     [Route("/api/[controller]/[action]")]
     public class LocationController : ControllerBase
     {
-        private readonly LocationHandler _locationHanlder = new();
+        private readonly LocationHandler _locationHandler = new();
 
         [HttpGet]
         public IActionResult GetLocationNames()
         {
-            return Ok(_locationHanlder.GetLocationNames());
+            return Ok(_locationHandler.GetLocationNames());
         }
     }
 }

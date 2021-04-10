@@ -16,8 +16,8 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         {
             Task.Run(() =>
             {
-                _weatherHandler.UpdateHistoricalWeatherRangeToDb(form.Location, form.OldestDate.ToString("yyyy/MM/dd"),
-                    form.NewestDate.ToString("yyyy/MM/dd"));
+                _weatherHandler.UpdateHistoricalWeatherRangeToDb(form.Location, form.OldestDateString,
+                    form.NewestDateString);
                 new DataWarehouseHandlers().UpdateWeatherWarehouse();
             });
             return Ok();

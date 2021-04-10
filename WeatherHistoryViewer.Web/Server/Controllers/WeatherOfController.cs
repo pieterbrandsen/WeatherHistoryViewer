@@ -53,17 +53,18 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
 
             var weatherOfWeek = _weatherHelper.GetWeatherWeekOfDate(location, date);
             var weatherOfWeekSimpleList = new List<HistoricalWeather>();
-            weatherOfWeek.ForEach(w =>
+            weatherOfWeek.ForEach(wl =>
             {
                 var weather = new HistoricalWeather
                 {
-                    MaxTemp = Math.Round(w.Select(h => h.MaxTemp).Average(), 2),
-                    AvgTemp = Math.Round(w.Select(h => h.AvgTemp).Average(), 2),
-                    MinTemp = Math.Round(w.Select(h => h.MinTemp).Average(), 2),
-                    SunHour = Math.Round(w.Select(h => h.SunHour).Average(), 2)
+                    MaxTemp = Math.Round(wl.Select(h => h.MaxTemp).Average(), 2),
+                    AvgTemp = Math.Round(wl.Select(h => h.AvgTemp).Average(), 2),
+                    MinTemp = Math.Round(wl.Select(h => h.MinTemp).Average(), 2),
+                    SunHour = Math.Round(wl.Select(h => h.SunHour).Average(), 2)
                 };
                 weatherOfWeekSimpleList.Add(weather);
             });
+
             var weatherLegend = _legendHelper.GetWeatherLegend(weatherOfWeekSimpleList);
             var averageHistoricalWeatherEachWeek =
                 _legendHelper.GetWeatherWithLegendClasses(weatherOfWeekSimpleList, weatherLegend, true);
