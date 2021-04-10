@@ -52,9 +52,9 @@ namespace WeatherHistoryViewer.Services.Helpers
             return weatherLegenda;
         }
 
-        private static string GetCssLegendClass(double currentValue, double maxValue, double minValue)
+        private static double GetCssLegendClassValue(double currentValue, double maxValue, double minValue)
         {
-            return $"legendColor{Math.Round((currentValue - minValue) / (maxValue - minValue) * 10, 0)}";
+            return Math.Round((currentValue - minValue) / (maxValue - minValue) * 10, 0);
         }
 
         public List<WeatherOverview> GetWeatherWithLegendClasses(List<WeatherOverview> weatherOverviews,
@@ -64,34 +64,26 @@ namespace WeatherHistoryViewer.Services.Helpers
             {
                 if (forceAssigningClasses)
                 {
-                    item.CssClass.MaxTemp =
-                        GetCssLegendClass(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp);
-                    item.CssClass.AvgTemp =
-                        GetCssLegendClass(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp);
-                    item.CssClass.MinTemp =
-                        GetCssLegendClass(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp);
-                    item.CssClass.SunHour =
-                        GetCssLegendClass(item.SunHour, legend.Max.SunHour, legend.Min.SunHour);
+                    item.CssClass.MaxTemp = $"legendColor{GetCssLegendClassValue(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp)}";
+                    item.CssClass.AvgTemp = $"legendColor{GetCssLegendClassValue(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp)}";
+                    item.CssClass.MinTemp = $"legendColor{GetCssLegendClassValue(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp)}";
+                    item.CssClass.SunHour = $"legendColor{GetCssLegendClassValue(item.SunHour, legend.Max.SunHour, legend.Min.SunHour)}";
                     continue;
                 }
 
                 switch (WeatherConstants.NameOfLegendValue)
                 {
                     case PossibleLegendValues.MaxTemp:
-                        item.CssClass.MaxTemp =
-                            GetCssLegendClass(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp);
+                        item.CssClass.MaxTemp = $"legendColor{GetCssLegendClassValue(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp)}";
                         break;
                     case PossibleLegendValues.AvgTemp:
-                        item.CssClass.AvgTemp =
-                            GetCssLegendClass(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp);
+                        item.CssClass.AvgTemp = $"legendColor{GetCssLegendClassValue(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp)}";
                         break;
                     case PossibleLegendValues.MinTemp:
-                        item.CssClass.MinTemp =
-                            GetCssLegendClass(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp);
+                        item.CssClass.MinTemp = $"legendColor{GetCssLegendClassValue(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp)}";
                         break;
                     case PossibleLegendValues.SunHour:
-                        item.CssClass.SunHour =
-                            GetCssLegendClass(item.SunHour, legend.Max.SunHour, legend.Min.SunHour);
+                        item.CssClass.SunHour = $"legendColor{GetCssLegendClassValue(item.SunHour, legend.Max.SunHour, legend.Min.SunHour)}";
                         break;
                 }
             }
@@ -106,34 +98,26 @@ namespace WeatherHistoryViewer.Services.Helpers
             {
                 if (forceAssigningClasses)
                 {
-                    item.CssClass.MaxTemp =
-                        GetCssLegendClass(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp);
-                    item.CssClass.AvgTemp =
-                        GetCssLegendClass(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp);
-                    item.CssClass.MinTemp =
-                        GetCssLegendClass(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp);
-                    item.CssClass.SunHour =
-                        GetCssLegendClass(item.SunHour, legend.Max.SunHour, legend.Min.SunHour);
+                    item.CssClass.MaxTemp = $"legendColor{GetCssLegendClassValue(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp)}";
+                    item.CssClass.AvgTemp = $"legendColor{GetCssLegendClassValue(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp)}";
+                    item.CssClass.MinTemp = $"legendColor{GetCssLegendClassValue(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp)}";
+                    item.CssClass.SunHour = $"legendColor{GetCssLegendClassValue(item.SunHour, legend.Max.SunHour, legend.Min.SunHour)}";
                     continue;
                 }
 
                 switch (WeatherConstants.NameOfLegendValue)
                 {
                     case PossibleLegendValues.MaxTemp:
-                        item.CssClass.MaxTemp =
-                            GetCssLegendClass(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp);
+                        item.CssClass.MaxTemp = $"legendColor{GetCssLegendClassValue(item.MaxTemp, legend.Max.MaxTemp, legend.Min.MaxTemp)}";
                         break;
                     case PossibleLegendValues.AvgTemp:
-                        item.CssClass.AvgTemp =
-                            GetCssLegendClass(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp);
+                        item.CssClass.AvgTemp = $"legendColor{GetCssLegendClassValue(item.AvgTemp, legend.Max.AvgTemp, legend.Min.AvgTemp)}";
                         break;
                     case PossibleLegendValues.MinTemp:
-                        item.CssClass.MinTemp =
-                            GetCssLegendClass(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp);
+                        item.CssClass.MinTemp = $"legendColor{GetCssLegendClassValue(item.MinTemp, legend.Max.MinTemp, legend.Min.MinTemp)}";
                         break;
                     case PossibleLegendValues.SunHour:
-                        item.CssClass.SunHour =
-                            GetCssLegendClass(item.SunHour, legend.Max.SunHour, legend.Min.SunHour);
+                        item.CssClass.SunHour = $"legendColor{GetCssLegendClassValue(item.SunHour, legend.Max.SunHour, legend.Min.SunHour)}";
                         break;
                 }
             }
