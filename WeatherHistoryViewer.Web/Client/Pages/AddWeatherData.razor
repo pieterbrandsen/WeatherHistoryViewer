@@ -1,0 +1,61 @@
+﻿@page "/addWeatherData"
+@inject HttpClient Http
+@if (_locationNames == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="form-style">
+        <div class="form-style-heading">Add weather data</div>
+        @if (_response.Location != null)
+        {
+            <p>
+                <b>Currently downloading data for @_response.Location </b>
+            </p>
+        }
+        <EditForm Model="@_response" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <label for="location">
+                <span>Location <span class="required">*</span></span><input type="text" class="input-field" @bind-value="@_response.Location" list="locationSearch"/>
+            </label>
+            <datalist id="locationSearch">
+                @foreach (var name in _locationNames)
+                {
+                    <option>@name</option>
+                }
+            </datalist>
+            <label>
+                <span>Oldest date <span class="required">*</span></span><InputDate @bind-Value="_response.OldestDate"></InputDate>
+            </label>
+            <label>
+                <span>Newest date <span class="required">*</span></span><InputDate @bind-Value="_response.NewestDate"></InputDate>
+            </label>
+            <label>
+                <span> </span><input type="submit" value="Add"/>
+            </label>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private readonly Core.Models.AddWeatherData _response = new();
+
+    private List<string> _locationNames;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
+        _response.NewestDate = DateTime.Today;
+        _response.OldestDate = DateTime.Today.AddDays(-365);
+    }
+
+    void HandleValidSubmit()
+    {
+        Http.PostAsJsonAsync("/api/addWeatherData", _response);
+    }
+
+}

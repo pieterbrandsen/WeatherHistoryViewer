@@ -1,0 +1,80 @@
+﻿@page "/weatherOfDay"
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.ViewModels
+@using WeatherHistoryViewer.Core.Constants
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
+@inject HttpClient Http
+
+@if (_weatherOfDay == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="form-style">
+        <div class="form-style-heading">Load weather data</div>
+        <p>
+            Currently loaded data for date @_weatherData.Date.ToString("MM/dd") in @_weatherOfDay.First().Location.Name
+        </p>
+        <EditForm Model="@_weatherData" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <label>
+                <span>Location <span class="required">*</span></span>
+                <select @bind="@_weatherData.Location" class="input-field">
+                    @foreach (var name in _locationNames)
+                    {
+                        <option>@name</option>
+                    }
+                </select>
+            </label>
+            <label>
+                <span>Date <span class="required">*</span></span><InputDate @bind-Value="_weatherData.Date"></InputDate>
+            </label>
+
+            <label>
+                <span> </span><input type="submit" value="Load" />
+            </label>
+        </EditForm>
+    </div>
+
+    <LegendComponent WeatherLegend="@_weatherLegend"></LegendComponent>
+    <DayTableComponent WeatherOfDay="@_weatherOfDay"></DayTableComponent>
+}
+
+
+@code {
+    private readonly WeatherData _weatherData = new();
+
+    private List<HistoricalWeather> _weatherOfDay;
+    private WeatherLegend _weatherLegend;
+    private List<string> _locationNames;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _weatherData.Date = DateTime.Today;
+        _weatherData.Location = WeatherConstants.DefaultLocationName;
+
+        _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
+        var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>($"/api/weatherOf/day?location={_weatherData.Location}&date={_weatherData.DateString}");
+        if (weatherOfDayViewModel != null)
+        {
+            _weatherOfDay = weatherOfDayViewModel.HistoricalWeather;
+            _weatherLegend = weatherOfDayViewModel.WeatherLegend;
+        }
+    }
+
+    async Task HandleValidSubmit()
+    {
+        var weatherOfDayViewModel = await Http.GetFromJsonAsync<WeatherOfDayViewModel>($"/api/weatherOf/day?location={_weatherData.Location}&date={_weatherData.DateString}");
+        if (weatherOfDayViewModel != null)
+        {
+            _weatherOfDay = weatherOfDayViewModel.HistoricalWeather;
+            _weatherLegend = weatherOfDayViewModel.WeatherLegend;
+        }
+    }
+
+}
