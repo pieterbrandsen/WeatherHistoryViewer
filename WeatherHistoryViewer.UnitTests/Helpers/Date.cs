@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WeatherHistoryViewer.Services.Helpers;
 using Xunit;
 
-namespace WeatherHistoryViewer.UnitTests.Services
+namespace WeatherHistoryViewer.UnitTests.Helpers
 {
     public class Date
     {

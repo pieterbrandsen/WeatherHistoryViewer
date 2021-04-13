@@ -39,17 +39,17 @@ namespace WeatherHistoryViewer.Services.Helpers
 
         public WeatherLegend GetWeatherLegend(List<HistoricalWeather> historicalWeather)
         {
-            var weatherLegenda = new WeatherLegend();
+            var weatherLegend = new WeatherLegend();
 
             var maxTemp = historicalWeather.Select(w => w.MaxTemp).ToList();
-            weatherLegenda = GetLegendValues(weatherLegenda, maxTemp, "MaxTemp");
+            weatherLegend = GetLegendValues(weatherLegend, maxTemp, "MaxTemp");
             var avgTemp = historicalWeather.Select(w => w.AvgTemp).ToList();
-            weatherLegenda = GetLegendValues(weatherLegenda, avgTemp, "AvgTemp");
+            weatherLegend = GetLegendValues(weatherLegend, avgTemp, "AvgTemp");
             var minTemp = historicalWeather.Select(w => w.MinTemp).ToList();
-            weatherLegenda = GetLegendValues(weatherLegenda, minTemp, "MinTemp");
+            weatherLegend = GetLegendValues(weatherLegend, minTemp, "MinTemp");
             var sunHour = historicalWeather.Select(w => w.SunHour).ToList();
-            weatherLegenda = GetLegendValues(weatherLegenda, sunHour, "SunHour");
-            return weatherLegenda;
+            weatherLegend = GetLegendValues(weatherLegend, sunHour, "SunHour");
+            return weatherLegend;
         }
 
         private static double GetCssLegendClassValue(double currentValue, double maxValue, double minValue)
@@ -57,7 +57,7 @@ namespace WeatherHistoryViewer.Services.Helpers
             return Math.Round((currentValue - minValue) / (maxValue - minValue) * 10, 0);
         }
 
-        public List<WeatherOverview> GetWeatherWithLegendClasses(List<WeatherOverview> weatherOverviews,
+        public List<WeatherOverview> GetWeatherListWithLegendClasses(List<WeatherOverview> weatherOverviews,
             WeatherLegend legend, bool forceAssigningClasses = false)
         {
             foreach (var item in weatherOverviews)
@@ -91,7 +91,7 @@ namespace WeatherHistoryViewer.Services.Helpers
             return weatherOverviews;
         }
 
-        public List<HistoricalWeather> GetWeatherWithLegendClasses(List<HistoricalWeather> historicalWeather,
+        public List<HistoricalWeather> GetWeatherListWithLegendClasses(List<HistoricalWeather> historicalWeather,
             WeatherLegend legend, bool forceAssigningClasses = false)
         {
             foreach (var item in historicalWeather)

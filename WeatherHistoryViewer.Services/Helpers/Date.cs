@@ -117,9 +117,6 @@ namespace WeatherHistoryViewer.Services.Helpers
                 if (j.DayOfWeek == DayOfWeek.Saturday) dateTimeList.Add(GetDateOfTomorrow(j));
             }
 
-            var dateList = new List<string>();
-            dateTimeList.OrderByDescending(d => d.Ticks).ToList()
-                .ForEach(d => dateList.Add(ConvertDateToDateString(d.Date)));
             return dateTimeList.Select(t=> ConvertDateToDateString(t.Date)).OrderByDescending(s=>s).ToList();
         }
     }

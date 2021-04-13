@@ -32,7 +32,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
             _logger.LogInformation("Started loading YearsPage");
             var weatherOfYears = _weatherHelper.GetWeatherOfPastYears(location);
             var weatherLegend = _legendHelper.GetWeatherLegend(weatherOfYears);
-            weatherOfYears = _legendHelper.GetWeatherWithLegendClasses(weatherOfYears, weatherLegend);
+            weatherOfYears = _legendHelper.GetWeatherListWithLegendClasses(weatherOfYears, weatherLegend);
             var weatherOfYearsViewModel = new WeatherOfYearsViewModel
             {
                 WeatherOverviews = weatherOfYears,
@@ -67,7 +67,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
 
             var weatherLegend = _legendHelper.GetWeatherLegend(weatherOfWeekSimpleList);
             var averageHistoricalWeatherEachWeek =
-                _legendHelper.GetWeatherWithLegendClasses(weatherOfWeekSimpleList, weatherLegend, true);
+                _legendHelper.GetWeatherListWithLegendClasses(weatherOfWeekSimpleList, weatherLegend, true);
             var weatherOfWeekViewModel = new WeatherOfWeekViewModel
             {
                 HistoricalWeather = weatherOfWeek,
@@ -89,7 +89,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
 
             var weatherOfDay = _weatherHelper.GetWeatherOfDay(location, date);
             var weatherLegend = _legendHelper.GetWeatherLegend(weatherOfDay);
-            weatherOfDay = _legendHelper.GetWeatherWithLegendClasses(weatherOfDay, weatherLegend);
+            weatherOfDay = _legendHelper.GetWeatherListWithLegendClasses(weatherOfDay, weatherLegend);
             var weatherOfDayViewModel = new WeatherOfDayViewModel
             {
                 HistoricalWeather = weatherOfDay,

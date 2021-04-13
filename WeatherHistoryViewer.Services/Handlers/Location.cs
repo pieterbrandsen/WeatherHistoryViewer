@@ -15,13 +15,6 @@ namespace WeatherHistoryViewer.Services.Handlers
             return foundLocation ?? knownLocation;
         }
 
-        public LocationWarehouse GetLocation(string cityName, LocationWarehouse knownLocation)
-        {
-            using var context = new ApplicationDbContext();
-            var foundLocation = context.LocationsWarehouse.FirstOrDefault(l => l.LocationName == cityName);
-            return foundLocation ?? knownLocation;
-        }
-
         public List<string> GetLocationNames()
         {
             using var context = new ApplicationDbContext();

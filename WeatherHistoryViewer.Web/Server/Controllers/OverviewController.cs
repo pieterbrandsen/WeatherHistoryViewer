@@ -26,7 +26,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
 
             var weatherOverviews = _weatherHelper.GetWeatherOverview();
             var weatherLegend = _legendHelper.GetWeatherLegend(weatherOverviews);
-            weatherOverviews = _legendHelper.GetWeatherWithLegendClasses(weatherOverviews, weatherLegend);
+            weatherOverviews = _legendHelper.GetWeatherListWithLegendClasses(weatherOverviews, weatherLegend);
             var weatherOverviewViewModel = new WeatherOverviewViewModel
             {
                 WeatherOverviews = weatherOverviews,
