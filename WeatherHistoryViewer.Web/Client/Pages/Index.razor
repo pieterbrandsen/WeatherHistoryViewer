@@ -1,0 +1,34 @@
+﻿@page "/"
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Core.ViewModels
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables
+@inject HttpClient Http
+
+@if (_weatherOverviews == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <LegendComponent WeatherLegend="@_weatherLegend"></LegendComponent>
+    <OverviewTableComponent WeatherOverviews="@_weatherOverviews"></OverviewTableComponent>
+}
+
+@code {
+
+    private List<WeatherOverview> _weatherOverviews;
+    private WeatherLegend _weatherLegend;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var weatherOverviewViewModel = await Http.GetFromJsonAsync<WeatherOverviewViewModel>("/api/overview");
+        if (weatherOverviewViewModel != null)
+        {
+            _weatherOverviews = weatherOverviewViewModel.WeatherOverviews;
+            _weatherLegend = weatherOverviewViewModel.WeatherLegend;
+        }
+    }
+
+}

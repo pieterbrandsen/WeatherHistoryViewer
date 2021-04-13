@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WeatherHistoryViewer.Db;
+﻿using WeatherHistoryViewer.Db;
 using Xunit;
 
 namespace WeatherHistoryViewer.UnitTests.Db
 {
     public class UserSecretsTests
     {
-        private string FakeConnectionString = "abc";
-        private string FakeWeatherHistoryViewerApiKey = "abc";
-        private string FakeWeatherStackApiKey = "abc";
+        private readonly string FakeConnectionString = "abc";
+        private readonly string FakeWeatherHistoryViewerApiKey = "abc";
+        private readonly string FakeWeatherStackApiKey = "abc";
+
         [Fact]
         public void SetUserSecrets()
         {

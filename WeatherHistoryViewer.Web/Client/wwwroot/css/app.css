@@ -1,0 +1,171 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+
+a, .btn-link { color: #0366d6; }
+
+.btn-primary {
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    color: #fff;
+}
+
+.content { padding-top: 1.1rem; }
+
+.valid.modified:not([type=checkbox]) { outline: 1px solid #26b050; }
+
+.invalid { outline: 1px solid red; }
+
+.validation-message { color: red; }
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.form-style {
+    background: #f4f7f8;
+    background: #f4f7f8;
+    border-radius: 8px;
+    font: 13px Arial, Helvetica, sans-serif;
+    margin-bottom: 50px;
+    max-width: 500px;
+    padding: 20px 12px 10px 20px;
+    padding: 20px;
+}
+
+.form-style-heading {
+    border-bottom: 2px solid #ddd;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 3px;
+}
+
+.form-style label {
+    display: block;
+    margin: 0px 0px 15px 0px;
+}
+
+.form-style label > span {
+    float: left;
+    font-weight: bold;
+    padding-right: 5px;
+    padding-top: 8px;
+    width: 100px;
+}
+
+.form-style span.required { color: red; }
+
+.form-style .tel-number-field {
+    text-align: center;
+    width: 40px;
+}
+
+.form-style input.input-field, .form-style .select-field { width: 48%; }
+
+.form-style input.input-field,
+.form-style .tel-number-field,
+.form-style .textarea-field,
+.form-style .select-field {
+    -moz-border-radius: 3px;
+    -moz-box-shadow: 1px 1px 4px #EBEBEB;
+    -moz-box-sizing: border-box;
+    -webkit-border-radius: 3px;
+    -webkit-box-shadow: 1px 1px 4px #EBEBEB;
+    -webkit-box-sizing: border-box;
+    border: 1px solid #C2C2C2;
+    border-radius: 3px;
+    box-shadow: 1px 1px 4px #EBEBEB;
+    box-sizing: border-box;
+    outline: none;
+    padding: 7px;
+}
+
+.form-style .input-field:focus,
+.form-style .tel-number-field:focus,
+.form-style .textarea-field:focus,
+.form-style .select-field:focus { border: 1px solid #0C0; }
+
+.form-style .textarea-field {
+    height: 100px;
+    width: 55%;
+}
+
+.form-style input[type=submit],
+.form-style input[type=button] {
+    -moz-border-radius: 3px;
+    -moz-box-shadow: 1px 1px 4px #DADADA;
+    -webkit-border-radius: 3px;
+    -webkit-box-shadow: 1px 1px 4px #DADADA;
+    background: #FF8500;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 1px 1px 4px #DADADA;
+    color: #fff;
+    padding: 8px 15px 8px 15px;
+}
+
+.form-style input[type=submit]:hover,
+.form-style input[type=button]:hover {
+    background: #EA7B00;
+    color: #fff;
+}
+
+.legendColor0 { background-color: hsla(240, 100%, 50%, 0.5); }
+
+.legendColor1 { background-color: hsla(216, 100%, 50%, 0.5); }
+
+.legendColor2 { background-color: hsla(192, 100%, 50%, 0.5); }
+
+.legendColor3 { background-color: hsla(168, 100%, 50%, 0.5); }
+
+.legendColor4 { background-color: hsla(144, 100%, 50%, 0.5); }
+
+.legendColor5 { background-color: hsla(120, 100%, 50%, 0.5); }
+
+.legendColor6 { background-color: hsla(96, 100%, 50%, 0.5); }
+
+.legendColor7 { background-color: hsla(72, 100%, 50%, 0.5); }
+
+.legendColor8 { background-color: hsla(48, 100%, 50%, 0.5); }
+
+.legendColor9 { background-color: hsla(24, 100%, 50%, 0.5); }
+
+.legendColor10 { background-color: hsla(0, 100%, 50%, 0.5); }
+
+.legenda-container {
+    background-color: #f4f7f8;
+    padding: 4px 3%;
+    width: 600px;
+}
+
+.color-range {
+    background-image: linear-gradient(to left, hsla(0, 100%, 50%, 1), hsla(60, 100%, 50%, 1), hsla(120, 100%, 50%, 1), hsla(180, 100%, 50%, 1), hsla(240, 100%, 50%, 1));
+    height: 100px;
+}
+
+.flex-container { display: flex; }
+
+.flex-container > p {
+    font-size: 18px;
+    line-height: 25px;
+    margin: 10px;
+    text-align: center;
+    width: 33%;
+}

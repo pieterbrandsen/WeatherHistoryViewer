@@ -1,0 +1,50 @@
+﻿@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Core.Constants
+<div class="legenda-container">
+    <div>
+        <h3 class="text-center">
+            <b>@NameOfLegendValue</b>
+        </h3>
+    </div>
+    <div class="color-range"></div>
+    <div class="flex-container">
+        <p class=" text-left">
+            @Math.Round(MinValue, 0)@Symbol
+        </p>
+        <p class=" text-center">
+            @Math.Round(AvgValue, 0)@Symbol
+        </p>
+        <p class=" text-right">
+            @Math.Round(MaxValue, 0)@Symbol
+        </p>
+    </div>
+    <br/>
+</div>
+
+@code {
+
+    [Parameter]
+    public WeatherLegend WeatherLegend { get; set; }
+
+    [Parameter]
+    public string OverrideNameOfLegendValue { get; set; }
+
+    private double MaxValue { get; set; }
+    private double AvgValue { get; set; }
+    private double MinValue { get; set; }
+    private string NameOfLegendValue { get; set; }
+    private string Symbol = "°C";
+
+    protected override void OnInitialized()
+    {
+        NameOfLegendValue = OverrideNameOfLegendValue ?? WeatherConstants.NameOfLegendValue.ToString();
+        if (NameOfLegendValue == "SunHour")
+        {
+            Symbol = " h";
+        }
+        MaxValue = (double) WeatherLegend.Max.GetType().GetProperty(NameOfLegendValue).GetValue(WeatherLegend.Max);
+        AvgValue = (double) WeatherLegend.Max.GetType().GetProperty(NameOfLegendValue).GetValue(WeatherLegend.Avg);
+        MinValue = (double) WeatherLegend.Max.GetType().GetProperty(NameOfLegendValue).GetValue(WeatherLegend.Min);
+    }
+
+}

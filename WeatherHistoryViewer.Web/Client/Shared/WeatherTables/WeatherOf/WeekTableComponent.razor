@@ -1,0 +1,67 @@
+﻿@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.Models
+<LegendComponent WeatherLegend="@WeatherLegend" OverrideNameOfLegendValue="@ChosenDisplayedProperty.ToString()"></LegendComponent>
+<table class="table table-bordered" style="width: auto;">
+    <tr>
+        <th>Year</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+        <th>Average</th>
+    </tr>
+    @for (var i = 0; i < WeatherOfWeek.Count; i++)
+    {
+        var week = WeatherOfWeek[i];
+        <tr>
+            <th>@week.First().Date.Split("/")[0]</th>
+            @foreach (var day in week)
+            {
+                <td>@day.GetType().GetProperty(ChosenDisplayedProperty.ToString()).GetValue(day)@_symbol</td>
+            }
+            @if (week.Count == 7)
+            {
+                <td class="@AverageHistoricalWeatherEachWeek[i].CssClass.GetType().GetProperty(ChosenDisplayedProperty.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i].CssClass)">@AverageHistoricalWeatherEachWeek[i].GetType().GetProperty(ChosenDisplayedProperty.ToString()).GetValue(AverageHistoricalWeatherEachWeek[i])@_symbol</td>
+            }
+        </tr>
+    }
+</table>
+<br/>
+<br/>
+
+@code {
+
+    public enum DisplayedProperties
+    {
+        AvgTemp,
+        MaxTemp,
+        MinTemp,
+        SunHour
+    }
+
+    [Parameter]
+    public List<List<HistoricalWeather>> WeatherOfWeek { get; set; }
+
+    [Parameter]
+    public List<HistoricalWeather> AverageHistoricalWeatherEachWeek { get; set; }
+
+    [Parameter]
+    public WeatherLegend WeatherLegend { get; set; }
+
+    [Parameter]
+    public DisplayedProperties ChosenDisplayedProperty { get; set; }
+
+    private string _symbol = "°C";
+
+    protected override void OnInitialized()
+    {
+        if (ChosenDisplayedProperty.ToString() == "SunHour")
+        {
+            _symbol = " h";
+        }
+    }
+
+}

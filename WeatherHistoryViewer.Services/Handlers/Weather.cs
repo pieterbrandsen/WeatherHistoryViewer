@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using WeatherHistoryViewer.Core.Models.Weather;
+using WeatherHistoryViewer.Core.Constants;
+using WeatherHistoryViewer.Core.Models.DataWarehouse;
 using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services.Converter;
 using WeatherHistoryViewer.Services.Helpers;
@@ -12,28 +15,20 @@ namespace WeatherHistoryViewer.Services.Handlers
 {
     public class WeatherHandler
     {
-        private readonly WeatherStackAPI _apiRequester;
-        private readonly Database _database;
+        private readonly WeatherStackApi _apiRequester;
+        private readonly DatabaseHandler _database;
         private readonly DateHelper _dateHelper;
         private readonly WeatherModelConverter _weatherModelConverter;
 
         public WeatherHandler()
         {
-            _apiRequester = new WeatherStackAPI();
+            _apiRequester = new WeatherStackApi();
             _weatherModelConverter = new WeatherModelConverter();
             _dateHelper = new DateHelper();
-            _database = new Database();
+            _database = new DatabaseHandler();
         }
 
-        private bool DoesDateAndCityExistInDb(string cityName, string date)
-        {
-            using var context = new ApplicationDbContext();
-            if (context.Weather.Any() && context.Weather.Include(o => o.Location)
-                .FirstOrDefault(w => w.Date == date && w.Location.Name == cityName) != null) return true;
-            return false;
-        }
-
-        public void UpdateWeatherToDb(string cityName, string date, HourlyInterval hourlyInterval)
+        public void UpdateWeatherToDb(string cityName, string date)
         {
             using var context = new ApplicationDbContext();
 
@@ -41,13 +36,14 @@ namespace WeatherHistoryViewer.Services.Handlers
             {
                 var weatherStackApiKey = UserSecrets.WeatherStackApiKey;
 
-                if (DoesDateAndCityExistInDb(cityName, date)) return;
                 var response =
-                    _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date, hourlyInterval);
-                var weatherModel =
-                    _weatherModelConverter.ToHistoricalWeatherModelConverter(response, date, hourlyInterval);
-
-                _database.AddHistoricalWeather(weatherModel);
+                    _apiRequester.GetHistoricalWeather(weatherStackApiKey, cityName, date);
+                if (response?.Historical != null)
+                {
+                    var weatherModel =
+                        _weatherModelConverter.ToHistoricalWeatherModelConverter(response, date);
+                    _database.AddHistoricalWeather(weatherModel);
+                }
             }
             catch (Exception e)
             {
@@ -56,19 +52,53 @@ namespace WeatherHistoryViewer.Services.Handlers
             }
         }
 
-        public void UpdateHistoricalWeatherRangeToDb(string cityName,
-            HourlyInterval hourlyInterval = HourlyInterval.Hours3, string oldestDate = null, string newestDate = null)
+        public void UpdateHistoricalWeatherRangeToDb(string locationName,
+            string oldestDate = null, string newestDate = null)
         {
-            var dateList = oldestDate == null
-                ? _dateHelper.GetAllRequestableDates()
-                : _dateHelper.GetRangeOfRequestableDates(oldestDate, newestDate);
+            var dateList = new List<string>();
+            if (oldestDate == null)
+                dateList = _dateHelper.GetAllDates();
+            else
+                dateList = !_dateHelper.IsDateOlderThenOldestDate(oldestDate)
+                    ? _dateHelper.GetRangeOfDates(oldestDate, newestDate)
+                    : _dateHelper.GetRangeOfDates(newestDateString: newestDate);
 
+            using var context = new ApplicationDbContext();
+            var excludedDates = new HashSet<string>(context.Weather.Include(w => w.Location)
+                .Where(w => w.Location.Name == locationName).Select(w => w.Date));
+            dateList = dateList.Where(p => !excludedDates.Contains(p)).ToList();
 
             foreach (var date in dateList)
             {
                 Debug.WriteLine(
-                    $"Place: {cityName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
-                UpdateWeatherToDb(cityName, date, hourlyInterval);
+                    $"Place: {locationName}; Day: {date}; ExecutedTime: {DateTime.Now.Minute}:{DateTime.Now.Second}");
+                UpdateWeatherToDb(locationName, date);
+            }
+        }
+
+        public void UpdateAllSavedHistoricalWeather()
+        {
+            try
+            {
+                var dateHelper = new DateHelper();
+                var oldestDate = dateHelper.GetDateStringOfDaysAgo(WeatherConstants.OldestDaysAgo);
+                var newestDate = dateHelper.GetDateStringOfDaysAgo(WeatherConstants.NewestDaysAgo);
+                var locations = new LocationHandler().GetLocationNames();
+                Task.Run(() =>
+                {
+                    foreach (var locationName in locations)
+                        new WeatherHandler().UpdateHistoricalWeatherRangeToDb(locationName,
+                            oldestDate,
+                            newestDate);
+                });
+
+                if (new WeatherHelper().DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb
+                    .WeekPage))
+                    new DataWarehouseHandlers().UpdateWeatherWarehouse();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

@@ -1,0 +1,86 @@
+﻿@page "/weatherOfWeek"
+@using WeatherHistoryViewer.Core.Models
+@using WeatherHistoryViewer.Core.Models.Weather
+@using WeatherHistoryViewer.Core.ViewModels
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
+@using WeatherHistoryViewer.Core.Constants
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables
+@inject HttpClient Http
+
+@if (_weatherOfWeek == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="form-style">
+        <div class="form-style-heading">Load weather data</div>
+        <p>
+            Currently loaded data for date @_weatherData.Date.ToString("MM/dd") in @_weatherOfWeek.First().First().Location.Name
+        </p>
+        <EditForm Model="@_weatherData" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <label>
+                <span>Location <span class="required">*</span></span>
+                <select @bind="@_weatherData.Location" class="input-field">
+                    @foreach (var name in _locationNames)
+                    {
+                        <option>@name</option>
+                    }
+                </select>
+            </label>
+            <label>
+                <span>Date <span class="required">*</span></span><InputDate @bind-Value="_weatherData.Date"></InputDate>
+            </label>
+
+            <label>
+                <span> </span><input type="submit" value="Load" />
+            </label>
+        </EditForm>
+    </div>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegend="@_weatherLegend" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" ChosenDisplayedProperty="@WeekTableComponent.DisplayedProperties.AvgTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegend="@_weatherLegend" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" ChosenDisplayedProperty="@WeekTableComponent.DisplayedProperties.MaxTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegend="@_weatherLegend" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" ChosenDisplayedProperty="@WeekTableComponent.DisplayedProperties.MinTemp"></WeekTableComponent>
+    <WeekTableComponent WeatherOfWeek="@_weatherOfWeek" WeatherLegend="@_weatherLegend" AverageHistoricalWeatherEachWeek="@_averageHistoricalWeatherEachWeek" ChosenDisplayedProperty="@WeekTableComponent.DisplayedProperties.SunHour"></WeekTableComponent>
+}
+
+
+@code {
+    private readonly WeatherData _weatherData = new();
+
+    private WeatherLegend _weatherLegend;
+    private List<List<HistoricalWeather>> _weatherOfWeek;
+    private List<HistoricalWeather> _averageHistoricalWeatherEachWeek;
+    private List<string> _locationNames;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _weatherData.Date = DateTime.Today;
+
+        _locationNames = await Http.GetFromJsonAsync<List<string>>("/api/location/getLocationNames");
+        _weatherData.Location = WeatherConstants.DefaultLocationName;
+
+        var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week?location={_weatherData.Location}&date={_weatherData.DateString}");
+        if (weatherOfWeekViewModel != null)
+        {
+            _weatherLegend = weatherOfWeekViewModel.WeatherLegend;
+            _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeather;
+            _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
+        }
+    }
+
+    async Task HandleValidSubmit()
+    {
+        var weatherOfWeekViewModel = await Http.GetFromJsonAsync<WeatherOfWeekViewModel>($"/api/weatherOf/week?location={_weatherData.Location}&date={_weatherData.DateString}");
+        if (weatherOfWeekViewModel != null)
+        {
+            _weatherLegend = weatherOfWeekViewModel.WeatherLegend;
+            _weatherOfWeek = weatherOfWeekViewModel.HistoricalWeather;
+            _averageHistoricalWeatherEachWeek = weatherOfWeekViewModel.AverageHistoricalWeatherEachWeek;
+        }
+    }
+
+}

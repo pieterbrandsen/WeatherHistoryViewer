@@ -1,143 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using WeatherHistoryViewer.Core.Models;
+using WeatherHistoryViewer.Core.Models.DataWarehouse;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
-using WeatherHistoryViewer.Services.Handlers; //using System.Data.Entity;
+using WeatherHistoryViewer.Services.Handlers;
 
 namespace WeatherHistoryViewer.Services.Helpers
 {
     public class WeatherHelper
     {
-        private readonly DateHelper dateHelper = new();
-        private readonly LocationHandler locationHandler = new();
+        private readonly DateHelper _dateHelper = new();
+        private readonly LocationHandler _locationHandler = new();
 
-        public List<HistoricalWeather> GetWeatherOfDateInThePastYears(string cityName, string date)
+        public bool DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb type)
         {
+            var result = true;
             using var context = new ApplicationDbContext();
-            try
+            var lastUpdateTime = context.LastUpdateTimes.Find("Weather");
+            if (lastUpdateTime == null)
             {
-                var dates = dateHelper.GetDateInLast15Y(date);
-                var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
-                    .Where(w => w.Location.Name == cityName && dates.Contains(w.Date))
-                    .OrderByDescending(o => o.DateEpoch).ToList();
-                return weather;
             }
-            catch (Exception e)
+            else if ((DateTime.Now - DateTime.Parse(lastUpdateTime.Date)).Days + (int) type <= 0)
             {
-                Console.WriteLine(e);
-                throw;
+                lastUpdateTime.Date = DateTime.Now.ToShortDateString();
+                context.SaveChanges();
             }
-        }
-
-        public (string date, double temp) GetMaxOrMinTempOfLocation(bool returnMax, string locationName, string year  = null)
-        {
-            using var context = new ApplicationDbContext();
-            var weatherList = new List<HistoricalWeather>();
-            var tempIsAssigned = false;
-            var temp = double.NaN;
-
-
-                // Sequence  contains no elements
-                if (returnMax)
-                {
-                    weatherList = context.Weather.Include(w => w.Location).Where(w =>
-                            w.Location.Name == locationName && (year != null && w.Date.Contains(year) || year == null))
-                        .ToList();
-                    if (weatherList.Count > 0)
-                    {
-                        tempIsAssigned = true;
-                       temp = weatherList.Max(w => w.MaxTemp);
-                    }
-                }
-            else {
-                    weatherList = context.Weather.Include(w => w.Location).Where(w =>
-                            w.Location.Name == locationName && (year != null && w.Date.Contains(year) || year == null))
-                        .ToList();
-                if (weatherList.Count > 0)
-                {
-                    tempIsAssigned = true;
-                    temp = weatherList.Min(w => w.MinTemp);
-                }
+            else
+            {
+                result = false;
             }
 
-            if (tempIsAssigned) {
-            string date = weatherList.FirstOrDefault(w => (returnMax ? w.MaxTemp : w.MinTemp) == temp).Date;
-            return (date, temp);
-            }
-
-            return (null, temp);
+            return result;
         }
 
         public List<WeatherOverview> GetWeatherOverview()
         {
-            using var context = new ApplicationDbContext();
-            var overviewList = new List<WeatherOverview>();
+            if (DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb.OverviewPage))
+                new DataWarehouseHandlers().UpdateWeatherWarehouse();
 
+            var overviewList = new List<WeatherOverview>();
+            using var context = new ApplicationDbContext();
             try
             {
-                var locations = locationHandler.GetAllLocationNames();
-                foreach (var location in locations)
+                var weatherLocations = context.WeatherWarehouse.Include(w => w.Location).Include(w => w.Time)
+                    .Include(w => w.WeatherMeasurement).ToList().GroupBy(w => w.Location.LocationName)
+                    .OrderBy(s => s.Key).ToList();
+                foreach (var weatherList in weatherLocations)
                 {
-                    (var dateOfMaxTemp, var maxTemp) = GetMaxOrMinTempOfLocation(true, location);
-                    (var dateOfMinTemp, var minTemp) = GetMaxOrMinTempOfLocation(false, location);
-                    var overviewObj = new WeatherOverview
+                    var highestMaxTemp = new TempModel {Temp = double.NegativeInfinity};
+                    var lowestMinTemp = new TempModel {Temp = double.PositiveInfinity};
+                    foreach (var weather in weatherList)
+                        if (weather.WeatherMeasurement.MaxTemp > highestMaxTemp.Temp)
+                        {
+                            highestMaxTemp.Temp = weather.WeatherMeasurement.MaxTemp;
+                            highestMaxTemp.Date = weather.Time.Date;
+                        }
+                        else if (weather.WeatherMeasurement.MinTemp < lowestMinTemp.Temp)
+                        {
+                            lowestMinTemp.Temp = weather.WeatherMeasurement.MinTemp;
+                            lowestMinTemp.Date = weather.Time.Date;
+                        }
+
+                    var weatherMeasurementList = weatherList.Select(w => w.WeatherMeasurement).ToList();
+                    var overview = new WeatherOverview
                     {
-                        LocationName = location,
-                        MaxTemp = Math.Round(maxTemp, 2),
-                        DateOfMaxTemp = dateOfMaxTemp,
-                        MinTemp = Math.Round(minTemp, 2),
-                        DateOfMinTemp = dateOfMinTemp,
-                        AverageSunHours =
-                            Math.Round(
-                                context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
-                                    .Select(w => w.SunHour).Average(), 2),
-                        AverageTemp =
-                            Math.Round(
-                                context.Weather.Include(w => w.Location).Where(w => w.Location.Name == location)
-                                    .Select(w => w.AvgTemp).Average(), 2)
+                        LocationName = weatherList.Key,
+                        AvgTemp = Math.Round(weatherMeasurementList.Select(w => w.AvgTemp).Average(), 2),
+                        SunHour = Math.Round(weatherMeasurementList.Select(w => w.SunHour).Average(), 2),
+                        MaxTemp = highestMaxTemp.Temp,
+                        DateOfMaxTemp = highestMaxTemp.Date,
+                        MinTemp = lowestMinTemp.Temp,
+                        DateOfMinTemp = lowestMinTemp.Date
                     };
-                    overviewList.Add(overviewObj);
+                    overviewList.Add(overview);
                 }
-
-                context.Dispose();
-
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
             }
 
             return overviewList;
-        }
-
-        public List<List<HistoricalWeather>> GetWeatherWeekOfDateInThePastYears(string cityName, string date)
-        {
-            using var context = new ApplicationDbContext();
-            var weatherList = new List<List<HistoricalWeather>>();
-            try
-            {
-                var dates = dateHelper.GetDateInLast15Y(date);
-                foreach (var currDate in dates)
-                {
-                    var currDates = dateHelper.GetWeekDatesFromDate(currDate);
-                    var weather = context.Weather.Include(w => w.Location).Include(w => w.SnapshotsOfDay)
-                   .Where(w => w.Location.Name == cityName && currDates.Contains(w.Date))
-                   .OrderByDescending(o => o.DateEpoch).ToList();
-                    weatherList.Add(weather);
-                }
-
-               
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-            return weatherList.FindAll(wl => wl.Count > 0);
         }
 
         public List<WeatherOverview> GetWeatherOfPastYears(string cityName)
@@ -145,45 +91,151 @@ namespace WeatherHistoryViewer.Services.Helpers
             using var context = new ApplicationDbContext();
             var overviewList = new List<WeatherOverview>();
 
+            if (DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb.YearsPage))
+                new DataWarehouseHandlers().UpdateWeatherWarehouse();
+
             try
             {
-                var dates = dateHelper.GetDateInLast15Y(DateTime.Now.AddDays(-1).ToString("MM/dd"));
-                foreach (var date in dates)
+                var weatherYears = context.WeatherWarehouse.Include(w => w.Location).Include(w => w.Time)
+                    .Include(w => w.WeatherMeasurement).Where(w => w.Location.LocationName == cityName).ToList()
+                    .GroupBy(s => s.Time.Year).OrderByDescending(s => s.Key).ToList();
+                foreach (var weatherList in weatherYears)
                 {
-                    var year = date.Split("-")[0];
-                    (var dateOfMaxTemp, var maxTemp) = GetMaxOrMinTempOfLocation(true, cityName, year);
-                    (var dateOfMinTemp, var minTemp) = GetMaxOrMinTempOfLocation(false, cityName, year);
-                    if (dateOfMaxTemp == null && dateOfMinTemp == null) continue;
-                    var overviewObj = new WeatherOverview
+                    var highestMaxTemp = new TempModel {Temp = -99};
+                    var lowestMinTemp = new TempModel {Temp = 99};
+                    foreach (var weather in weatherList)
                     {
-                        Year = year,
-                        LocationName = cityName,
-                        MaxTemp = Math.Round(maxTemp, 2),
-                        DateOfMaxTemp = dateOfMaxTemp.Split("-")[1]+"/"+ dateOfMaxTemp.Split("-")[2],
-                        MinTemp = Math.Round(minTemp, 2),
-                        DateOfMinTemp = dateOfMinTemp.Split("-")[1] + "/" + dateOfMinTemp.Split("-")[2],
-                        AverageSunHours =
-                            Math.Round(
-                                context.Weather.Include(w => w.Location).Where(w => w.Location.Name == cityName && w.Date.Contains(year))
-                                    .Select(w => w.SunHour).Average(), 2),
-                        AverageTemp =
-                            Math.Round(
-                                context.Weather.Include(w => w.Location).Where(w => w.Location.Name == cityName && w.Date.Contains(year))
-                                    .Select(w => w.AvgTemp).Average(), 2)
+                        if (weather.WeatherMeasurement.MaxTemp > highestMaxTemp.Temp)
+                        {
+                            highestMaxTemp.Temp = weather.WeatherMeasurement.MaxTemp;
+                            highestMaxTemp.Date = weather.Time.Date;
+                        }
+
+                        if (weather.WeatherMeasurement.MinTemp < lowestMinTemp.Temp)
+                        {
+                            lowestMinTemp.Temp = weather.WeatherMeasurement.MinTemp;
+                            lowestMinTemp.Date = weather.Time.Date;
+                        }
+                    }
+
+                    var weatherMeasurementList = weatherList.Select(w => w.WeatherMeasurement).ToList();
+                    var shortDateOfMaxTemp = highestMaxTemp.Date.Substring(highestMaxTemp.Date.IndexOf('/') + 1);
+                    var shortDateOfLowestTemp = lowestMinTemp.Date.Substring(lowestMinTemp.Date.IndexOf('/') + 1);
+                    var overview = new WeatherOverview
+                    {
+                        LocationName = weatherList.First().Location.LocationName,
+                        Year = weatherList.Key.ToString(),
+                        AvgTemp = Math.Round(weatherMeasurementList.Select(w => w.AvgTemp).Average(), 2),
+                        SunHour = Math.Round(weatherMeasurementList.Select(w => w.SunHour).Average(), 2),
+                        MaxTemp = highestMaxTemp.Temp,
+                        DateOfMaxTemp = shortDateOfMaxTemp,
+                        MinTemp = lowestMinTemp.Temp,
+                        DateOfMinTemp = shortDateOfLowestTemp
                     };
 
-                    overviewList.Add(overviewObj);
+                    overviewList.Add(overview);
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
-                context.Dispose();
+            return overviewList;
+        }
 
+        public List<List<HistoricalWeather>> GetWeatherWeekOfDate(string cityName, string date)
+        {
+            if (DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb.WeekPage))
+                new DataWarehouseHandlers().UpdateWeatherWarehouse();
+
+            using var context = new ApplicationDbContext();
+            var weatherListList = new List<List<HistoricalWeather>>();
+            try
+            {
+                var weatherYears = context.WeatherWarehouse.Include(w => w.Location).Include(w => w.Time)
+                    .Include(w => w.WeatherMeasurement).Where(w => w.Location.LocationName == cityName).ToList()
+                    .GroupBy(s => s.Time.Year).OrderByDescending(s => s.Key).ToList();
+                foreach (var weatherList in weatherYears)
+                {
+                    var shortDate = date.Split("/").Length > 2 ? date.Substring(date.IndexOf('/') + 1) : date;
+                    var weatherOfDate = weatherList.FirstOrDefault(s => s.Time.Date.Contains(shortDate));
+                    if (weatherOfDate == null) continue;
+
+                    var currentDates = _dateHelper.GetWeekDatesFromDate(weatherOfDate.Time.Date);
+                    var newWeatherList = new List<HistoricalWeather>();
+                    currentDates.ForEach(currentDate =>
+                    {
+                        var weatherMeasurement = weatherList.FirstOrDefault(w => w.Time.Date == currentDate);
+                        if (weatherMeasurement != null)
+                        {
+                            var historicalWeather = new HistoricalWeather
+                            {
+                                AvgTemp = weatherMeasurement.WeatherMeasurement.AvgTemp,
+                                Date = weatherMeasurement.Time.Date,
+                                Location = _locationHandler.GetLocation(weatherMeasurement.Location.LocationName),
+                                MaxTemp = weatherMeasurement.WeatherMeasurement.MaxTemp,
+                                MinTemp = weatherMeasurement.WeatherMeasurement.MinTemp,
+                                SunHour = weatherMeasurement.WeatherMeasurement.SunHour
+                            };
+                            newWeatherList.Add(historicalWeather);
+                        }
+                    });
+
+                    weatherListList.Add(newWeatherList);
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-            return overviewList;
+
+            return weatherListList;
+        }
+
+        public List<HistoricalWeather> GetWeatherOfDay(string cityName, string date)
+        {
+            if (DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb.DayPage))
+                new DataWarehouseHandlers().UpdateWeatherWarehouse();
+
+            using var context = new ApplicationDbContext();
+            var historicalWeatherList = new List<HistoricalWeather>();
+            try
+            {
+                var weatherYears = context.WeatherWarehouse.Include(w => w.Location).Include(w => w.Time)
+                    .Include(w => w.WeatherMeasurement).Where(w => w.Location.LocationName == cityName).ToList()
+                    .GroupBy(s => s.Time.Year).OrderByDescending(s => s.Key).ToList();
+                foreach (var weatherList in weatherYears)
+                {
+                    var shortDate = date.Split("/").Length > 1 ? date.Substring(date.IndexOf('/') + 1) : date;
+                    var weatherOfDate = weatherList.FirstOrDefault(s => s.Time.Date.Contains(shortDate));
+                    if (weatherOfDate == null) continue;
+
+                    var historicalWeather = new HistoricalWeather
+                    {
+                        AvgTemp = weatherOfDate.WeatherMeasurement.AvgTemp,
+                        Date = weatherOfDate.Time.Year.ToString(),
+                        Location = _locationHandler.GetLocation(weatherOfDate.Location.LocationName),
+                        MaxTemp = weatherOfDate.WeatherMeasurement.MaxTemp,
+                        MinTemp = weatherOfDate.WeatherMeasurement.MinTemp,
+                        SunHour = weatherOfDate.WeatherMeasurement.SunHour
+                    };
+                    historicalWeatherList.Add(historicalWeather);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return historicalWeatherList;
+        }
+
+        private class TempModel
+        {
+            public double Temp { get; set; }
+            public string Date { get; set; }
         }
     }
 }
