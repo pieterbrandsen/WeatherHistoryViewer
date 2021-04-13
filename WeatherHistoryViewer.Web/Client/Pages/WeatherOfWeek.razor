@@ -4,6 +4,7 @@
 @using WeatherHistoryViewer.Core.ViewModels
 @using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
 @using WeatherHistoryViewer.Core.Constants
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables
 @inject HttpClient Http
 
 @if (_weatherOfWeek == null)
@@ -20,8 +21,8 @@ else
             Currently loaded data for date @_weatherData.Date.ToString("MM/dd") in @_weatherOfWeek.First().First().Location.Name
         </p>
         <EditForm Model="@_weatherData" OnValidSubmit="@HandleValidSubmit">
-            <DataAnnotationsValidator/>
-            <ValidationSummary/>
+            <DataAnnotationsValidator />
+            <ValidationSummary />
             <label>
                 <span>Location <span class="required">*</span></span>
                 <select @bind="@_weatherData.Location" class="input-field">
@@ -36,7 +37,7 @@ else
             </label>
 
             <label>
-                <span> </span><input type="submit" value="Load"/>
+                <span> </span><input type="submit" value="Load" />
             </label>
         </EditForm>
     </div>

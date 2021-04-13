@@ -2,6 +2,7 @@
 @using WeatherHistoryViewer.Core.Models
 @using WeatherHistoryViewer.Core.ViewModels
 @using WeatherHistoryViewer.Core.Constants
+@using WeatherHistoryViewer.Web.Client.Shared.WeatherTables.WeatherOf
 @inject HttpClient Http
 
 @if (_weatherOfYears == null)
@@ -18,8 +19,8 @@ else
             Currently loaded data for @_weatherOfYears.First().LocationName
         </p>
         <EditForm Model="@_yearData" OnValidSubmit="@HandleValidSubmit">
-            <DataAnnotationsValidator/>
-            <ValidationSummary/>
+            <DataAnnotationsValidator />
+            <ValidationSummary />
             <label>
                 <span>Location <span class="required">*</span></span>
                 <select @bind="@_yearData.Location" class="input-field">
@@ -31,7 +32,7 @@ else
             </label>
 
             <label>
-                <span> </span><input type="submit" value="Load"/>
+                <span> </span><input type="submit" value="Load" />
             </label>
         </EditForm>
     </div>
