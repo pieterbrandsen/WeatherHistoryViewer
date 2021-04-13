@@ -25,7 +25,7 @@ namespace WeatherHistoryViewer.Services.Handlers
                 if (_locationHandler.DoesLocationExistInDb(weather.Location.Name))
                     context.Locations.Attach(weather.Location);
                 context.Weather.Add(weather);
-            context.SaveChanges();
+                context.SaveChanges();
                 context.Database.CommitTransaction();
             }
             catch (Exception e)
@@ -45,7 +45,7 @@ namespace WeatherHistoryViewer.Services.Handlers
             try
             {
                 context.LocationsWarehouse.Add(locationWarehouse);
-            context.SaveChanges();
+                context.SaveChanges();
             }
             catch (Exception e)
             {
@@ -65,7 +65,7 @@ namespace WeatherHistoryViewer.Services.Handlers
                 if (new DateHelper().DoesDateExistInDb(weatherWarehouse.Time.Date))
                     context.Times.Attach(weatherWarehouse.Time);
                 context.WeatherWarehouse.Add(weatherWarehouse);
-            context.SaveChanges();
+                context.SaveChanges();
                 context.Database.CommitTransaction();
             }
             catch (Exception e)

@@ -33,6 +33,7 @@
 <br/>
 
 @code {
+
     public enum DisplayedProperties
     {
         AvgTemp,
@@ -51,7 +52,7 @@
     public WeatherLegend WeatherLegend { get; set; }
 
     [Parameter]
-    public DisplayedProperties ChosenDisplayedProperty{ get; set; }
+    public DisplayedProperties ChosenDisplayedProperty { get; set; }
 
     private string _symbol = "°C";
 

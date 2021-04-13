@@ -160,31 +160,29 @@ namespace WeatherHistoryViewer.Services.Helpers
                 {
                     var shortDate = date.Split("/").Length > 2 ? date.Substring(date.IndexOf('/') + 1) : date;
                     var weatherOfDate = weatherList.FirstOrDefault(s => s.Time.Date.Contains(shortDate));
-                    if (weatherOfDate == null)
-                    {
-                        continue;
-                    }
+                    if (weatherOfDate == null) continue;
 
                     var currentDates = _dateHelper.GetWeekDatesFromDate(weatherOfDate.Time.Date);
-                        var newWeatherList = new List<HistoricalWeather>();
-                        currentDates.ForEach(currentDate=> {
-                            var weatherMeasurement = weatherList.FirstOrDefault(w => w.Time.Date == currentDate);
-                            if (weatherMeasurement != null)
+                    var newWeatherList = new List<HistoricalWeather>();
+                    currentDates.ForEach(currentDate =>
+                    {
+                        var weatherMeasurement = weatherList.FirstOrDefault(w => w.Time.Date == currentDate);
+                        if (weatherMeasurement != null)
+                        {
+                            var historicalWeather = new HistoricalWeather
                             {
-                                var historicalWeather = new HistoricalWeather
-                                {
-                                    AvgTemp = weatherMeasurement.WeatherMeasurement.AvgTemp,
-                                    Date = weatherMeasurement.Time.Date,
-                                    Location = _locationHandler.GetLocation(weatherMeasurement.Location.LocationName),
-                                    MaxTemp = weatherMeasurement.WeatherMeasurement.MaxTemp,
-                                    MinTemp = weatherMeasurement.WeatherMeasurement.MinTemp,
-                                    SunHour = weatherMeasurement.WeatherMeasurement.SunHour
-                                };
-                                newWeatherList.Add(historicalWeather);
-                            }
-                        });
+                                AvgTemp = weatherMeasurement.WeatherMeasurement.AvgTemp,
+                                Date = weatherMeasurement.Time.Date,
+                                Location = _locationHandler.GetLocation(weatherMeasurement.Location.LocationName),
+                                MaxTemp = weatherMeasurement.WeatherMeasurement.MaxTemp,
+                                MinTemp = weatherMeasurement.WeatherMeasurement.MinTemp,
+                                SunHour = weatherMeasurement.WeatherMeasurement.SunHour
+                            };
+                            newWeatherList.Add(historicalWeather);
+                        }
+                    });
 
-                        weatherListList.Add(newWeatherList);
+                    weatherListList.Add(newWeatherList);
                 }
             }
             catch (Exception e)
@@ -212,27 +210,25 @@ namespace WeatherHistoryViewer.Services.Helpers
                 {
                     var shortDate = date.Split("/").Length > 1 ? date.Substring(date.IndexOf('/') + 1) : date;
                     var weatherOfDate = weatherList.FirstOrDefault(s => s.Time.Date.Contains(shortDate));
-                    if (weatherOfDate == null)
-                    {
-                        continue;
-                    }
+                    if (weatherOfDate == null) continue;
 
                     var historicalWeather = new HistoricalWeather
-                        {
-                            AvgTemp = weatherOfDate.WeatherMeasurement.AvgTemp,
-                            Date = weatherOfDate.Time.Year.ToString(),
-                            Location = _locationHandler.GetLocation(weatherOfDate.Location.LocationName),
-                            MaxTemp = weatherOfDate.WeatherMeasurement.MaxTemp,
-                            MinTemp = weatherOfDate.WeatherMeasurement.MinTemp,
-                            SunHour = weatherOfDate.WeatherMeasurement.SunHour
-                        };
-                        historicalWeatherList.Add(historicalWeather);
+                    {
+                        AvgTemp = weatherOfDate.WeatherMeasurement.AvgTemp,
+                        Date = weatherOfDate.Time.Year.ToString(),
+                        Location = _locationHandler.GetLocation(weatherOfDate.Location.LocationName),
+                        MaxTemp = weatherOfDate.WeatherMeasurement.MaxTemp,
+                        MinTemp = weatherOfDate.WeatherMeasurement.MinTemp,
+                        SunHour = weatherOfDate.WeatherMeasurement.SunHour
+                    };
+                    historicalWeatherList.Add(historicalWeather);
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
+
             return historicalWeatherList;
         }
 

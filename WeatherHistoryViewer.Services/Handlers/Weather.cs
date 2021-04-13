@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using WeatherHistoryViewer.Core.Constants;
 using WeatherHistoryViewer.Core.Models.DataWarehouse;
 using WeatherHistoryViewer.Db;
@@ -58,15 +57,11 @@ namespace WeatherHistoryViewer.Services.Handlers
         {
             var dateList = new List<string>();
             if (oldestDate == null)
-            {
                 dateList = _dateHelper.GetAllDates();
-            }
             else
-            {
                 dateList = !_dateHelper.IsDateOlderThenOldestDate(oldestDate)
                     ? _dateHelper.GetRangeOfDates(oldestDate, newestDate)
                     : _dateHelper.GetRangeOfDates(newestDateString: newestDate);
-            }
 
             using var context = new ApplicationDbContext();
             var excludedDates = new HashSet<string>(context.Weather.Include(w => w.Location)
@@ -97,7 +92,8 @@ namespace WeatherHistoryViewer.Services.Handlers
                             newestDate);
                 });
 
-                if (new WeatherHelper().DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb.WeekPage))
+                if (new WeatherHelper().DoesWeatherWarehouseNeedToBeUpdated(MinCachingDaysBeforeUpdatingWeatherDb
+                    .WeekPage))
                     new DataWarehouseHandlers().UpdateWeatherWarehouse();
             }
             catch (Exception e)

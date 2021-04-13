@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace WeatherHistoryViewer.Core.Models.DataWarehouse
+﻿namespace WeatherHistoryViewer.Core.Models.DataWarehouse
 {
     public enum MinCachingDaysBeforeUpdatingWeatherDb
     {

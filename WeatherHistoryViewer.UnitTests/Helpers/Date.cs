@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WeatherHistoryViewer.Services.Helpers;
 using Xunit;
 
@@ -22,23 +19,23 @@ namespace WeatherHistoryViewer.UnitTests.Helpers
 
         public static IEnumerable<object[]> GetDateRanges()
         {
-            for (int i = 1; i < 15; i++)
+            for (var i = 1; i < 15; i++)
             {
                 var newestDate = DateHelper.GetDateStringOfDaysAgo(i);
                 var oldestDate = DateHelper.GetDateStringOfDaysAgo(i * 2);
                 var expectedLength = i + 1;
-                yield return new object[] { oldestDate, newestDate, expectedLength };
+                yield return new object[] {oldestDate, newestDate, expectedLength};
             }
 
-            yield return new object[] { null, null, DateHelper.GetAllDates().Count + 1 };
-            yield return new object[] { DateHelper.GetDateStringOfDaysAgo(2), null, 3 };
-            yield return new object[] { DateHelper.GetDateStringOfDaysAgo(), DateHelper.GetDateStringOfDaysAgo(2), 6 };
-
+            yield return new object[] {null, null, DateHelper.GetAllDates().Count + 1};
+            yield return new object[] {DateHelper.GetDateStringOfDaysAgo(2), null, 3};
+            yield return new object[] {DateHelper.GetDateStringOfDaysAgo(), DateHelper.GetDateStringOfDaysAgo(2), 6};
         }
 
         [Theory]
         [MemberData(nameof(GetDateRanges))]
-        public void GetRangeOfRequestableDatesShouldReturnExpectedLength(string oldestDateString, string newestDateString, int expectedLength)
+        public void GetRangeOfRequestableDatesShouldReturnExpectedLength(string oldestDateString,
+            string newestDateString, int expectedLength)
         {
             var dateList = DateHelper.GetRangeOfDates(oldestDateString, newestDateString);
 
@@ -57,10 +54,7 @@ namespace WeatherHistoryViewer.UnitTests.Helpers
 
         public static IEnumerable<object[]> GetListOfDates()
         {
-            for (int i = 1; i < 100; i += 4)
-            {
-                yield return new object[] { DateHelper.GetDateStringOfDaysAgo(i) };
-            }
+            for (var i = 1; i < 100; i += 4) yield return new object[] {DateHelper.GetDateStringOfDaysAgo(i)};
         }
 
         [Theory]

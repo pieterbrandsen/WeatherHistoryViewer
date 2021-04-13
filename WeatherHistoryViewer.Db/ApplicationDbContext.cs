@@ -18,7 +18,9 @@ namespace WeatherHistoryViewer.Db
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured) optionsBuilder.UseSqlServer("Data Source=weather-history-db.database.windows.net;Initial Catalog=WeatherHistoryDataDb;User ID=pieterbrandsen;Password=Passw0rd;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            if (!optionsBuilder.IsConfigured)
+                optionsBuilder.UseSqlServer(
+                    "Data Source=weather-history-db.database.windows.net;Initial Catalog=WeatherHistoryDataDb;User ID=pieterbrandsen;Password=Passw0rd;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

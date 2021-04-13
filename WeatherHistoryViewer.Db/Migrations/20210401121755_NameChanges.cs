@@ -7,37 +7,37 @@ namespace WeatherHistoryViewer.Db.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_WeatherWarehouse_WeatherMeasurments_WeatherMeasurmentId",
-                table: "WeatherWarehouse");
+                "FK_WeatherWarehouse_WeatherMeasurments_WeatherMeasurmentId",
+                "WeatherWarehouse");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_WeatherMeasurments",
-                table: "WeatherMeasurments");
+                "PK_WeatherMeasurments",
+                "WeatherMeasurments");
 
             migrationBuilder.RenameTable(
-                name: "WeatherMeasurments",
+                "WeatherMeasurments",
                 newName: "WeatherMeasurements");
 
             migrationBuilder.RenameColumn(
-                name: "WeatherMeasurmentId",
-                table: "WeatherWarehouse",
-                newName: "WeatherMeasurementId");
+                "WeatherMeasurmentId",
+                "WeatherWarehouse",
+                "WeatherMeasurementId");
 
             migrationBuilder.RenameIndex(
-                name: "IX_WeatherWarehouse_WeatherMeasurmentId",
+                "IX_WeatherWarehouse_WeatherMeasurmentId",
                 table: "WeatherWarehouse",
                 newName: "IX_WeatherWarehouse_WeatherMeasurementId");
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_WeatherMeasurements",
-                table: "WeatherMeasurements",
-                column: "Id");
+                "PK_WeatherMeasurements",
+                "WeatherMeasurements",
+                "Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_WeatherWarehouse_WeatherMeasurements_WeatherMeasurementId",
-                table: "WeatherWarehouse",
-                column: "WeatherMeasurementId",
-                principalTable: "WeatherMeasurements",
+                "FK_WeatherWarehouse_WeatherMeasurements_WeatherMeasurementId",
+                "WeatherWarehouse",
+                "WeatherMeasurementId",
+                "WeatherMeasurements",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -45,37 +45,37 @@ namespace WeatherHistoryViewer.Db.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_WeatherWarehouse_WeatherMeasurements_WeatherMeasurementId",
-                table: "WeatherWarehouse");
+                "FK_WeatherWarehouse_WeatherMeasurements_WeatherMeasurementId",
+                "WeatherWarehouse");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_WeatherMeasurements",
-                table: "WeatherMeasurements");
+                "PK_WeatherMeasurements",
+                "WeatherMeasurements");
 
             migrationBuilder.RenameTable(
-                name: "WeatherMeasurements",
+                "WeatherMeasurements",
                 newName: "WeatherMeasurments");
 
             migrationBuilder.RenameColumn(
-                name: "WeatherMeasurementId",
-                table: "WeatherWarehouse",
-                newName: "WeatherMeasurmentId");
+                "WeatherMeasurementId",
+                "WeatherWarehouse",
+                "WeatherMeasurmentId");
 
             migrationBuilder.RenameIndex(
-                name: "IX_WeatherWarehouse_WeatherMeasurementId",
+                "IX_WeatherWarehouse_WeatherMeasurementId",
                 table: "WeatherWarehouse",
                 newName: "IX_WeatherWarehouse_WeatherMeasurmentId");
 
             migrationBuilder.AddPrimaryKey(
-                name: "PK_WeatherMeasurments",
-                table: "WeatherMeasurments",
-                column: "Id");
+                "PK_WeatherMeasurments",
+                "WeatherMeasurments",
+                "Id");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_WeatherWarehouse_WeatherMeasurments_WeatherMeasurmentId",
-                table: "WeatherWarehouse",
-                column: "WeatherMeasurmentId",
-                principalTable: "WeatherMeasurments",
+                "FK_WeatherWarehouse_WeatherMeasurments_WeatherMeasurmentId",
+                "WeatherWarehouse",
+                "WeatherMeasurmentId",
+                "WeatherMeasurments",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }

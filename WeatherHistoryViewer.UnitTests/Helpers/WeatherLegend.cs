@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WeatherHistoryViewer.Core.Constants;
 using WeatherHistoryViewer.Core.Models;
 using WeatherHistoryViewer.Core.Models.Weather;
@@ -19,16 +17,14 @@ namespace WeatherHistoryViewer.UnitTests.Helpers
         {
             var weatherOverviewList = new List<WeatherOverview>();
 
-            for (int i = 1; i <= length; i++)
-            {
-                weatherOverviewList.Add(new()
+            for (var i = 1; i <= length; i++)
+                weatherOverviewList.Add(new WeatherOverview()
                 {
                     SunHour = i,
                     AvgTemp = i,
                     MaxTemp = i,
-                    MinTemp = i,
+                    MinTemp = i
                 });
-            }
 
             weatherOverviewList = weatherOverviewList.OrderBy(a => Guid.NewGuid()).ToList();
             return weatherOverviewList;
@@ -38,16 +34,14 @@ namespace WeatherHistoryViewer.UnitTests.Helpers
         {
             var weatherOverviewList = new List<HistoricalWeather>();
 
-            for (int i = 1; i <= length; i++)
-            {
-                weatherOverviewList.Add(new()
+            for (var i = 1; i <= length; i++)
+                weatherOverviewList.Add(new HistoricalWeather()
                 {
                     SunHour = i,
                     AvgTemp = i,
                     MaxTemp = i,
-                    MinTemp = i,
+                    MinTemp = i
                 });
-            }
 
             weatherOverviewList = weatherOverviewList.OrderBy(a => Guid.NewGuid()).ToList();
             return weatherOverviewList;
@@ -58,7 +52,6 @@ namespace WeatherHistoryViewer.UnitTests.Helpers
             const double length = 100;
             yield return new object[] {WeatherOverviewListGenerator(length)};
             yield return new object[] {null, HistoricalWeatherListGenerator(length)};
-
         }
 
         [Theory]
@@ -100,9 +93,8 @@ namespace WeatherHistoryViewer.UnitTests.Helpers
                 var filledWeatherList =
                     _legendHelper.GetWeatherListWithLegendClasses(weatherOverviewList, weatherLegend);
                 foreach (var item in filledWeatherList)
-                {
-                    Assert.NotNull(item.CssClass.GetType().GetProperty(WeatherConstants.NameOfLegendValue.ToString())?.GetValue(item.CssClass));
-                }
+                    Assert.NotNull(item.CssClass.GetType().GetProperty(WeatherConstants.NameOfLegendValue.ToString())
+                        ?.GetValue(item.CssClass));
 
                 var filledForceAssignedWeatherList =
                     _legendHelper.GetWeatherListWithLegendClasses(weatherOverviewList, weatherLegend, true);
@@ -113,16 +105,14 @@ namespace WeatherHistoryViewer.UnitTests.Helpers
                     Assert.NotNull(item.CssClass.MinTemp);
                     Assert.NotNull(item.CssClass.SunHour);
                 }
-
             }
             else
             {
                 var filledWeatherList =
                     _legendHelper.GetWeatherListWithLegendClasses(historicalWeatherList, weatherLegend);
                 foreach (var item in filledWeatherList)
-                {
-                    Assert.NotNull(item.CssClass.GetType().GetProperty(WeatherConstants.NameOfLegendValue.ToString())?.GetValue(item.CssClass));
-                }
+                    Assert.NotNull(item.CssClass.GetType().GetProperty(WeatherConstants.NameOfLegendValue.ToString())
+                        ?.GetValue(item.CssClass));
 
                 var filledForceAssignedWeatherList =
                     _legendHelper.GetWeatherListWithLegendClasses(historicalWeatherList, weatherLegend, true);

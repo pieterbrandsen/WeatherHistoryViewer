@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WeatherHistoryViewer.Core.Models.DataWarehouse;
 using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 

@@ -89,7 +89,8 @@ namespace WeatherHistoryViewer.Services.Helpers
 
         public bool IsDateOlderThenOldestDate(string date)
         {
-            return ConvertDateStringToDate(date).Ticks < ConvertDateStringToDate(WeatherConstants.OldestWeatherDatePossible).Ticks;
+            return ConvertDateStringToDate(date).Ticks <
+                   ConvertDateStringToDate(WeatherConstants.OldestWeatherDatePossible).Ticks;
         }
 
         public List<string> GetWeekDatesFromDate(string date)
@@ -117,7 +118,7 @@ namespace WeatherHistoryViewer.Services.Helpers
                 if (j.DayOfWeek == DayOfWeek.Saturday) dateTimeList.Add(GetDateOfTomorrow(j));
             }
 
-            return dateTimeList.Select(t=> ConvertDateToDateString(t.Date)).OrderByDescending(s=>s).ToList();
+            return dateTimeList.Select(t => ConvertDateToDateString(t.Date)).OrderByDescending(s => s).ToList();
         }
     }
 }

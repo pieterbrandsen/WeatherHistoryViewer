@@ -10,8 +10,8 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
     public class OverviewController : ControllerBase
     {
         private readonly LegendHelper _legendHelper = new();
-        private readonly WeatherHelper _weatherHelper = new();
         private readonly ILogger _logger;
+        private readonly WeatherHelper _weatherHelper = new();
 
         public OverviewController(ILogger<OverviewController> logger)
         {

@@ -16,8 +16,8 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
     {
         private readonly string _defaultDate = "2020/01/01";
         private readonly LegendHelper _legendHelper = new();
-        private readonly WeatherHelper _weatherHelper = new();
         private readonly ILogger _logger;
+        private readonly WeatherHelper _weatherHelper = new();
 
         public WeatherOfController(ILogger<WeatherOfController> logger)
         {
@@ -79,7 +79,7 @@ namespace WeatherHistoryViewer.Web.Server.Controllers
         }
 
         [HttpGet]
-        [ResponseCache(Duration = 60 * 60 * 12, VaryByQueryKeys = new[] { "location", "date" })]
+        [ResponseCache(Duration = 60 * 60 * 12, VaryByQueryKeys = new[] {"location", "date"})]
         public IActionResult Day(string location = WeatherConstants.DefaultLocationName, string date = null)
         {
             _logger.LogInformation("Started loading DayPage");

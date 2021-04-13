@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WeatherHistoryViewer.Core.Models.DataWarehouse;
+﻿using WeatherHistoryViewer.Core.Models.DataWarehouse;
 
 namespace WeatherHistoryViewer.Core.Constants
 {
@@ -16,7 +11,5 @@ namespace WeatherHistoryViewer.Core.Constants
         public const string OldestWeatherDatePossible = "2008/07/01";
 
         public const string DefaultLocationName = "Amsterdam";
-        
-
     }
 }

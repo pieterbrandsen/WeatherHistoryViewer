@@ -48,7 +48,7 @@ namespace WeatherHistoryViewer.Services.Handlers
                         {
                             Location = new LocationWarehouse {LocationName = weather.Location.Name},
                             Time = time,
-                            WeatherMeasurement = new WeatherMeasurement()
+                            WeatherMeasurement = new WeatherMeasurement
                             {
                                 AvgTemp = weather.AvgTemp, MaxTemp = weather.MaxTemp, MinTemp = weather.MinTemp,
                                 SunHour = weather.SunHour
