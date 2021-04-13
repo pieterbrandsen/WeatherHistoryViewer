@@ -2,6 +2,7 @@ name: Build and deploy .NET Core app to Windows WebApp WeatherHistoryViewerWeb
 on:
   push:
     branches:
+    - master
     - develop
 env:
   AZURE_WEBAPP_NAME: WeatherHistoryViewerWeb
