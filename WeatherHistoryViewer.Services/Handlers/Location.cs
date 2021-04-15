@@ -17,7 +17,6 @@ namespace WeatherHistoryViewer.Services.Handlers
         public List<string> GetLocationNames()
         {
             using var context = new ApplicationDbContext();
-            //var locations = context.Locations.Select(s => s.Name).ToList();
             var locations = context.LocationsWarehouse.Select(s => s.LocationName).ToList();
             return locations;
         }

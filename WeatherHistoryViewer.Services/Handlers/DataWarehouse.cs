@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WeatherHistoryViewer.Core.Models.DataWarehouse;
+using WeatherHistoryViewer.Core.Models.Weather;
 using WeatherHistoryViewer.Db;
 using WeatherHistoryViewer.Services.Helpers;
 
@@ -61,8 +62,8 @@ namespace WeatherHistoryViewer.Services.Handlers
 
         private class NameAndLocation
         {
-            public string Date { get; set; }
-            public string City { get; set; }
+            private string Date { get; set; }
+            private string City { get; set; }
             public string CombinedValue => Date += City;
         }
     }

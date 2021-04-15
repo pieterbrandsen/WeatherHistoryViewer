@@ -4,7 +4,7 @@ namespace WeatherHistoryViewer.Core.Constants
 {
     public class WeatherConstants
     {
-        public const short OldestDaysAgo = 10000;
+        public const short OldestDaysAgo = 365;
         public const short NewestDaysAgo = 10;
 
         public const PossibleLegendValues NameOfLegendValue = PossibleLegendValues.AvgTemp;
