@@ -25,7 +25,7 @@ namespace WeatherHistoryViewer.Services.Helpers
             }
             else if ((DateTime.Now - DateTime.Parse(lastUpdateTime.Date)).Days + (int) type <= 0)
             {
-                //lastUpdateTime.Date = DateTime.Now.ToShortDateString();
+                lastUpdateTime.Date = DateTime.Now.ToShortDateString();
                 context.SaveChanges();
             }
             else
